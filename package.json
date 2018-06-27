@@ -10,8 +10,15 @@
   "author": "George Soteriou",
   "license": "ISC",
   "dependencies": {
+    "composable-middleware": "^0.3.0",
     "express": "^4.16.3",
+    "express-auth-negotiate": "^0.2.0",
     "express-kerberos": "^1.0.0",
+    "http-errors": "^1.6.3",
+    "kerberos": "0.0.24",
+    "nan": "^2.10.0",
+    "nested-error-stacks": "^2.0.1",
+    "pify": "^3.0.0",
     "simple-kerberos": "^1.1.2"
   },
   "devDependencies": {
