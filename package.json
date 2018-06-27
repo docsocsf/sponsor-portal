@@ -1,0 +1,21 @@
+{
+  "name": "portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "author": "George Soteriou",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "express-kerberos": "^1.0.0",
+    "simple-kerberos": "^1.1.2"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0"
+  }
+}
