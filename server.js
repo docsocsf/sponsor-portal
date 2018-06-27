@@ -1,5 +1,5 @@
 const express = require('express');
-const expressKerberos = require('express-kerberos');
+const  {default: expressKerberos}  = require('express-kerberos');
 
 const app = express();
 
