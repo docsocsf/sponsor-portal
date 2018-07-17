@@ -1,0 +1,20 @@
+html
+    body
+    form(method="post" action="/member-login")
+        h1 Member Login:
+            div.form-group
+                label(for="user") Username: 
+                input#user.form-control(type="text", placeholder="Imperial ID", name="user")
+            div.form-group
+                label(for="pass") Password: 
+                input(type="password", name="pass")
+            button.btn.btn-primary(type='submit') Login
+    form(method="post" action="/sponsor-login")
+        h1 Sponsor Login:
+            div.form-group
+                label#user.form-control(for="user") Username: 
+                input(type="text", placeholder="Imperial ID", name="user")
+            div.form-group
+                label(for="pass") Password: 
+                input(type="password", name="pass")
+            button.btn.btn-primary(type='submit') Login

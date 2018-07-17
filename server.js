@@ -3,9 +3,19 @@ const session = require('express-session');
 const util = require('util')
 const krb5 = require('node-krb5')
 const rp = require('request-promise');
+const mongoose = require('mongoose');
+const fs = require('fs');
+const fileUpload = require('express-fileupload');
 
 //EXPRESS APP
 const app = express();
+
+app.set('view engine', 'pug');
+app.set('views', __dirname + '/views');
+
+app.use("/static", express.static(__dirname + '/public'));
+
+app.use(fileUpload());
 
 //PORT
 app.set('port', process.env.PORT || 8080);
@@ -16,7 +26,7 @@ app.use(express.json());
 
 //SESSION
 app.use(session({
-  secret: 'keyboard cat',
+  secret: 'shhhhhhhhhhhh',
   resave: false,
   saveUninitialized: true
 }))
@@ -30,6 +40,85 @@ var options = {
   }
 }
 
+//MONGOOSE
+mongoose.connect('mongodb://localhost/portal');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('connected to db');
+});
+
+//DATABASE SCHEME
+var SponsorSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    unique: true,
+    required: true,
+    trim: true
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  users: [{type: String}]
+});
+var Sponsor = mongoose.model('Sponsor', SponsorSchema);
+module.exports = Sponsor;
+
+//PORTAL LOGIN
+app.get('/portal-login', (req,res) => {
+  res.render("portal-login");
+});
+
+//portal auth
+app.post('/portal-login', (req,res,next) => {
+  if(req.session.docsoc){
+    res.redirect('/portal');
+  }else{
+    next();
+  }
+}, (req,res) => {
+  var user = req.body.user;
+  var pass = req.body.pass;
+  if(user === "docsoc" && pass === "docsoc"){
+    req.session.docsoc = true;
+    res.redirect('/portal');
+  }else{
+    res.redirect('/');
+  }
+})
+
+//PORTAL
+app.get('/portal', (req,res,next) => {
+  if(req.session.docsoc){
+    next();
+  }else{
+    res.redirect('/portal-login');
+  }
+}, (req,res) => {
+  Sponsor.find((err, s) => {
+      res.render("portal", {sponsors: s});
+  })
+});
+
+//Add new sponsor
+app.post('/new-sponsor', (req,res) => {
+  var sponsor = new Sponsor({
+    username: req.body.user,
+    password: req.body.pass,
+    users: []
+  });
+
+  sponsor.save( (err, user) => {
+    if (err) {
+      return next(err)
+    } else {
+      console.log(user);
+      res.redirect('/portal');
+    }
+  });
+});
+
 //LOGIN PAGE
 app.get('/',  (req,res,next) => {
   if(req.session.login){
@@ -42,11 +131,11 @@ app.get('/',  (req,res,next) => {
     next();
   }
 },(req,res) => {
-  res.sendFile('public/login.html', {root: __dirname });
+  res.render("login");
 });
 
 
-//LOGIN member FORM
+//MEMBER AUTH
 app.post('/member-login', (req,res) => {
   var user = req.body.user;
   var pass = req.body.pass;
@@ -67,6 +156,7 @@ app.post('/member-login', (req,res) => {
           req.session.login = true;
           req.session.type = 'member';
           req.session.name = data.Customer.FirstName;
+          req.session.user = data.Customer.Login;
           res.redirect('/member');
         }else{
           //NON DOCSOC USER
@@ -78,42 +168,75 @@ app.post('/member-login', (req,res) => {
   });
 });
 
-app.post('/member-login', (req,res) => {
-
-});
-
 
 //member PAGE
 app.get('/member', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
       next();
-    }else{
+    }else if(req.session.type == 'sponsor'){
       res.redirect('/sponsor');
     }
   }else{
     res.redirect('/');
   }
 }, (req,res) => {
-  //console.log(req.session);
-  //res.sendFile('public/member.html', {root: __dirname });
-  res.write('<html><head></head><body><form method="post"><input type="submit"/></form>');
-  res.write('Hello member ' + req.session.name + '</body></html>');
-  res.end();
+  var hasCV = fs.existsSync( __dirname + '/cvs/' + req.session.user + '.pdf');
+  console.log(hasCV);
+  Sponsor.find((err, s) => {
+      res.render('member',{name: req.session.name, sponsors: s, CV: hasCV});
+    }) 
 });
 
-app.post('/member', (req,res) => {
-  req.session.destroy();
-  res.redirect('/');
+app.post('/upload-cv', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      next();
+    }else if(req.session.type == 'sponsor'){
+      res.redirect('/sponsor');
+    }
+  }else{
+    res.redirect('/');
+  }
+},(req,res) => {
+  if (!req.files) 
+    return res.status(400).send('No files were uploaded.');
+  let sampleFile = req.files.file;
+  console.log(req.session);
+
+  sampleFile.mv(__dirname + '/cvs/' + req.session.user + '.pdf', function(err) {
+    if (err) 
+      return res.status(500).send(err);
+    res.redirect('/member');
+  });
 });
 
+//SPONSOR AUTH
+app.post('/sponsor-login', (req,res) => {
+  var user = req.body.user;
+  var pass = req.body.pass;
+  Sponsor.find({username: user}, (err,result) => {
+    if(err) return console.log(err);
+    //console.log(result[0].password);
+    if(result[0] && result[0].password === pass){
+      //VALID USER
+      console.log('success');
+      req.session.login = true;
+      req.session.type = 'sponsor';
+      req.session.name = user;
+      res.redirect('/sponsor');
+    }else{
+      res.send("Invalid Username or Password");
+    }
+  })
+});
 
 //sponsor PAGE
 app.get('/sponsor', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'sponsor'){
       next();
-    }else{
+    }else if(req.session.type == 'member'){
       res.redirect('/member');
     }
   }else{
@@ -121,10 +244,16 @@ app.get('/sponsor', (req,res,next) => {
   }
 }, (req,res) => {
   //console.log(req.session);
-  //res.sendFile('public/member.html', {root: __dirname });
-  res.write('Hello Sponsor ' + req.session.name);
-  res.write('<form method="post"><input type="submit"/></form>');
-  res.end();
+  Sponsor.find({username: req.session.name},(err, s) => {
+    res.render('sponsor',{sponsor: s[0]})
+  }) 
+});
+
+
+//LOGOUT
+app.post('/logout', (req,res) => {
+  req.session.destroy();
+  res.redirect('/');
 });
 
 

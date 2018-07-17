@@ -1,0 +1,11 @@
+html
+    body
+    form(method="post" action="/portal-login")
+        h1 Member Login:
+            div.form-group
+                label(for="user") Username: 
+                input#user.form-control(type="text", placeholder="Imperial ID", name="user")
+            div.form-group
+                label(for="pass") Password: 
+                input(type="password", name="pass")
+            button.btn.btn-primary(type='submit') Login

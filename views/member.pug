@@ -1,0 +1,22 @@
+html
+    body
+        h1 Hello there #{name} 
+        if CV
+            h2 Update CV:
+            form(action="/show-CV" method="post")
+                label View your current CV: 
+                button.btn.btn-primary(type='submit') View
+        else
+            h3 Upload CV:
+        form(method="post" action="/upload-cv"  encType="multipart/form-data")
+            label Upload new CV: 
+            input(type="file", name="file")
+            button.btn.btn-primary(type='submit' value="Upload!") Upload CV
+        h2 Sponsors to send your CV to
+        ul
+            for sponsor in sponsors
+                li= sponsor.username
+        form(method="post" action="/send-CV")
+            button.btn.btn-primary(type='submit') Send CV
+        form(method="post" action="/logout")
+            button.btn.btn-primary(type='submit') Logout
