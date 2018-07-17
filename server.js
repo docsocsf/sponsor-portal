@@ -60,7 +60,20 @@ var SponsorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  users: [{type: String}]
+  users: [{
+    FirstName: {
+      type: String
+    },
+    LastName: {
+      type: String
+    },
+    Email: {
+      type: String
+    },
+    Username: {
+      type: String
+    }
+  }]
 });
 var Sponsor = mongoose.model('Sponsor', SponsorSchema);
 module.exports = Sponsor;
@@ -97,7 +110,7 @@ app.get('/portal', (req,res,next) => {
   }
 }, (req,res) => {
   Sponsor.find((err, s) => {
-      res.render("portal", {sponsors: s});
+    res.render("portal", {sponsors: s});
   })
 });
 
@@ -108,12 +121,23 @@ app.post('/new-sponsor', (req,res) => {
     password: req.body.pass,
     users: []
   });
-
-  sponsor.save( (err, user) => {
+  
+  sponsor.save((err, user) => {
     if (err) {
       return next(err)
     } else {
       console.log(user);
+      res.redirect('/portal');
+    }
+  });
+});
+
+app.post('/remove-sponsor/:user', (req,res) => {
+  console.log(req.params.user);
+  Sponsor.remove({username: req.params.user} , (err) => {
+    if (err) {
+      return next(err)
+    } else {
       res.redirect('/portal');
     }
   });
@@ -155,8 +179,7 @@ app.post('/member-login', (req,res) => {
           console.log('success');
           req.session.login = true;
           req.session.type = 'member';
-          req.session.name = data.Customer.FirstName;
-          req.session.user = data.Customer.Login;
+          req.session.data = data.Customer;
           res.redirect('/member');
         }else{
           //NON DOCSOC USER
@@ -181,11 +204,10 @@ app.get('/member', (req,res,next) => {
     res.redirect('/');
   }
 }, (req,res) => {
-  var hasCV = fs.existsSync( __dirname + '/cvs/' + req.session.user + '.pdf');
-  console.log(hasCV);
+  var hasCV = fs.existsSync( __dirname + '/cvs/' + req.session.data.Login + '.pdf');
   Sponsor.find((err, s) => {
-      res.render('member',{name: req.session.name, sponsors: s, CV: hasCV});
-    }) 
+    res.render('member',{name: req.session.data.FirstName, sponsors: s, CV: hasCV});
+  }) 
 });
 
 app.post('/upload-cv', (req,res,next) => {
@@ -200,64 +222,133 @@ app.post('/upload-cv', (req,res,next) => {
   }
 },(req,res) => {
   if (!req.files) 
-    return res.status(400).send('No files were uploaded.');
+  return res.status(400).send('No files were uploaded.');
   let sampleFile = req.files.file;
-  console.log(req.session);
-
-  sampleFile.mv(__dirname + '/cvs/' + req.session.user + '.pdf', function(err) {
+  
+  sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '.pdf', function(err) {
     if (err) 
-      return res.status(500).send(err);
+    return res.status(500).send(err);
     res.redirect('/member');
   });
 });
 
-//SPONSOR AUTH
-app.post('/sponsor-login', (req,res) => {
-  var user = req.body.user;
-  var pass = req.body.pass;
-  Sponsor.find({username: user}, (err,result) => {
-    if(err) return console.log(err);
-    //console.log(result[0].password);
-    if(result[0] && result[0].password === pass){
-      //VALID USER
-      console.log('success');
-      req.session.login = true;
-      req.session.type = 'sponsor';
-      req.session.name = user;
-      res.redirect('/sponsor');
-    }else{
-      res.send("Invalid Username or Password");
-    }
-  })
-});
-
-//sponsor PAGE
-app.get('/sponsor', (req,res,next) => {
+app.post('/show-cv', (req,res,next) => {
   if(req.session.login){
-    if(req.session.type == 'sponsor'){
+    if(req.session.type == 'member'){
       next();
-    }else if(req.session.type == 'member'){
-      res.redirect('/member');
+    }else if(req.session.type == 'sponsor'){
+      res.redirect('/sponsor');
     }
   }else{
     res.redirect('/');
   }
-}, (req,res) => {
-  //console.log(req.session);
-  Sponsor.find({username: req.session.name},(err, s) => {
-    res.render('sponsor',{sponsor: s[0]})
-  }) 
+},(req,res) => {
+  var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '.pdf');
+  res.contentType("application/pdf");
+  res.send(data); 
 });
 
-
-//LOGOUT
-app.post('/logout', (req,res) => {
-  req.session.destroy();
-  res.redirect('/');
+app.post('/remove-cv', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      next();
+    }else if(req.session.type == 'sponsor'){
+      res.redirect('/sponsor');
+    }
+  }else{
+    res.redirect('/');
+  }
+},(req,res) => {
+  fs.unlink(__dirname + '/cvs/' + req.session.data.Login + '.pdf', function(err) {
+    if (err) 
+    return res.status(500).send(err);
+    res.redirect('/member');
+  });
 });
 
-
-//SERVER LISTEN
-app.listen(app.get('port'), function(){
-  console.log('Server listening on port ' + app.get('port'));
-});                            
+app.post('/send-cv', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      next();
+    }else if(req.session.type == 'sponsor'){
+      res.redirect('/sponsor');
+    }
+  }else{
+    res.redirect('/');
+  }
+},(req,res) => {
+  console.log(req.body);
+  Sponsor.find((err, sponsors) => {
+    sponsors.forEach((sponsor) => {
+      var data = {FirstName: req.session.data.FirstName,
+        LastName: req.session.data.LastName,
+        Email: req.session.data.Email,
+        Username: req.session.data.Login}
+        if(sponsor.username in req.body){
+          sponsor.users.push(data);
+        }else{
+          sponsor.users = sponsor.users.filter(i => i.Username !== req.session.data.Login)
+        }
+        sponsor.save((err, user) => {
+          if (err) {
+            return next(err)
+          } else {
+            console.log(user);
+          }
+        }); 
+      });
+    });
+    res.redirect('/');
+  });
+  
+  //SPONSOR AUTH
+  app.post('/sponsor-login', (req,res) => {
+    var user = req.body.user;
+    var pass = req.body.pass;
+    Sponsor.find({username: user}, (err,result) => {
+      if(err) return console.log(err);
+      //console.log(result[0].password);
+      if(result[0] && result[0].password === pass){
+        //VALID USER
+        console.log('success');
+        req.session.login = true;
+        req.session.type = 'sponsor';
+        req.session.data.FirstName = user;
+        res.redirect('/sponsor');
+      }else{
+        res.send("Invalid Username or Password");
+      }
+    })
+  });
+  
+  //sponsor PAGE
+  app.get('/sponsor', (req,res,next) => {
+    if(req.session.login){
+      if(req.session.type == 'sponsor'){
+        next();
+      }else if(req.session.type == 'member'){
+        res.redirect('/member');
+      }
+    }else{
+      res.redirect('/');
+    }
+  }, (req,res) => {
+    //console.log(req.session);
+    Sponsor.find({username: req.session.data.FirstName},(err, s) => {
+      res.render('sponsor',{sponsor: s[0]})
+    }) 
+  });
+  
+  
+  //LOGOUT
+  app.post('/logout', (req,res) => {
+    req.session.destroy();
+    res.redirect('/');
+  });
+  
+  
+  //SERVER LISTEN
+  app.listen(app.get('port'), function(){
+    console.log('Server listening on port ' + app.get('port'));
+  });                            
+  

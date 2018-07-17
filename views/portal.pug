@@ -14,5 +14,10 @@ html
         ul
             for sponsor in sponsors
                 li= sponsor.username + ' ' + sponsor.password
+                ul
+                    for user in sponsor.users
+                        li= user.Username
+                form(method="post" action="/remove-sponsor/"+sponsor.username)
+                    button.btn.btn-primary(type='submit') Remove
         form(method="post" action="/logout")
             button.btn.btn-primary(type='submit') Logout

@@ -3,20 +3,24 @@ html
         h1 Hello there #{name} 
         if CV
             h2 Update CV:
-            form(action="/show-CV" method="post")
+            form(action="/show-cv" method="post")
                 label View your current CV: 
                 button.btn.btn-primary(type='submit') View
+            form(action="/remove-cv" method="post")
+                label Remove your current CV: 
+                button.btn.btn-primary(type='submit') Remove
         else
-            h3 Upload CV:
+            h2 Upload CV:
         form(method="post" action="/upload-cv"  encType="multipart/form-data")
             label Upload new CV: 
             input(type="file", name="file")
             button.btn.btn-primary(type='submit' value="Upload!") Upload CV
         h2 Sponsors to send your CV to
-        ul
+        form(action="/send-cv" method="post")
             for sponsor in sponsors
-                li= sponsor.username
-        form(method="post" action="/send-CV")
+                div.form-group
+                    input(type="checkbox", name= sponsor.username)
+                    label= sponsor.username  
             button.btn.btn-primary(type='submit') Send CV
         form(method="post" action="/logout")
             button.btn.btn-primary(type='submit') Logout
