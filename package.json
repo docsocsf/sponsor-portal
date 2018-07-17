@@ -23,6 +23,7 @@
     "osenv": "^0.1.5",
     "pkginfo": "^0.4.1",
     "request": "^2.87.0",
+    "request-promise": "^4.2.2",
     "rimraf": "^2.6.2",
     "semver": "^5.5.0",
     "tar": "^4.4.4",

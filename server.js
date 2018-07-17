@@ -1,8 +1,7 @@
 const express = require('express');
 var util = require('util')
 var krb5 = require('node-krb5')
-var bodyParser = require("body-parser");
-var request = require('request');
+var rp = require('request-promise');
 
 const app = express();
 
@@ -10,9 +9,8 @@ app.set('port', process.env.PORT || 8080);
 
 app.use(express.static(__dirname + '/public'));
 
-app.use(bodyParser.urlencoded({
-  extend:false
-}));
+app.use(express.urlencoded({extended: false})); 
+app.use(express.json());   
 
 
 var username = 'user';
@@ -26,7 +24,7 @@ var options = {
 }
 
 app.get('/login', (req,res) => {
-  res.sendFile('login.html');
+  res.sendFile('index.html');
 });
 
 app.post('/login', (req,res) => {
@@ -34,24 +32,18 @@ app.post('/login', (req,res) => {
   var pass = req.body.pass;
   console.log('User ' + user + ' trying to login');
   krb5.authenticate(user + "@IC.AC.UK" ,pass, (err, stuff) => {
-    console.log(stuff);
     if(err){
       console.log('err ' + err);
       res.send('wrong username or password');
     }else{
-      request(options, function (err, rs, body) {
-        var info = [];
-        if (!err) {
-          JSON.parse(body).forEach(e => {
-            if(user == e.Customer.Login){
-              console.log('good');
-              res.send('success');
-              return;
-            }
-          });
+      rp(options).then((body) => {
+        var data = JSON.parse(body);
+        if(data.find(el => el.Customer.Login === user)) {
+          console.log('good');
+          res.redirect('/studet');
+        }else{
+          console.log('not member of DoCSoc');
         }
-        console.dir(err);
-        return;
       });
     }
   });
