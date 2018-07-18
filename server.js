@@ -176,50 +176,58 @@ app.post('/member-login', (req,res) => {
       res.render('login', {error: "Wrong username or password"});
     }else{
       //REQUEST EACTIVITIES if auth file older than 24 hours
+      if(!fs.existsSync(__dirname + '/auth/')){
+        fs.mkdirSync(__dirname + '/auth/');
+      }
       if (fs.existsSync(authpath)) {
-        fs.stat(authpath, function(err, stat) {
-          if (err) {
-            return console.error(err);
-          }
-          var now = new Date().getTime();
-          //86400000 ms is 24 hours
-          endTime = new Date(stat.ctime).getTime() + 86400000;
-          if (now > endTime) {
-            //download new file
-            console.log('outdated, updating auth file');
-            rp(options).then((body) => {
-              fs.writeFile(authpath,body,(err) => {
-                if (err) return err;
-                checkMember(req, res,user);
-              })
-            });
-          }else{
-            checkMember(req, res, user);
-          }
-        });
+        var stat = fs.statSync(authpath);
+        if (err) {
+          return console.error(err);
+        }
+        var now = new Date().getTime();
+        //86400000 ms is 24 hours
+        endTime = new Date(stat.ctime).getTime() + 86400000;
+        if (now > endTime) {
+          //download new file
+          console.log('outdated, updating auth file');
+          rp(options).then((body) => {
+            fs.writeFileSync(authpath,body);
+            checkMember(req, res,user);
+          });
+        }else{
+          checkMember(req, res, user);
+        }
       }else{
         //download new file
         console.log('downloading auth file');
         rp(options).then((body) => {
-          fs.writeFile(authpath,body,(err) => {
-            if (err) return err;
-            checkMember(req, res, user);
-          })
+          fs.writeFileSync(authpath,body);
+          checkMember(req, res,user);
         });
       }
     }
   });
 });
 
+//check memebr if docsoc
 var checkMember = (req,res,user) => {
   var auth = fs.readFileSync(authpath);
   var data = JSON.parse(auth).find(el => el.Customer.Login === user);
   if(data) {
     //VALID USER
     console.log('success');
+    //setup session
+    req.session.docsoc = false;
     req.session.login = true;
     req.session.type = 'member';
     req.session.data = data.Customer;
+    //make folder
+    if(!fs.existsSync(__dirname + '/cvs/')){
+      fs.mkdirSync(__dirname + '/cvs/');
+    }
+    if(!fs.existsSync(__dirname + '/cvs/' + user)){
+      fs.mkdirSync(__dirname + '/cvs/' + user);
+    }
     res.redirect('/member');
   }else{
     //NON DOCSOC USER
@@ -303,11 +311,8 @@ app.post('/remove-cv', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
-  fs.unlink(__dirname + '/cvs/' + req.session.data.Login + '.pdf', function(err) {
-    if (err) 
-    return res.status(500).send(err);
-    res.redirect('/member');
-  });
+  fs.unlinkSync(__dirname + '/cvs/' + req.session.data.Login + '.pdf');
+  res.redirect('/member');  
 });
 
 //send CV
@@ -328,72 +333,73 @@ app.post('/send-cv', (req,res,next) => {
       var data = {FirstName: req.session.data.FirstName,
         LastName: req.session.data.LastName,
         Email: req.session.data.Email,
-        Username: req.session.data.Login}
-        if(sponsor.username in req.body){
-          sponsor.users.push(data);
-        }else{
-          sponsor.users = sponsor.users.filter(i => i.Username !== req.session.data.Login)
-        }
-        sponsor.save((err, user) => {
-          if (err) {
-            return next(err)
-          } else {
-            console.log(user);
-          }
-        }); 
-      });
-    });
-    res.redirect('/');
-  });
-  
-  //SPONSOR AUTH
-  app.post('/sponsor-login', (req,res) => {
-    var user = req.body.user;
-    var pass = req.body.pass;
-    Sponsor.find({username: user}, (err,result) => {
-      if(err) return console.log(err);
-      //console.log(result[0].password);
-      if(result[0] && result[0].password === pass){
-        //VALID USER
-        console.log('success');
-        req.session.login = true;
-        req.session.type = 'sponsor';
-        req.session.data.FirstName = user;
-        res.redirect('/sponsor');
+        Username: req.session.data.Login
+      }
+      if(sponsor.username in req.body){
+        sponsor.users.push(data);
       }else{
-        res.send("Invalid Username or Password");
+        sponsor.users = sponsor.users.filter(i => i.Username !== req.session.data.Login)
       }
-    })
+      sponsor.save((err, user) => {
+        if (err) {
+          return next(err)
+        } else {
+          console.log(user);
+        }
+      }); 
+    });
   });
-  
-  //sponsor PAGE
-  app.get('/sponsor', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'sponsor'){
-        next();
-      }else if(req.session.type == 'member'){
-        res.redirect('/member');
-      }
+  res.redirect('/');
+});
+
+//SPONSOR AUTH
+app.post('/sponsor-login', (req,res) => {
+  var user = req.body.user;
+  var pass = req.body.pass;
+  Sponsor.find({username: user}, (err,result) => {
+    if(err) return console.log(err);
+    //console.log(result[0].password);
+    if(result[0] && result[0].password === pass){
+      //VALID USER
+      console.log('success');
+      req.session.docsoc = false;
+      req.session.login = true;
+      req.session.type = 'sponsor';
+      req.session.data.FirstName = user;
+      res.redirect('/sponsor');
     }else{
-      res.redirect('/');
+      res.send("Invalid Username or Password");
     }
-  }, (req,res) => {
-    //console.log(req.session);
-    Sponsor.find({username: req.session.data.FirstName},(err, s) => {
-      res.render('sponsor',{sponsor: s[0]})
-    }) 
-  });
-  
-  
-  //LOGOUT
-  app.post('/logout', (req,res) => {
-    req.session.destroy();
+  })
+});
+
+//sponsor PAGE
+app.get('/sponsor', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'sponsor'){
+      next();
+    }else if(req.session.type == 'member'){
+      res.redirect('/member');
+    }
+  }else{
     res.redirect('/');
-  });
-  
-  
-  //SERVER LISTEN
-  app.listen(app.get('port'), function(){
-    console.log('Server listening on port ' + app.get('port'));
-  });                            
-  
+  }
+}, (req,res) => {
+  //console.log(req.session);
+  Sponsor.find({username: req.session.data.FirstName},(err, s) => {
+    res.render('sponsor',{sponsor: s[0]})
+  }) 
+});
+
+
+//LOGOUT
+app.post('/logout', (req,res) => {
+  req.session.destroy();
+  res.redirect('/');
+});
+
+
+//SERVER LISTEN
+app.listen(app.get('port'), function(){
+  console.log('Server listening on port ' + app.get('port'));
+});                            
