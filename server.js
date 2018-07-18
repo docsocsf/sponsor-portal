@@ -279,24 +279,28 @@ app.post('/upload-cv', (req,res,next) => {
     Sponsor.find((err, s) => {
       res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "No file uploaded"});
     });
-  }else{
+  }else if (!req.body.pdfname){
     //check for file name
-    if (!req.body.pdfname){
+    req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+    Sponsor.find((err, s) => {
+      res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "Invalid File Name"});
+      return res.status(500);;
+    });
+  }else if(req.session.files.includes(req.body.pdfname + '.pdf')){
+    req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+    Sponsor.find((err, s) => {
+      res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "Duplicate File Name"});
+      return res.status(500);;
+    });
+  }else{
+    let sampleFile = req.files.file;
+    sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf', function(err) {
+      if (err) return res.status(500).send(err);
       req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
       Sponsor.find((err, s) => {
-        res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "Invalid File Name"});
-        return res.status(500);;
+        res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
       });
-    }else{
-      let sampleFile = req.files.file;
-      sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf', function(err) {
-        if (err) return res.status(500).send(err);
-        req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-        Sponsor.find((err, s) => {
-          res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
-        });
-      });
-    }
+    });
   }
 });
 
