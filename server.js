@@ -13,7 +13,7 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
-app.use("/static", express.static(__dirname + '/public'));
+app.use("/static", express.static(__dirname + '/static'));
 
 app.use(fileUpload());
 
@@ -132,6 +132,7 @@ app.post('/new-sponsor', (req,res) => {
   });
 });
 
+//Remove Sponsor
 app.post('/remove-sponsor/:user', (req,res) => {
   console.log(req.params.user);
   Sponsor.remove({username: req.params.user} , (err) => {
@@ -170,6 +171,7 @@ app.post('/member-login', (req,res) => {
       //WRONG PASSWORD/INVALID USER
       console.log('err ' + err);
       //res.send('wrong username or password');
+      res.render('login', {error: "Wrong username or password"});
     }else{
       //REQUEST EACTIVITIES AND CHECK IF DOCSOC MEMBER
       rp(options).then((body) => {
@@ -184,12 +186,16 @@ app.post('/member-login', (req,res) => {
         }else{
           //NON DOCSOC USER
           console.log('not member of DoCSoc');
-          res.send("Not a DoCSoc Member!");
+          res.render('login', {error: "Not a DoCSoc Member!"});
         }
       });
     }
   });
 });
+
+app.get('/member-login', (req,res) => {
+  res.redirect('/');
+})
 
 
 //member PAGE

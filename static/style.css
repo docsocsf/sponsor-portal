@@ -1,0 +1,84 @@
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+.login{
+    background-color: #225590;
+    width: 500px;
+    height: 500px;
+    text-align: center;
+    border-radius: 10px;
+    margin: auto;
+    margin-top: 10%;
+    line-height: 50px;
+    color: white;
+}
+
+.error {
+    font-size: 0.9rem;
+    color: red;
+    margin: 0;
+    padding: 0;
+}
+
+.member-login-tab {
+    border-top-left-radius: 10px;
+}
+
+.sponsor-login-tab {
+    border-top-right-radius: 10px;
+}
+
+.btn-primary {
+    display: inline-block;
+    min-width: 110px;
+    margin: 15px 5px;
+    padding: 10px 15px 12px;
+    font-size: 1.2rem;
+    border: 0;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 1px rgba(0, 0, 0, 0.1), inset 0 -10px 20px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    background: #59d;
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:hover {
+    background: #48c;
+}
+
+
+input {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.hidden-form {
+    display: none;
+}
+
+.login-tab{
+    display: inline-block;
+    width: 50%;
+    height: 50px;
+    background-color: #59d;
+    margin: 0;
+    vertical-align: middle;
+    line-height: 50px;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.inactive-tab:hover {
+    background: #48c;
+}
+
+.active-tab{
+    background-color: #225590;
+}
+
+.form-group input{
+    width: 70%;
+    height: 30px;
+}

@@ -1,20 +1,27 @@
-html
-    body
-    form(method="post" action="/member-login")
+include ./layout.pug
+.login
+    .login-header
+        .member-login-tab.login-tab.active-tab Members
+        .sponsor-login-tab.login-tab.inactive-tab Sponsors
+    form(method="post" action="/member-login").member-login
         h1 Member Login:
-            div.form-group
+            br
+            .error #{error}
+            .form-group
                 label(for="user") Username: 
-                input#user.form-control(type="text", placeholder="Imperial ID", name="user")
-            div.form-group
+                input(type="text", name="user")
+            .form-group
                 label(for="pass") Password: 
                 input(type="password", name="pass")
-            button.btn.btn-primary(type='submit') Login
-    form(method="post" action="/sponsor-login")
+            button.btn-primary(type='submit') Login
+    form(method="post" action="/sponsor-login").sponsor-login.hidden-form
         h1 Sponsor Login:
-            div.form-group
-                label#user.form-control(for="user") Username: 
-                input(type="text", placeholder="Imperial ID", name="user")
-            div.form-group
+            br
+            .error #{error}
+            .form-group
+                label(for="user") Username: 
+                input(type="text", name="user")
+            .form-group
                 label(for="pass") Password: 
                 input(type="password", name="pass")
-            button.btn.btn-primary(type='submit') Login
+            button.btn-primary(type='submit') Login
