@@ -33,12 +33,14 @@ app.use(session({
 
 //EACTIVITIES PORTAL
 var options = {
+  //Change this to get correct auth
   url: 'https://eactivities.union.ic.ac.uk/API/CSP/605/reports/onlinesales?year=17-18',
   auth: {
     user: 'user',
     password: '03CB83E3-AF2E-4528-98D2-20046AED475A'
   }
 }
+const authpath = __dirname + '/auth/auth.json';
 
 //MONGOOSE
 mongoose.connect('mongodb://localhost/portal');
@@ -173,25 +175,58 @@ app.post('/member-login', (req,res) => {
       //res.send('wrong username or password');
       res.render('login', {error: "Wrong username or password"});
     }else{
-      //REQUEST EACTIVITIES AND CHECK IF DOCSOC MEMBER
-      rp(options).then((body) => {
-        var data = JSON.parse(body).find(el => el.Customer.Login === user);
-        if(data) {
-          //VALID USER
-          console.log('success');
-          req.session.login = true;
-          req.session.type = 'member';
-          req.session.data = data.Customer;
-          res.redirect('/member');
-        }else{
-          //NON DOCSOC USER
-          console.log('not member of DoCSoc');
-          res.render('login', {error: "Not a DoCSoc Member!"});
-        }
-      });
+      //REQUEST EACTIVITIES if auth file older than 24 hours
+      if (fs.existsSync(authpath)) {
+        fs.stat(authpath, function(err, stat) {
+          if (err) {
+            return console.error(err);
+          }
+          var now = new Date().getTime();
+          //86400000 ms is 24 hours
+          endTime = new Date(stat.ctime).getTime() + 86400000;
+          if (now > endTime) {
+            //download new file
+            console.log('outdated, updating auth file');
+            rp(options).then((body) => {
+              fs.writeFile(authpath,body,(err) => {
+                if (err) return err;
+                checkMember(req, res,user);
+              })
+            });
+          }else{
+            checkMember(req, res, user);
+          }
+        });
+      }else{
+        //download new file
+        console.log('downloading auth file');
+        rp(options).then((body) => {
+          fs.writeFile(authpath,body,(err) => {
+            if (err) return err;
+            checkMember(req, res, user);
+          })
+        });
+      }
     }
   });
 });
+
+var checkMember = (req,res,user) => {
+  var auth = fs.readFileSync(authpath);
+  var data = JSON.parse(auth).find(el => el.Customer.Login === user);
+  if(data) {
+    //VALID USER
+    console.log('success');
+    req.session.login = true;
+    req.session.type = 'member';
+    req.session.data = data.Customer;
+    res.redirect('/member');
+  }else{
+    //NON DOCSOC USER
+    console.log('not member of DoCSoc');
+    res.render('login', {error: "Not a DoCSoc Member!"});
+  }
+}
 
 app.get('/member-login', (req,res) => {
   res.redirect('/');
@@ -216,6 +251,7 @@ app.get('/member', (req,res,next) => {
   }) 
 });
 
+//upload CV
 app.post('/upload-cv', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
@@ -232,12 +268,13 @@ app.post('/upload-cv', (req,res,next) => {
   let sampleFile = req.files.file;
   
   sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '.pdf', function(err) {
-    if (err) 
-    return res.status(500).send(err);
+    if (err) return res.status(500).send(err);
     res.redirect('/member');
   });
 });
 
+
+//Show CV
 app.post('/show-cv', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
@@ -254,6 +291,7 @@ app.post('/show-cv', (req,res,next) => {
   res.send(data); 
 });
 
+//delete CV
 app.post('/remove-cv', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
@@ -272,6 +310,7 @@ app.post('/remove-cv', (req,res,next) => {
   });
 });
 
+//send CV
 app.post('/send-cv', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
