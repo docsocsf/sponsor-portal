@@ -9,6 +9,10 @@ include ./layout.pug
     .row
       h1.col Your CVs:
     br
+    if error
+      .alert.alert-danger(role="alert") 
+        strong oh snap! 
+        | #{error}
     .row
       for i in [0,1,2,3,4]
         .cv.col-2.mr-md-auto.container-fluid.card
@@ -19,18 +23,18 @@ include ./layout.pug
               .padding
                 br
                 br
-              form.rename-row-padding.rename-row.row.d-none(action="/rename-cv" method="post")
-                input.col-10(type="text", name="pdf-name")
+              form.rename-row-padding.rename-row.row.d-none(action="/rename-cv/" + files[i]  method="post")
+                input.col-10(type="text", name="pdfname")
                 button.col-2.btn.btn-outline-light(type='submit')
                   span.octicon.octicon-check
               .row.bottom-allign
-                form.col-4(action="/show-cv" method="post")
+                form.col-4(action="/show-cv/" + files[i] method="post")
                   button.btn.btn-outline-light.full-width(type='submit')
                     span.octicon.octicon-eye
                 .col-4
                   button.rename.btn.btn-outline-light.full-width
                     span.octicon.octicon-pencil
-                form.col-4(action="/remove-cv" method="post")
+                form.col-4(action="/remove-cv/" + files[i] method="post")
                   button.btn.btn-outline-light.full-width(type='submit')
                     span.octicon.octicon-trashcan
             else
@@ -38,8 +42,8 @@ include ./layout.pug
                 h3.col Upload CV:
               form(method="post" action="/upload-cv"  encType="multipart/form-data")
                 .row.name-row-padding
-                  label.col-4(for="pdf-name") Name:
-                  input.col-8(type="text", name="pdf-name")
+                  label.col-4(for="pdfname" value="CV_" + 1) Name:
+                  input.col-8(type="text", name="pdfname")
                 .row
                   input.col-9.upload-padding(type="file", name="file")
                   button.col-2.btn.btn-outline-light.submit(type='submit')

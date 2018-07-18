@@ -255,6 +255,7 @@ app.get('/member', (req,res,next) => {
     res.redirect('/');
   }
 }, (req,res) => {
+  req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
   Sponsor.find((err, s) => {
     res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
   }) 
@@ -272,19 +273,36 @@ app.post('/upload-cv', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
-  if (!req.files) 
-  return res.status(400).send('No files were uploaded.');
-  let sampleFile = req.files.file;
-  
-  sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '.pdf', function(err) {
-    if (err) return res.status(500).send(err);
-    res.redirect('/member');
-  });
+  //check for file
+  if (!req.files.file) {
+    req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+    Sponsor.find((err, s) => {
+      res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "No file uploaded"});
+    });
+  }else{
+    //check for file name
+    if (!req.body.pdfname){
+      req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+      Sponsor.find((err, s) => {
+        res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "Invalid File Name"});
+        return res.status(500);;
+      });
+    }else{
+      let sampleFile = req.files.file;
+      sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf', function(err) {
+        if (err) return res.status(500).send(err);
+        req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+        Sponsor.find((err, s) => {
+          res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
+        });
+      });
+    }
+  }
 });
 
 
 //Show CV
-app.post('/show-cv', (req,res,next) => {
+app.post('/show-cv/:name', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
       next();
@@ -295,13 +313,13 @@ app.post('/show-cv', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
-  var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '.pdf');
+  var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
   res.contentType("application/pdf");
   res.send(data); 
 });
 
-//delete CV
-app.post('/remove-cv', (req,res,next) => {
+//rename CV
+app.post('/rename-cv/:currname', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
       next();
@@ -312,8 +330,32 @@ app.post('/remove-cv', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
-  fs.unlinkSync(__dirname + '/cvs/' + req.session.data.Login + '.pdf');
-  res.redirect('/member');  
+  var oldpath = __dirname + '/cvs/' + req.session.data.Login + '/' + req.params.currname;
+  var newpath = __dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf';
+  fs.renameSync(oldpath,newpath);
+  req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+  Sponsor.find((err, s) => {
+    res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
+  });
+});
+
+//delete CV
+app.post('/remove-cv/:name', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      next();
+    }else if(req.session.type == 'sponsor'){
+      res.redirect('/sponsor');
+    }
+  }else{
+    res.redirect('/');
+  }
+},(req,res) => {
+  fs.unlinkSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
+  req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+  Sponsor.find((err, s) => {
+    res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
+  });
 });
 
 //send CV
