@@ -1,26 +1,54 @@
-html
-    body
-        h1 Hello there #{name} 
-        if CV
-            h2 Update CV:
-            form(action="/show-cv" method="post")
-                label View your current CV: 
-                button.btn.btn-primary(type='submit') View
-            form(action="/remove-cv" method="post")
-                label Remove your current CV: 
-                button.btn.btn-primary(type='submit') Remove
-        else
-            h2 Upload CV:
-        form(method="post" action="/upload-cv"  encType="multipart/form-data")
-            label Upload new CV: 
-            input(type="file", name="file")
-            button.btn.btn-primary(type='submit' value="Upload!") Upload CV
-        h2 Sponsors to send your CV to
-        form(action="/send-cv" method="post")
-            for sponsor in sponsors
-                div.form-group
-                    input(type="checkbox", name= sponsor.username)
-                    label= sponsor.username  
-            button.btn.btn-primary(type='submit') Send CV
-        form(method="post" action="/logout")
-            button.btn.btn-primary(type='submit') Logout
+include ./layout.pug
+.member
+  nav.header.navbar
+    .container-fluid
+      h1.col-11 Hello there, #{name}
+      form.col-1(method="post" action="/logout")
+        button.btn-primary.btn-lg(type='submit') Logout
+  .cvs.container-fluid
+    .row
+      h1.col Your CVs:
+    br
+    .row
+      for i in [0,1,2,3,4]
+        .cv.col-2.mr-md-auto.container-fluid.card
+          .card-body
+            if files[i] != undefined
+              .card-title
+                h3.col Name: #{files[i].slice(0, -4)}
+              .padding
+                br
+                br
+              form.rename-row-padding.rename-row.row.d-none(action="/rename-cv" method="post")
+                input.col-10(type="text", name="pdf-name")
+                button.col-2.btn.btn-outline-light(type='submit')
+                  span.octicon.octicon-check
+              .row.bottom-allign
+                form.col-4(action="/show-cv" method="post")
+                  button.btn.btn-outline-light.full-width(type='submit')
+                    span.octicon.octicon-eye
+                .col-4
+                  button.rename.btn.btn-outline-light.full-width
+                    span.octicon.octicon-pencil
+                form.col-4(action="/remove-cv" method="post")
+                  button.btn.btn-outline-light.full-width(type='submit')
+                    span.octicon.octicon-trashcan
+            else
+              .row
+                h3.col Upload CV:
+              form(method="post" action="/upload-cv"  encType="multipart/form-data")
+                .row.name-row-padding
+                  label.col-4(for="pdf-name") Name:
+                  input.col-8(type="text", name="pdf-name")
+                .row
+                  input.col-9.upload-padding(type="file", name="file")
+                  button.col-2.btn.btn-outline-light.submit(type='submit')
+                    span.octicon.octicon-cloud-upload
+  br
+  h2 Sponsors to send your CV to
+  form(action="/send-cv" method="post")
+    for sponsor in sponsors
+      div.form-group
+        input(type="checkbox", name= sponsor.username)
+        label= sponsor.username
+    button.btn(type='submit') Send CV

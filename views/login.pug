@@ -1,20 +1,22 @@
 include ./layout.pug
 .login
-    .login-header
-        .member-login-tab.login-tab.active-tab Members
-        .sponsor-login-tab.login-tab.inactive-tab Sponsors
-    form(method="post" action="/member-login").member-login
+    .header
+        .member-tab.login-tab.active-tab Members
+        .sponsor-tab.login-tab.inactive-tab Sponsors
+    form(method="post" action="/member-login").member
         h1 Member Login:
-            br
-            .error #{error}
+            if error
+                .error #{error}
+            else 
+                br
             .form-group
                 label(for="user") Username: 
                 input(type="text", name="user")
             .form-group
                 label(for="pass") Password: 
                 input(type="password", name="pass")
-            button.btn-primary(type='submit') Login
-    form(method="post" action="/sponsor-login").sponsor-login.hidden-form
+            button.btn.btn-primary.btn-lg(type='submit') Login
+    form(method="post" action="/sponsor-login").sponsor.hidden
         h1 Sponsor Login:
             br
             .error #{error}
@@ -24,4 +26,4 @@ include ./layout.pug
             .form-group
                 label(for="pass") Password: 
                 input(type="password", name="pass")
-            button.btn-primary(type='submit') Login
+            button.btn.btn-primary.btn-lg(type='submit') Login

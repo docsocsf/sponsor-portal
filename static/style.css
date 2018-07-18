@@ -1,84 +1,108 @@
 body {
-    font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
 }
 
+.hidden {
+  display: none;
+}
+
+/* === LOGIN === */
+
 .login{
-    background-color: #225590;
-    width: 500px;
-    height: 500px;
-    text-align: center;
-    border-radius: 10px;
-    margin: auto;
-    margin-top: 10%;
-    line-height: 50px;
-    color: white;
+  background-color: #225590;
+  width: 500px;
+  height: 500px;
+  text-align: center;
+  border-radius: 10px;
+  margin: auto;
+  margin-top: 10%;
+  color: white;
+  font-size: 1rem;
 }
 
 .error {
-    font-size: 0.9rem;
-    color: red;
-    margin: 0;
-    padding: 0;
+  font-size: 1rem;
+  color: red;
+  margin: 0;
+  padding: 0;
 }
 
-.member-login-tab {
-    border-top-left-radius: 10px;
+.login .member-tab {
+  border-top-left-radius: 10px;
 }
 
-.sponsor-login-tab {
-    border-top-right-radius: 10px;
+.login .sponsor-tab {
+  border-top-right-radius: 10px;
 }
 
-.btn-primary {
-    display: inline-block;
-    min-width: 110px;
-    margin: 15px 5px;
-    padding: 10px 15px 12px;
-    font-size: 1.2rem;
-    border: 0;
-    border-radius: 3px;
-    box-shadow: inset 0 -1px 0 1px rgba(0, 0, 0, 0.1), inset 0 -10px 20px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    background: #59d;
-    color: #fff;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+.login .login-tab{
+  display: inline-block;
+  width: 50%;
+  height: 50px;
+  background-color: #59d;
+  margin: 0;
+  vertical-align: middle;
+  line-height: 50px;
+  font-size: 1.2em;
+  cursor: pointer;
 }
 
-.btn-primary:hover {
-    background: #48c;
+.login .inactive-tab:hover {
+  background: #48c;
+}
+
+.login .active-tab{
+  background-color: #225590;
+}
+
+.login form {
+  line-height: 50px;
+}
+
+.login .form-group input {
+  width: 70%;
+  height: 30px;
+  margin-bottom: 20px;
+  font-size: 1rem;
 }
 
 
-input {
-    text-align: center;
-    margin-bottom: 20px;
+/* === MEMBER === */
+
+.member .cvs {
+  margin-top: 20px;
 }
 
-.hidden-form {
-    display: none;
+.member .cv {
+  background-color: #59d;
 }
 
-.login-tab{
-    display: inline-block;
-    width: 50%;
-    height: 50px;
-    background-color: #59d;
-    margin: 0;
-    vertical-align: middle;
-    line-height: 50px;
-    font-size: 1.2em;
-    cursor: pointer;
+.member .header {
+  background-color: #225590;
+  color: white;
 }
 
-.inactive-tab:hover {
-    background: #48c;
+.member .rename-row-padding {
+  padding: 5px 15px 5px 15px;
 }
 
-.active-tab{
-    background-color: #225590;
+.member .name-row-padding {
+  padding: 15px 25px 15px 0px;
 }
 
-.form-group input{
-    width: 70%;
-    height: 30px;
+.member .upload-padding {
+  padding: 0 5px 0 15px;
+}
+
+.member .full-width {
+  width: 100%;
+  margin: auto;
+}
+
+.member .submit {
+  width: 10%;
 }

@@ -228,6 +228,8 @@ var checkMember = (req,res,user) => {
     if(!fs.existsSync(__dirname + '/cvs/' + user)){
       fs.mkdirSync(__dirname + '/cvs/' + user);
     }
+    //add filenames to session
+    req.session.files = fs.readdirSync(__dirname + '/cvs/' + user);
     res.redirect('/member');
   }else{
     //NON DOCSOC USER
@@ -253,9 +255,8 @@ app.get('/member', (req,res,next) => {
     res.redirect('/');
   }
 }, (req,res) => {
-  var hasCV = fs.existsSync( __dirname + '/cvs/' + req.session.data.Login + '.pdf');
   Sponsor.find((err, s) => {
-    res.render('member',{name: req.session.data.FirstName, sponsors: s, CV: hasCV});
+    res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
   }) 
 });
 
