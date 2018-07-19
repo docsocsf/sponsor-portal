@@ -313,7 +313,7 @@ app.post('/show-cv/:name', (req,res,next) => {
 },(req,res) => {
   var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
   res.contentType('application/pdf');
-  res.redirect('/member');
+  res.send(data);
 });
 
 //rename CV
@@ -334,11 +334,26 @@ app.post('/rename-cv/:currname', (req,res,next) => {
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
     renderMember(req,res, 'Duplicate File Name');
   }else{
+    //rename
     var oldCV = req.params.currname;
     var newCV = req.body.pdfname + '.pdf';
     fs.renameSync(path  + '/' + oldCV, path  + '/' + newCV);
     req.session.files = fs.readdirSync(path);
-    res.redirect('/member');
+    
+    //remove from sponsor
+    Sponsor.find((error, sponsors) => {
+      sponsors.forEach(sponsor => {
+        sponsor.users.forEach(user => {
+          if(user.username === req.session.data.Login && user.cv === oldCV) {
+            user.cv = newCV;
+          }
+        })
+        sponsor.save((err, user) => {
+          if (err) return next(err)
+        }); 
+      });
+      res.redirect('/member');
+    });
   }
 });
 
@@ -354,10 +369,21 @@ app.post('/remove-cv/:name', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
+  //delete file
   fs.unlinkSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
   req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+  //remove from sponsors
+  Sponsor.find((error, sponsors) => {
+    sponsors.forEach(sponsor => {
+      sponsor.users = sponsor.users.filter(user => (user.username !== req.session.data.Login || (user.username === req.session.data.Login && user.cv !== req.params.name)));
+      sponsor.save((err, user) => {
+        if (err) return next(err)
+      }); 
+    });
+  });
   res.redirect('/member');
 });
+
 
 //send CV
 app.post('/send-cv', (req,res,next) => {
