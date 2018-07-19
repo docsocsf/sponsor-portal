@@ -10,7 +10,11 @@ include ./layout.pug
     h2.row Student Cvs:
     for user in users
       .row.cv
-        .col-5= user.FirstName + ' ' + user.Surname
+        .col-4= user.FirstName + ' ' + user.Surname
         .col-5= user.email
         .col-2= user.cv
+        .col-1 
+          form.col-4(action="/sponsor-show-cv/" + user.username + "/" + user.cv method="post")
+            button.btn.btn-outline-light.full-width(type='submit')
+              span.octicon.octicon-eye
 

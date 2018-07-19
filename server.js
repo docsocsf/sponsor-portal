@@ -299,16 +299,16 @@ app.post('/upload-cv', (req,res,next) => {
 });
 
 
-//Show CV
-app.post('/show-cv/:name', (req,res,next) => {
+//member Show CV
+app.post('/member-show-cv/:name', (req,res,next) => {
   if(req.session.login){
     if(req.session.type == 'member'){
-      next();
+      res.redirect('/member');
     }else if(req.session.type == 'sponsor'){
-      res.redirect('/sponsor');
+      next();
+    }else{
+      res.redirect('/');
     }
-  }else{
-    res.redirect('/');
   }
 },(req,res) => {
   var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
@@ -497,6 +497,23 @@ app.get('/sponsor', (req,res,next) => {
 app.get('/sponsor-login', (req,res) => {
   res.redirect('/');
 })
+
+//sponsor Show CV
+app.post('/sponsor-show-cv/:path/:name', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      res.redirect('/member');
+    }else if(req.session.type == 'sponsor'){
+      next();
+    }else{
+      res.redirect('/');
+    }
+  }
+},(req,res) => {
+  var data = fs.readFileSync(__dirname + '/cvs/' + req.params.path + '/' + req.params.name);
+  res.contentType('application/pdf');
+  res.send(data);
+});
 
 //LOGOUT
 app.post('/logout', (req,res) => {
