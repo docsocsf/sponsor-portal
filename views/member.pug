@@ -57,27 +57,29 @@ include ./layout.pug
     .row
       .send-cvs.container-fluid
         .row
-          .col-3.color.table-heading.head Sponsors
+          .col-2.color.table-heading.head Sponsors
+          .col-2.color.table-heading.head Position
           for i in [0,1,2,3,4]
             if files[i] != undefined
               .col.color.table-heading.head CV: #{files[i].slice(0, -4)}
           .col.color.table-heading.head none
-          if(files.length % 2 != 0)
+          if(files.length % 2 === 0)
             .color
         form(method="post" action="/send-cv")
-          for file, sponsor in sponsors
+          for r in rows
             fieldset
             .row
-              .col-3.color.table-heading= sponsor
+              .col-2.color.table-heading= r.sponsor
+              .col-2.color.table-heading= r.position
               for i in [0,1,2,3,4,5]
                 if files[i] != undefined || i === 5
-                    if(i === file) 
+                    if(i === r.cv) 
                       .col.color 
-                        input.radio(type="radio" checked="checked" name=sponsor + '-' + files[i])
+                        input.radio(type="radio" checked="checked" name=r.sponsorUsername + '-' + r.position + '-' + files[i])
                     else
                       .col.color
-                        input.radio(type="radio" name=sponsor + '-' + files[i])
-              if(files.length % 2 != 0)
+                        input.radio(type="radio" name=r.sponsorUsername + '-' + r.position + '-' + files[i])
+              if(files.length % 2 === 0)
                 .color
           br
           .row

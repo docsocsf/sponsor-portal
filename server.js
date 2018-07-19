@@ -58,26 +58,51 @@ var SponsorSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
+  name: {
+    type: String
+  },
   password: {
     type: String,
     required: true,
   },
-  users: [{
-    FirstName: {
+  rank: {
+    type: String
+  },
+  posts: [{
+    date: {
       type: String
     },
-    Surname: {
+    title: {
       type: String
     },
-    email: {
-      type: String
-    },
-    username: {
-      type: String
-    },
-    cv: {
+    text: {
       type: String
     }
+  }],
+  positions: [{
+    name: {
+      type: String
+    },
+    info: {
+      type: String
+    },
+    users: [{
+      FirstName: {
+        type: String
+      },
+      Surname: {
+        type: String
+      },
+      email: {
+        type: String
+      },
+      username: {
+        type: String
+      },
+      cv: {
+        type: String
+      }
+    }]
   }]
 });
 var Sponsor = mongoose.model('Sponsor', SponsorSchema);
@@ -123,8 +148,11 @@ app.get('/portal', (req,res,next) => {
 app.post('/new-sponsor', (req,res) => {
   var sponsor = new Sponsor({
     username: req.body.user,
+    name: req.body.name,
     password: req.body.pass,
-    users: []
+    rank: req.body.rank,
+    posts: [],
+    positions: []
   });
   
   sponsor.save((err, user) => {
@@ -343,11 +371,13 @@ app.post('/rename-cv/:currname', (req,res,next) => {
     //remove from sponsor
     Sponsor.find((error, sponsors) => {
       sponsors.forEach(sponsor => {
-        sponsor.users.forEach(user => {
-          if(user.username === req.session.data.Login && user.cv === oldCV) {
-            user.cv = newCV;
-          }
-        })
+        sponsor.positions.forEach(position => {
+          position.users.forEach(user => {
+            if(user.username === req.session.data.Login && user.cv === oldCV) {
+              user.cv = newCV;
+            }
+          });
+        });
         sponsor.save((err, user) => {
           if (err) return next(err)
         }); 
@@ -375,10 +405,12 @@ app.post('/remove-cv/:name', (req,res,next) => {
   //remove from sponsors
   Sponsor.find((error, sponsors) => {
     sponsors.forEach(sponsor => {
-      sponsor.users = sponsor.users.filter(user => (user.username !== req.session.data.Login || (user.username === req.session.data.Login && user.cv !== req.params.name)));
+      sponsor.positions.forEach(position => {
+        position.users = position.users.filter(user => (user.username !== req.session.data.Login || (user.username === req.session.data.Login && user.cv !== req.params.name)));
+      });
       sponsor.save((err, user) => {
         if (err) return next(err)
-      }); 
+      });
     });
   });
   res.redirect('/member');
@@ -403,19 +435,30 @@ app.post('/send-cv', (req,res,next) => {
     email: req.session.data.Email,
     username: req.session.data.Login
   }
-  var cvs = {};
+  var cvs = [];
   //manipulating form data
   for(var label in req.body){
-    var entry = label.split('-',2)
-    cvs[entry[0]] = entry[1];
+    var entry = label.split('-',3)
+    var cv = {
+      sponsor: entry[0],
+      position: entry[1],
+      file: entry[2]
+    }
+    cvs.push(cv);
   }
   Sponsor.find((err, sponsors) => {
     sponsors.forEach((sponsor) => {
-      sponsor.users = sponsor.users.filter(i => i.username !== req.session.data.Login);
-      if(cvs[sponsor.username] != 'undefined'){
-        data.cv = cvs[sponsor.username];
-        sponsor.users.push(data);
-      }
+      sponsor.positions.forEach(position => {
+        //remove myself
+        position.users = position.users.filter(i => i.username !== req.session.data.Login);
+        //if cv chosen, add user data to position
+        cvs.forEach(cv => {
+          if(cv.file !== 'undefined' && cv.sponsor === sponsor.username && cv.position === position.name){
+            data.cv = cv.file;
+            position.users.push(data);
+          }
+        })
+      });
       sponsor.save((err, user) => {
         if (err) return next(err)
       }); 
@@ -427,19 +470,27 @@ app.post('/send-cv', (req,res,next) => {
 //render member
 var renderMember = (req,res,err) => {
   Sponsor.find((error, sponsors) => {
-    s = {}
+    rows = []
     sponsors.forEach(sponsor => {
-      var maybeuser = sponsor.users.filter(e => e.username === req.session.data.Login);
-      if(maybeuser.length > 0){
-        var user = maybeuser[0];
-        s[sponsor.username] = req.session.files.indexOf(user.cv);
-      }else{
-        s[sponsor.username] = 5;
-      }
+      sponsor.positions.forEach(position => {
+        var row = {
+          sponsor: sponsor.name,
+          sponsorUsername: sponsor.username,
+          position: position.name,
+          info: position.info,
+          cv: 5
+        };
+        var maybeuser = position.users.filter(user => user.username === req.session.data.Login);
+        if(maybeuser.length > 0){
+          var user = maybeuser[0];
+          row.cv = req.session.files.indexOf(user.cv);
+        }
+        rows.push(row);
+      });
     })
     var data = {
       name: req.session.data.FirstName, 
-      sponsors: s,
+      rows: rows,
       files: req.session.files, 
       error:err
     }
@@ -490,7 +541,7 @@ app.get('/sponsor', (req,res,next) => {
   }
 }, (req,res) => {
   Sponsor.find({username: req.session.user},(err, s) => {
-    res.render('sponsor', {name: req.session.user, users: s[0].users})
+    res.render('sponsor', {name: s[0].name, positions: s[0].positions})
   }) 
 });
 
@@ -513,6 +564,32 @@ app.post('/sponsor-show-cv/:path/:name', (req,res,next) => {
   var data = fs.readFileSync(__dirname + '/cvs/' + req.params.path + '/' + req.params.name);
   res.contentType('application/pdf');
   res.send(data);
+});
+
+app.post('/add-position', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      res.redirect('/member');
+    }else if(req.session.type == 'sponsor'){
+      next();
+    }else{
+      res.redirect('/');
+    }
+  }
+},(req,res) => {
+  Sponsor.find({username: req.session.user} , (err, sponsor) => {
+    if (err) return next(err);
+    var data = {
+      name: req.body.name,
+      info: req.body.info,
+      users: []
+    }
+    sponsor[0].positions.push(data);
+    sponsor[0].save((err, user) => {
+      if (err) return next(err);
+      res.redirect('/sponsor')
+    });
+  });
 });
 
 //LOGOUT

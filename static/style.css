@@ -139,6 +139,39 @@ body {
 
 .sponsor .cv {
   background-color: #59d;
-  padding: 10px 0 10px 0;
+  width: 90%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.sponsor .add-position {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.sponsor .position {
+  background-color: #59d;
+  width: 95%;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.sponsor .bg {
+  background-color: #59d;
+  margin-top: 20px;
+  border-radius: 5px;
+}
+
+.sponsor .cvs {
+  width: 90%;
+  background-color: #48c;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.sponsor .top-margin {
   margin-top: 20px;
 }
