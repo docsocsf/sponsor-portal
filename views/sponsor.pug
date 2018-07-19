@@ -5,6 +5,10 @@ include ./layout.pug
       h1.col-11 Hello there, #{name}
       form.col-1(method="post" action="/logout")
         button.btn-primary.btn-lg(type='submit') Logout
+  if error
+    .alert.alert-danger(role="alert") 
+      strong oh snap! 
+      | #{error}
   .container.add-position.bg
       form(method="post" action="/add-position")
         br
@@ -29,7 +33,7 @@ include ./layout.pug
             h3.col-7 Info: #{position.info}
             br
             form.col-1(action="/remove-position/" + position.name method="post")
-              button.btn.btn-outline-light.full-width(type='submit')
+              button.btn.btn-outline-light(type='submit')
                 span.octicon.octicon-trashcan
           .row
             .cvs.container
@@ -38,11 +42,10 @@ include ./layout.pug
                 .row
                   .cv.container
                     .row
-                      .col-4= user.FirstName + ' ' + user.Surname
-                      .col-5= user.email
-                      .col-2= user.cv
-                      .col-1 
-                        form.col-4(action="/sponsor-show-cv/" + user.username + "/" + user.cv method="post")
+                      .col-5= user.FirstName + ' ' + user.Surname
+                      .col-6= user.email
+                      .col-1.full-width 
+                        form(action="/sponsor-show-cv/" + user.username + "/" + user.cv method="post")
                           button.btn.btn-outline-light.full-width(type='submit')
                             span.octicon.octicon-eye
       br

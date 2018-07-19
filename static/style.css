@@ -6,6 +6,13 @@ body {
   height: 100%;
 }
 
+input[type=radio] {
+  transform: scale(2.5);
+  vertical-align: middle;
+  margin-top:20%;
+}
+
+
 /* === LOGIN === */
 
 .login{
@@ -67,6 +74,8 @@ body {
 }
 
 
+
+
 /* === MEMBER === */
 
 .member .cvs {
@@ -74,7 +83,9 @@ body {
 }
 
 .member .cv {
-  background-color: #59d;
+  background-color: #225590;
+  color: white;
+  width: 18%;
 }
 
 .member .header, .sponsor .header{
@@ -109,7 +120,7 @@ body {
 }
 
 .member .send-cvs {
-  width: 80%;
+  width: 98%;
 }
 
 .member .send-cvs .color {
@@ -123,26 +134,40 @@ body {
 }
 
 .member .head {
-  font-size: 2rem;
+  font-size: 1.7rem;
 }
 
 .color1 {
-  background-color: #59d;
+  background-color: #225590;
+  color: white;
+  text-align: center;
 }
 
 .color2 {
-  background-color:#48c
+  background-color:#48c;
+  color: white;
+  text-align: center;
+}
+
+.send-row{
+  min-height: 100px;
+}
+
+.member .align{
+  margin-top: 10%;
 }
 
 
 /* === SPONSOR === */
 
 .sponsor .cv {
-  background-color: #59d;
+  background-color: #48c;
+  color: white;
   width: 90%;
   margin-top: 20px;
   margin-bottom: 20px;
   border-radius: 5px;
+  font-size: 1.2em;
 }
 
 .sponsor .add-position {
@@ -151,7 +176,8 @@ body {
 }
 
 .sponsor .position {
-  background-color: #59d;
+  background-color: #225590;
+  color: white;
   width: 95%;
   margin-top: 20px;
   margin-bottom: 20px;
@@ -159,17 +185,25 @@ body {
 }
 
 .sponsor .bg {
-  background-color: #59d;
+  background-color: #225590;
+  color: white;
   margin-top: 20px;
   border-radius: 5px;
 }
 
 .sponsor .cvs {
   width: 90%;
-  background-color: #48c;
+  background-color: #225590;
+  color: white;
   margin-top: 20px;
   margin-bottom: 20px;
   border-radius: 5px;
+}
+
+.sponsor .full-width {
+  padding: 0;
+  width: 100%;
+  height: 40px;
 }
 
 .sponsor .top-margin {

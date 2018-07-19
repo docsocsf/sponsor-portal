@@ -15,7 +15,7 @@ include ./layout.pug
         | #{error}
     .row
       for i in [0,1,2,3,4]
-        .cv.col-2.mr-md-auto.container-fluid.card
+        .cv.mr-md-auto.container-fluid.card
           .card-body
             if files[i] != undefined
               .card-title
@@ -57,20 +57,25 @@ include ./layout.pug
     .row
       .send-cvs.container-fluid
         .row
-          .col-2.color.table-heading.head Sponsors
-          .col-2.color.table-heading.head Position
+          .col.color1.table-heading.head(style="border-top-left-radius: 5px") Sponsors
+          .col.color1.table-heading.head Position
+          .col.color1.table-heading.head Info
           for i in [0,1,2,3,4]
             if files[i] != undefined
-              .col.color.table-heading.head CV: #{files[i].slice(0, -4)}
-          .col.color.table-heading.head none
+              .col.color.table-heading.head CV: #{files[i].slice(0, -4)} 
+          .col.color.table-heading.head(style="border-top-right-radius: 5px") none
           if(files.length % 2 === 0)
             .color
         form(method="post" action="/send-cv")
           for r in rows
             fieldset
-            .row
-              .col-2.color.table-heading= r.sponsor
-              .col-2.color.table-heading= r.position
+            .row.send-row
+              .col.color1.table-heading
+                .align= r.sponsor
+              .col.color1.table-heading
+                .align= r.position
+              .col.color1.table-heading
+                .align= r.info
               for i in [0,1,2,3,4,5]
                 if files[i] != undefined || i === 5
                     if(i === r.cv) 
@@ -83,4 +88,4 @@ include ./layout.pug
                 .color
           br
           .row
-            button.col-6.btn.send-cv-button(type='submit') Send CV
+            button.col-6.btn.btn-primary.btn-lg.send-cv-button(type='submit') Send CV
