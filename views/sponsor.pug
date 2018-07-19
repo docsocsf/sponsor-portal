@@ -1,8 +1,16 @@
-html
-    body
-        h1 Hello there #{sponsor.username} 
-        ul
-            for user in sponsor.users
-                li= user
-        form(method="post" action="/logout")
-            button.btn.btn-primary(type='submit') Logout
+include ./layout.pug
+.sponsor
+  nav.header.navbar
+    .container-fluid
+      h1.col-11 Hello there, #{name}
+      form.col-1(method="post" action="/logout")
+        button.btn-primary.btn-lg(type='submit') Logout
+  .container
+    br
+    h2.row Student Cvs:
+    for user in users
+      .row.cv
+        .col-5= user.FirstName + ' ' + user.Surname
+        .col-5= user.email
+        .col-2= user.cv
+

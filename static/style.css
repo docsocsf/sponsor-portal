@@ -6,10 +6,6 @@ body {
   height: 100%;
 }
 
-.hidden {
-  display: none;
-}
-
 /* === LOGIN === */
 
 .login{
@@ -81,7 +77,7 @@ body {
   background-color: #59d;
 }
 
-.member .header {
+.member .header, .sponsor .header{
   background-color: #225590;
   color: white;
 }
@@ -107,9 +103,27 @@ body {
   width: 10%;
 }
 
-.member .send-cv {
+.member .send-cv-button {
   width: 50%;
   margin: auto; 
+}
+
+.member .send-cvs {
+  width: 80%;
+}
+
+.member .send-cvs .color {
+  text-align: center;
+}
+
+.member .table-heading {
+  font-weight: 500;
+  line-height: 1.7;
+  font-size: 1.5rem;
+}
+
+.member .head {
+  font-size: 2rem;
 }
 
 .color1 {
@@ -118,4 +132,13 @@ body {
 
 .color2 {
   background-color:#48c
+}
+
+
+/* === SPONSOR === */
+
+.sponsor .cv {
+  background-color: #59d;
+  padding: 10px 0 10px 0;
+  margin-top: 20px;
 }

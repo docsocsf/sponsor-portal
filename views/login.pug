@@ -1,29 +1,35 @@
 include ./layout.pug
 .login
-    .header
-        .member-tab.login-tab.active-tab Members
-        .sponsor-tab.login-tab.inactive-tab Sponsors
-    form(method="post" action="/member-login").member
-        h1 Member Login:
-            if error
-                .error #{error}
-            else 
-                br
-            .form-group
-                label(for="user") Username: 
-                input(type="text", name="user")
-            .form-group
-                label(for="pass") Password: 
-                input(type="password", name="pass")
-            button.btn.btn-primary.btn-lg(type='submit') Login
-    form(method="post" action="/sponsor-login").sponsor.hidden
-        h1 Sponsor Login:
-            br
-            .error #{error}
-            .form-group
-                label(for="user") Username: 
-                input(type="text", name="user")
-            .form-group
-                label(for="pass") Password: 
-                input(type="password", name="pass")
-            button.btn.btn-primary.btn-lg(type='submit') Login
+  .header
+    if member
+      .member-tab.login-tab.active-tab Members
+      .sponsor-tab.login-tab.inactive-tab Sponsors
+    else
+      .member-tab.login-tab.inactive-tab Members
+      .sponsor-tab.login-tab.active-tab Sponsors
+  form(method="post" action="/member-login").member-login.d-none
+    h1 Member Login:
+      if error && member
+        .error #{error}
+      else 
+        br
+      .form-group
+        label(for="user") Username: 
+        input(type="text", name="user")
+      .form-group
+        label(for="pass") Password: 
+        input(type="password", name="pass")
+      button.btn.btn-primary.btn-lg(type='submit') Login
+  form(method="post" action="/sponsor-login").sponsor-login.d-none
+    h1 Sponsor Login:
+      if error && !member
+        .error #{error}
+      else
+        br
+      .form-group
+        label(for="user") Username: 
+        input(type="text", name="user")
+      .form-group
+        label(for="pass") Password: 
+        input(type="password", name="pass")
+      button.btn.btn-primary.btn-lg(type='submit') Login

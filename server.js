@@ -13,7 +13,7 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
-app.use("/static", express.static(__dirname + '/static'));
+app.use('/static', express.static(__dirname + '/static'));
 
 app.use(fileUpload());
 
@@ -85,7 +85,7 @@ module.exports = Sponsor;
 
 //PORTAL LOGIN
 app.get('/portal-login', (req,res) => {
-  res.render("portal-login");
+  res.render('portal-login');
 });
 
 //portal auth
@@ -98,7 +98,7 @@ app.post('/portal-login', (req,res,next) => {
 }, (req,res) => {
   var user = req.body.user;
   var pass = req.body.pass;
-  if(user === "docsoc" && pass === "docsoc"){
+  if(user === 'docsoc' && pass === 'docsoc'){
     req.session.docsoc = true;
     res.redirect('/portal');
   }else{
@@ -115,7 +115,7 @@ app.get('/portal', (req,res,next) => {
   }
 }, (req,res) => {
   Sponsor.find((err, s) => {
-    res.render("portal", {sponsors: s});
+    res.render('portal', {sponsors: s});
   })
 });
 
@@ -161,7 +161,7 @@ app.get('/',  (req,res,next) => {
     next();
   }
 },(req,res) => {
-  res.render("login");
+  res.render('login' , {member: true});
 });
 
 
@@ -172,14 +172,14 @@ app.post('/member-login', (req,res) => {
   console.log('User ' + user + ' trying to login...');
   //KERBEROS AUTHENTICATION
   console.log('starting Kerberos Authentication...');
-  krb5.authenticate(user + "@IC.AC.UK" , pass, (err, stuff) => {
+  krb5.authenticate(user + '@IC.AC.UK' , pass, (err, stuff) => {
     if(err){
       //WRONG PASSWORD/INVALID USER
       console.log('err ' + err);
       //res.send('wrong username or password');
-      res.render('login', {error: "Wrong username or password"});
+      res.render('login', {member: true, error: 'Wrong username or password'});
     }else{
-      console.log("Kerberos Authentication success, Starting DoCSoc Member Check...")
+      console.log('Kerberos Authentication success, Starting DoCSoc Member Check...')
       //REQUEST EACTIVITIES if auth file older than 24 hours
       if(!fs.existsSync(__dirname + '/auth/')){
         fs.mkdirSync(__dirname + '/auth/');
@@ -220,7 +220,7 @@ var checkMember = (req,res,user) => {
   var data = JSON.parse(auth).find(el => el.Customer.Login === user);
   if(data) {
     //VALID USER
-    console.log("User " + user + " successfully loged in");
+    console.log('User ' + user + ' successfully loged in');
     //setup session
     req.session.docsoc = false;
     req.session.login = true;
@@ -239,7 +239,7 @@ var checkMember = (req,res,user) => {
   }else{
     //NON DOCSOC USER
     console.log('not member of DoCSoc');
-    res.render('login', {error: "Not a DoCSoc Member!"});
+    res.render('login', {member: true, error: 'Not a DoCSoc Member!'});
   }
 }
 
@@ -281,15 +281,15 @@ app.post('/upload-cv', (req,res,next) => {
   if (!req.files.file) {
     //check for no file uploaded
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-    renderMember(req,res, "No file uploaded");
+    renderMember(req,res, 'No file uploaded');
   }else if (!req.body.pdfname){
     //check for no file name
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-    renderMember(req,res, "Invalid File Name");
+    renderMember(req,res, 'Invalid File Name');
   }else if(req.session.files.includes(req.body.pdfname + '.pdf')){
     //check for duplicate file name
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-    renderMember(req,res, "Duplicate File Name");
+    renderMember(req,res, 'Duplicate File Name');
   }else{
     let sampleFile = req.files.file;
     sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf', function(err) {
@@ -314,7 +314,7 @@ app.post('/show-cv/:name', (req,res,next) => {
   }
 },(req,res) => {
   var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
-  res.contentType("application/pdf");
+  res.contentType('application/pdf');
   res.redirect('/member');
 });
 
@@ -334,7 +334,7 @@ app.post('/rename-cv/:currname', (req,res,next) => {
   if(req.session.files.includes(req.body.pdfname + '.pdf')){
     //check for duplicate file name
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-    renderMember(req,res, "Duplicate File Name");
+    renderMember(req,res, 'Duplicate File Name');
   }else{
     var oldCV = req.params.currname;
     var newCV = req.body.pdfname + '.pdf';
@@ -382,7 +382,7 @@ app.post('/send-cv', (req,res,next) => {
   var cvs = {};
   //manipulating form data
   for(var label in req.body){
-    var entry = label.split("-",2)
+    var entry = label.split('-',2)
     cvs[entry[0]] = entry[1];
   }
   Sponsor.find((err, sponsors) => {
@@ -428,22 +428,31 @@ var renderMember = (req,res,err) => {
 }
 
 //SPONSOR AUTH
-app.post('/sponsor-login', (req,res) => {
+app.post('/sponsor-login', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'sponsor'){
+      res.redirect('/sponsor');
+    }else if(req.session.type == 'member'){
+      res.redirect('/member');
+    }
+  }else{
+    next();
+  }
+}, (req,res) => {
   var user = req.body.user;
   var pass = req.body.pass;
   Sponsor.find({username: user}, (err,result) => {
     if(err) return console.log(err);
-    //console.log(result[0].password);
     if(result[0] && result[0].password === pass){
       //VALID USER
       console.log('success');
       req.session.docsoc = false;
       req.session.login = true;
       req.session.type = 'sponsor';
-      req.session.data.FirstName = user;
+      req.session.user = user;
       res.redirect('/sponsor');
     }else{
-      res.send("Invalid username or Password");
+      res.render('login', {member: false, error: 'Wrong username or password'});
     }
   })
 });
@@ -461,11 +470,14 @@ app.get('/sponsor', (req,res,next) => {
   }
 }, (req,res) => {
   //console.log(req.session);
-  Sponsor.find({username: req.session.data.FirstName},(err, s) => {
-    res.render('sponsor',{sponsor: s[0]})
+  Sponsor.find({username: req.session.user},(err, s) => {
+    res.render('sponsor', {name: req.session.user, users: s[0].users})
   }) 
 });
 
+app.get('/sponsor-login', (req,res) => {
+  res.redirect('/');
+})
 
 //LOGOUT
 app.post('/logout', (req,res) => {

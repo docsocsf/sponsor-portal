@@ -1,4 +1,11 @@
 $(function() {
+
+  if($('.member-tab').hasClass('active-tab')){
+    $('.member-login').removeClass('d-none');
+  }else{
+    $('.sponsor-login').removeClass('d-none');
+  }
+
   $('.login-tab').click(function(e) {
     e.preventDefault();
     if(!$(this).hasClass('active-tab')){
@@ -8,10 +15,10 @@ $(function() {
       
       //change forms
       $('form').each(function() {
-        if($(this).hasClass('hidden')){
-          $(this).removeClass('hidden');
+        if($(this).hasClass('d-none')){
+          $(this).removeClass('d-none');
         }else{
-          $(this).addClass('hidden');
+          $(this).addClass('d-none');
         }
       })
     }
