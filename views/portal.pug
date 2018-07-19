@@ -5,18 +5,30 @@ html
       h1 Add a new sponsor:
         div.form-group
           label(for="user") Username: 
-          input#user.form-control(type="text", placeholder="Sponsor Username", name="user")
+          input.form-control(type="text", placeholder="Sponsor Username", name="user")
+        div.form-group
+          label(for="name") Name: 
+          input.form-control(type="text", placeholder="Sponsor Username", name="name")
         div.form-group
           label(for="pass") Password: 
           input(type="password", name="pass")
+        div.form-group
+          label(for="pass") Rank: 
+          select(name="rank")
+            option(value="gold") Gold
+            option(value="silver") Silver
+            option(value="bronze") Bronze
         button.btn.btn-primary(type='submit') Add
     h2 All sponsors: 
     ul
       for sponsor in sponsors
         li= sponsor
         ul
-          for user in sponsor.users
-            li= user
+          for position in sponsor.positions
+            li= position
+            ul
+              for user in position.users
+                li= user
         form(method="post" action="/remove-sponsor/"+sponsor.username)
           button.btn.btn-primary(type='submit') Remove
     form(method="post" action="/logout")

@@ -15,7 +15,7 @@ include ./layout.pug
         | #{error}
     .row
       for i in [0,1,2,3,4]
-        .cv.col-2.mr-md-auto.container-fluid.card
+        .cv.mr-md-auto.container-fluid.card
           .card-body
             if files[i] != undefined
               .card-title
@@ -57,28 +57,35 @@ include ./layout.pug
     .row
       .send-cvs.container-fluid
         .row
-          .col-3.color.table-heading.head Sponsors
+          .col.color1.table-heading.head(style="border-top-left-radius: 5px") Sponsors
+          .col.color1.table-heading.head Position
+          .col.color1.table-heading.head Info
           for i in [0,1,2,3,4]
             if files[i] != undefined
-              .col.color.table-heading.head CV: #{files[i].slice(0, -4)}
-          .col.color.table-heading.head none
-          if(files.length % 2 != 0)
+              .col.color.table-heading.head CV: #{files[i].slice(0, -4)} 
+          .col.color.table-heading.head(style="border-top-right-radius: 5px") none
+          if(files.length % 2 === 0)
             .color
         form(method="post" action="/send-cv")
-          for file, sponsor in sponsors
+          for r in rows
             fieldset
-            .row
-              .col-3.color.table-heading= sponsor
+            .row.send-row
+              .col.color1.table-heading
+                .align= r.sponsor
+              .col.color1.table-heading
+                .align= r.position
+              .col.color1.table-heading
+                .align= r.info
               for i in [0,1,2,3,4,5]
                 if files[i] != undefined || i === 5
-                    if(i === file) 
+                    if(i === r.cv) 
                       .col.color 
-                        input.radio(type="radio" checked="checked" name=sponsor + '-' + files[i])
+                        input.radio(type="radio" checked="checked" name=r.sponsorUsername + '-' + r.position + '-' + files[i])
                     else
                       .col.color
-                        input.radio(type="radio" name=sponsor + '-' + files[i])
-              if(files.length % 2 != 0)
+                        input.radio(type="radio" name=r.sponsorUsername + '-' + r.position + '-' + files[i])
+              if(files.length % 2 === 0)
                 .color
           br
           .row
-            button.col-6.btn.send-cv-button(type='submit') Send CV
+            button.col-6.btn.btn-primary.btn-lg.send-cv-button(type='submit') Send CV
