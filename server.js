@@ -66,13 +66,16 @@ var SponsorSchema = new mongoose.Schema({
     FirstName: {
       type: String
     },
-    LastName: {
+    Surname: {
       type: String
     },
-    Email: {
+    email: {
       type: String
     },
-    Username: {
+    username: {
+      type: String
+    },
+    cv: {
       type: String
     }
   }]
@@ -166,8 +169,9 @@ app.get('/',  (req,res,next) => {
 app.post('/member-login', (req,res) => {
   var user = req.body.user;
   var pass = req.body.pass;
-  console.log('User ' + user + ' trying to login');
+  console.log('User ' + user + ' trying to login...');
   //KERBEROS AUTHENTICATION
+  console.log('starting Kerberos Authentication...');
   krb5.authenticate(user + "@IC.AC.UK" , pass, (err, stuff) => {
     if(err){
       //WRONG PASSWORD/INVALID USER
@@ -175,6 +179,7 @@ app.post('/member-login', (req,res) => {
       //res.send('wrong username or password');
       res.render('login', {error: "Wrong username or password"});
     }else{
+      console.log("Kerberos Authentication success, Starting DoCSoc Member Check...")
       //REQUEST EACTIVITIES if auth file older than 24 hours
       if(!fs.existsSync(__dirname + '/auth/')){
         fs.mkdirSync(__dirname + '/auth/');
@@ -209,13 +214,13 @@ app.post('/member-login', (req,res) => {
   });
 });
 
-//check memebr if docsoc
+//check memeber is docsoc
 var checkMember = (req,res,user) => {
   var auth = fs.readFileSync(authpath);
   var data = JSON.parse(auth).find(el => el.Customer.Login === user);
   if(data) {
     //VALID USER
-    console.log('success');
+    console.log("User " + user + " successfully loged in");
     //setup session
     req.session.docsoc = false;
     req.session.login = true;
@@ -256,9 +261,7 @@ app.get('/member', (req,res,next) => {
   }
 }, (req,res) => {
   req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-  Sponsor.find((err, s) => {
-    res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
-  }) 
+  renderMember(req,res);
 });
 
 //upload CV
@@ -273,33 +276,26 @@ app.post('/upload-cv', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
-  //check for file
+  req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+  //console.log(req.session.files + ' ' + req.body.pdfname);
   if (!req.files.file) {
+    //check for no file uploaded
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-    Sponsor.find((err, s) => {
-      res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "No file uploaded"});
-    });
+    renderMember(req,res, "No file uploaded");
   }else if (!req.body.pdfname){
-    //check for file name
+    //check for no file name
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-    Sponsor.find((err, s) => {
-      res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "Invalid File Name"});
-      return res.status(500);;
-    });
+    renderMember(req,res, "Invalid File Name");
   }else if(req.session.files.includes(req.body.pdfname + '.pdf')){
+    //check for duplicate file name
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-    Sponsor.find((err, s) => {
-      res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files, error: "Duplicate File Name"});
-      return res.status(500);;
-    });
+    renderMember(req,res, "Duplicate File Name");
   }else{
     let sampleFile = req.files.file;
     sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf', function(err) {
       if (err) return res.status(500).send(err);
       req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-      Sponsor.find((err, s) => {
-        res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
-      });
+      res.redirect('/member');
     });
   }
 });
@@ -319,7 +315,7 @@ app.post('/show-cv/:name', (req,res,next) => {
 },(req,res) => {
   var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
   res.contentType("application/pdf");
-  res.send(data); 
+  res.redirect('/member');
 });
 
 //rename CV
@@ -334,13 +330,18 @@ app.post('/rename-cv/:currname', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
-  var oldpath = __dirname + '/cvs/' + req.session.data.Login + '/' + req.params.currname;
-  var newpath = __dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf';
-  fs.renameSync(oldpath,newpath);
-  req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-  Sponsor.find((err, s) => {
-    res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
-  });
+  var path = __dirname + '/cvs/' + req.session.data.Login;
+  if(req.session.files.includes(req.body.pdfname + '.pdf')){
+    //check for duplicate file name
+    req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
+    renderMember(req,res, "Duplicate File Name");
+  }else{
+    var oldCV = req.params.currname;
+    var newCV = req.body.pdfname + '.pdf';
+    fs.renameSync(path  + '/' + oldCV, path  + '/' + newCV);
+    req.session.files = fs.readdirSync(path);
+    res.redirect('/member');
+  }
 });
 
 //delete CV
@@ -357,9 +358,7 @@ app.post('/remove-cv/:name', (req,res,next) => {
 },(req,res) => {
   fs.unlinkSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name);
   req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-  Sponsor.find((err, s) => {
-    res.render('member',{name: req.session.data.FirstName, sponsors: s, files: req.session.files});
-  });
+  res.redirect('/member');
 });
 
 //send CV
@@ -374,30 +373,59 @@ app.post('/send-cv', (req,res,next) => {
     res.redirect('/');
   }
 },(req,res) => {
-  console.log(req.body);
+  var data = {
+    FirstName: req.session.data.FirstName,
+    Surname: req.session.data.Surname,
+    email: req.session.data.Email,
+    username: req.session.data.Login
+  }
+  var cvs = {};
+  //manipulating form data
+  for(var label in req.body){
+    var entry = label.split("-",2)
+    cvs[entry[0]] = entry[1];
+  }
   Sponsor.find((err, sponsors) => {
     sponsors.forEach((sponsor) => {
-      var data = {FirstName: req.session.data.FirstName,
-        LastName: req.session.data.LastName,
-        Email: req.session.data.Email,
-        Username: req.session.data.Login
-      }
-      if(sponsor.username in req.body){
+      sponsor.users = sponsor.users.filter(i => i.username !== req.session.data.Login);
+      if(cvs[sponsor.username] != 'undefined'){
+        data.cv = cvs[sponsor.username];
         sponsor.users.push(data);
-      }else{
-        sponsor.users = sponsor.users.filter(i => i.Username !== req.session.data.Login)
       }
       sponsor.save((err, user) => {
         if (err) {
           return next(err)
         } else {
-          console.log(user);
+          //console.log(user);
         }
       }); 
     });
   });
-  res.redirect('/');
+  res.redirect('/member');
 });
+
+//render member
+var renderMember = (req,res,err) => {
+  Sponsor.find((error, sponsors) => {
+    s = {}
+    sponsors.forEach(sponsor => {
+      var maybeuser = sponsor.users.filter(e => e.username === req.session.data.Login);
+      if(maybeuser.length > 0){
+        var user = maybeuser[0];
+        s[sponsor.username] = req.session.files.indexOf(user.cv);
+      }else{
+        s[sponsor.username] = 5;
+      }
+    })
+    var data = {
+      name: req.session.data.FirstName, 
+      sponsors: s,
+      files: req.session.files, 
+      error:err
+    }
+    res.render('member',data);
+  });
+}
 
 //SPONSOR AUTH
 app.post('/sponsor-login', (req,res) => {
@@ -415,7 +443,7 @@ app.post('/sponsor-login', (req,res) => {
       req.session.data.FirstName = user;
       res.redirect('/sponsor');
     }else{
-      res.send("Invalid Username or Password");
+      res.send("Invalid username or Password");
     }
   })
 });

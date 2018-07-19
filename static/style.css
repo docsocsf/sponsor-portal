@@ -106,3 +106,16 @@ body {
 .member .submit {
   width: 10%;
 }
+
+.member .send-cv {
+  width: 50%;
+  margin: auto; 
+}
+
+.color1 {
+  background-color: #59d;
+}
+
+.color2 {
+  background-color:#48c
+}

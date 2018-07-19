@@ -14,7 +14,6 @@ $(function() {
           $(this).addClass('hidden');
         }
       })
-      
     }
   });
 
@@ -25,4 +24,18 @@ $(function() {
     $(this).parent().parent().siblings('.padding').toggleClass('d-none');
   });
 
+  $('.radio').click(function(){
+    $(this).parent().parent().find('input').each(function(){
+      $(this).prop('checked', false);
+    });
+    $(this).prop('checked', true);
+  });
+
+  $('.color:odd').each(function(){
+    $(this).addClass('color1');
+  })
+
+  $('.color:even').each(function(){
+    $(this).addClass('color2');
+  })
 });

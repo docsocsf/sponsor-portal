@@ -40,7 +40,7 @@ include ./layout.pug
             else
               .row
                 h3.col Upload CV:
-              form(method="post" action="/upload-cv"  encType="multipart/form-data")
+              form(method="post" action="/upload-cv" encType="multipart/form-data")
                 .row.name-row-padding
                   label.col-4(for="pdfname" value="CV_" + 1) Name:
                   input.col-8(type="text", name="pdfname")
@@ -49,10 +49,33 @@ include ./layout.pug
                   button.col-2.btn.btn-outline-light.submit(type='submit')
                     span.octicon.octicon-cloud-upload
   br
-  h2 Sponsors to send your CV to
-  form(action="/send-cv" method="post")
-    for sponsor in sponsors
-      div.form-group
-        input(type="checkbox", name= sponsor.username)
-        label= sponsor.username
-    button.btn(type='submit') Send CV
+  .cvs.container
+    .row
+      h1.col Send your CVs
+    br
+    .row
+      for i in [-1,0,1,2,3,4]
+        if files[i] != undefined
+          .col.color #{files[i].slice(0, -4)}
+        else 
+          .col.color
+      .col.color none
+      .color
+    form(method="post" action="/send-cv")
+      for file, sponsor in sponsors
+        fieldset
+        .row
+          .col.color= sponsor
+          for i in [0,1,2,3,4,5]
+            if files[i] != undefined || i === 5
+              .col.color
+                if(i === file)  
+                  input.radio(type="radio" checked="checked" name=sponsor + '-' + files[i])
+                else
+                  input.radio(type="radio" name=sponsor + '-' + files[i])
+            else
+              .col.color
+          .color
+      br
+      .row
+        button.col-6.btn.send-cv(type='submit') Send CV

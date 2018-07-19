@@ -1,23 +1,23 @@
 html
-    body
-        h1 Hello there DoCSoc
-        form(method="post" action="/new-sponsor")
-            h1 Add a new sponsor:
-                div.form-group
-                    label(for="user") Username: 
-                    input#user.form-control(type="text", placeholder="Sponsor Username", name="user")
-                div.form-group
-                    label(for="pass") Password: 
-                    input(type="password", name="pass")
-                button.btn.btn-primary(type='submit') Add
-        h2 All sponsors: 
+  body
+    h1 Hello there DoCSoc
+    form(method="post" action="/new-sponsor")
+      h1 Add a new sponsor:
+        div.form-group
+          label(for="user") Username: 
+          input#user.form-control(type="text", placeholder="Sponsor Username", name="user")
+        div.form-group
+          label(for="pass") Password: 
+          input(type="password", name="pass")
+        button.btn.btn-primary(type='submit') Add
+    h2 All sponsors: 
+    ul
+      for sponsor in sponsors
+        li= sponsor
         ul
-            for sponsor in sponsors
-                li= sponsor.username + ' ' + sponsor.password
-                ul
-                    for user in sponsor.users
-                        li= user.Username
-                form(method="post" action="/remove-sponsor/"+sponsor.username)
-                    button.btn.btn-primary(type='submit') Remove
-        form(method="post" action="/logout")
-            button.btn.btn-primary(type='submit') Logout
+          for user in sponsor.users
+            li= user
+        form(method="post" action="/remove-sponsor/"+sponsor.username)
+          button.btn.btn-primary(type='submit') Remove
+    form(method="post" action="/logout")
+      button.btn.btn-primary(type='submit') Logout
