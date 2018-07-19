@@ -131,7 +131,6 @@ app.post('/new-sponsor', (req,res) => {
     if (err) {
       return next(err)
     } else {
-      console.log(user);
       res.redirect('/portal');
     }
   });
@@ -139,7 +138,6 @@ app.post('/new-sponsor', (req,res) => {
 
 //Remove Sponsor
 app.post('/remove-sponsor/:user', (req,res) => {
-  console.log(req.params.user);
   Sponsor.remove({username: req.params.user} , (err) => {
     if (err) {
       return next(err)
@@ -179,7 +177,8 @@ app.post('/member-login', (req,res) => {
       //res.send('wrong username or password');
       res.render('login', {member: true, error: 'Wrong username or password'});
     }else{
-      console.log('Kerberos Authentication success, Starting DoCSoc Member Check...')
+      console.log('Kerberos Authentication success.');
+      console.log('Starting DoCSoc Member Check...');
       //REQUEST EACTIVITIES if auth file older than 24 hours
       if(!fs.existsSync(__dirname + '/auth/')){
         fs.mkdirSync(__dirname + '/auth/');
@@ -194,7 +193,7 @@ app.post('/member-login', (req,res) => {
         endTime = new Date(stat.ctime).getTime() + 86400000;
         if (now > endTime) {
           //download new file
-          console.log('outdated, updating auth file');
+          console.log('Outdated auth file, Updating...');
           rp(options).then((body) => {
             fs.writeFileSync(authpath,body);
             checkMember(req, res,user);
@@ -204,7 +203,7 @@ app.post('/member-login', (req,res) => {
         }
       }else{
         //download new file
-        console.log('downloading auth file');
+        console.log('Downloading auth file');
         rp(options).then((body) => {
           fs.writeFileSync(authpath,body);
           checkMember(req, res,user);
@@ -238,7 +237,7 @@ var checkMember = (req,res,user) => {
     res.redirect('/member');
   }else{
     //NON DOCSOC USER
-    console.log('not member of DoCSoc');
+    console.log('Not member of DoCSoc');
     res.render('login', {member: true, error: 'Not a DoCSoc Member!'});
   }
 }
@@ -277,7 +276,6 @@ app.post('/upload-cv', (req,res,next) => {
   }
 },(req,res) => {
   req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
-  //console.log(req.session.files + ' ' + req.body.pdfname);
   if (!req.files.file) {
     //check for no file uploaded
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login);
@@ -393,11 +391,7 @@ app.post('/send-cv', (req,res,next) => {
         sponsor.users.push(data);
       }
       sponsor.save((err, user) => {
-        if (err) {
-          return next(err)
-        } else {
-          //console.log(user);
-        }
+        if (err) return next(err)
       }); 
     });
   });
@@ -469,7 +463,6 @@ app.get('/sponsor', (req,res,next) => {
     res.redirect('/');
   }
 }, (req,res) => {
-  //console.log(req.session);
   Sponsor.find({username: req.session.user},(err, s) => {
     res.render('sponsor', {name: req.session.user, users: s[0].users})
   }) 

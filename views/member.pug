@@ -49,33 +49,36 @@ include ./layout.pug
                   button.col-2.btn.btn-outline-light.submit(type='submit')
                     span.octicon.octicon-cloud-upload
   br
-  .send-cvs.container-fluid
+  br
+  .container-fluid
     .row
       h1.col Send your CVs
     br
     .row
-      .col-3.color.table-heading.head Sponsors
-      for i in [0,1,2,3,4]
-        if files[i] != undefined
-          .col.color.table-heading.head CV: #{files[i].slice(0, -4)}
-      .col.color.table-heading.head none
-      if(files.length % 2 != 0)
-        .color
-    form(method="post" action="/send-cv")
-      for file, sponsor in sponsors
-        fieldset
+      .send-cvs.container-fluid
         .row
-          .col-3.color.table-heading= sponsor
-          for i in [0,1,2,3,4,5]
-            if files[i] != undefined || i === 5
-                if(i === file) 
-                  .col.color 
-                    input.radio(type="radio" checked="checked" name=sponsor + '-' + files[i])
-                else
-                  .col.color
-                    input.radio(type="radio" name=sponsor + '-' + files[i])
+          .col-3.color.table-heading.head Sponsors
+          for i in [0,1,2,3,4]
+            if files[i] != undefined
+              .col.color.table-heading.head CV: #{files[i].slice(0, -4)}
+          .col.color.table-heading.head none
           if(files.length % 2 != 0)
             .color
-      br
-      .row
-        button.col-6.btn.send-cv-button(type='submit') Send CV
+        form(method="post" action="/send-cv")
+          for file, sponsor in sponsors
+            fieldset
+            .row
+              .col-3.color.table-heading= sponsor
+              for i in [0,1,2,3,4,5]
+                if files[i] != undefined || i === 5
+                    if(i === file) 
+                      .col.color 
+                        input.radio(type="radio" checked="checked" name=sponsor + '-' + files[i])
+                    else
+                      .col.color
+                        input.radio(type="radio" name=sponsor + '-' + files[i])
+              if(files.length % 2 != 0)
+                .color
+          br
+          .row
+            button.col-6.btn.send-cv-button(type='submit') Send CV
