@@ -481,7 +481,7 @@ app.get('/sponsor', (req,res,next) => {
   }
 }, (req,res) => {
   Sponsor.find({username: req.session.user},(err, sponsor) => {
-    res.render('sponsor', {name: sponsor[0].name, positions: sponsor[0].positions})
+    res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
   }) 
 }) 
 
@@ -528,7 +528,7 @@ app.post('/add-position', (req,res,next) => {
         res.redirect('/sponsor')
       }) 
     }else{
-      res.render('sponsor', {name: sponsor[0].name, positions: sponsor[0].positions, error: "Position name already exists"})
+      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Position name already exists"})
     }
   }) 
 }) 
@@ -550,8 +550,79 @@ app.post('/remove-position/:name', (req,res,next) => {
     sponsor[0].positions = sponsor[0].positions.filter(position => position.name !== req.params.name) 
     sponsor[0].save((err, user) => {
       if (err) return next(err) 
-      res.redirect('/sponsor')
+      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
     }) 
+  }) 
+}) 
+
+//change-name
+app.post('/change-name', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      res.redirect('/member') 
+    }else if(req.session.type == 'sponsor'){
+      next() 
+    }else{
+      res.redirect('/') 
+    }
+  }
+},(req,res) => {
+  Sponsor.find({username: req.session.user} , (err, sponsor) => {
+    if (err) return next(err) 
+    sponsor[0].name = req.body.name
+    sponsor[0].save((err, user) => {
+      if (err) return next(err) 
+      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+    }) 
+  }) 
+})
+
+//change Username
+app.post('/change-username', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      res.redirect('/member') 
+    }else if(req.session.type == 'sponsor'){
+      next() 
+    }else{
+      res.redirect('/') 
+    }
+  }
+},(req,res) => {
+  Sponsor.find({username: req.session.user} , (err, sponsor) => {
+    if (err) return next(err) 
+    sponsor[0].username = req.body.username
+    req.session.user = req.body.username
+    sponsor[0].save((err, user) => {
+      if (err) return next(err) 
+      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+    }) 
+  }) 
+}) 
+
+//change Password
+app.post('/change-password', (req,res,next) => {
+  if(req.session.login){
+    if(req.session.type == 'member'){
+      res.redirect('/member') 
+    }else if(req.session.type == 'sponsor'){
+      next() 
+    }else{
+      res.redirect('/') 
+    }
+  }
+},(req,res) => {
+  Sponsor.find({username: req.session.user} , (err, sponsor) => {
+    if (err) return next(err)
+    if(sponsor[0].password === req.body.oldpass && req.body.pass1 === req.body.pass2) {
+      sponsor[0].password = req.body.pass1
+      sponsor[0].save((err, user) => {
+        if (err) return next(err) 
+        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+      }) 
+    }else{
+      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Error while trying to change password. Please try again."})
+    }
   }) 
 }) 
 

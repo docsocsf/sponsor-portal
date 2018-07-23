@@ -2,13 +2,14 @@ include ./layout.pug
 .sponsor
   nav.header.navbar
     .container-fluid
-      h1.col-11 Hello there, #{name}
+      h1.col-10 Hello there, #{name}
+      .col-1
+        button.btn-primary.btn-lg.account Account
       form.col-1(method="post" action="/logout")
-        button.btn-primary.btn-lg(type='submit') Logout
+        button.btn-primary.btn-lg(type='submit') Logout        
   if error
     .alert.alert-danger(role="alert") 
-      strong oh snap! 
-      | #{error}
+      strong oh snap! #{error}
   .container.add-position.bg
       form(method="post" action="/add-position")
         br
@@ -49,4 +50,37 @@ include ./layout.pug
                           button.btn.btn-outline-light.full-width(type='submit')
                             span.octicon.octicon-eye
       br
-
+  .account-settings.d-none
+    h1 Account Settings:
+    .name
+      form(method="post" action="/change-name")
+        label.col-5(for="name") 
+          h2 Name: 
+        input.col-6(value=name, type="text", placeholder=name, name="name")
+        button.col-1.btn.btn-outline-light(type='submit')
+          span.octicon.octicon-check
+    .username
+      form(method="post" action="/change-username")
+        label.col-5(for="username") 
+          h2 Username: 
+        input.col-6(value=username, type="text", placeholder=username, name="username")
+        button.col-1.btn.btn-outline-light(type='submit')
+          span.octicon.octicon-check
+    .pass
+      form(method="post" action="/change-password")
+        .container
+          label
+            h2 Password: 
+          .row
+            label.col-5(for="pass1") Old Password:
+            input.col-6(type="password", name="oldpass")  
+          .row
+            label.col-5(for="pass1") New Password:
+            input.col-6(type="password", name="pass1")
+          .row
+            label.col-5(for="pass1") Retype new Password:
+            input.col-6(type="password", name="pass2")
+          button.col-1.btn.btn-outline-light(type='submit')
+            span.octicon.octicon-check
+    br
+    button.btn-primary.btn-lg.account.col-3 Close
