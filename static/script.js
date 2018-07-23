@@ -45,4 +45,8 @@ $(function() {
   $('.color:even').each(function(){
     $(this).addClass('color2');
   })
+
+  $('.account').click(function() {
+    $('.account-settings').toggleClass('d-none');
+  })
 });

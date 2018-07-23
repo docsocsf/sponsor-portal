@@ -481,7 +481,7 @@ app.get('/sponsor', (req,res,next) => {
   }
 }, (req,res) => {
   Sponsor.find({username: req.session.user},(err, sponsor) => {
-    res.render('sponsor', {name: sponsor[0].name, positions: sponsor[0].positions})
+    res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
   }) 
 }) 
 
