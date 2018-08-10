@@ -26,27 +26,12 @@ $(function() {
 
   $('.rename').click(function(e){
     e.preventDefault();
-    console.log($(this).closest('.rename-row').html());
     $(this).parent().parent().siblings('.rename-row').toggleClass('d-none');
     $(this).parent().parent().siblings('.padding').toggleClass('d-none');
   });
 
-  $('.radio').click(function(){
-    $(this).parent().parent().find('input').each(function(){
-      $(this).prop('checked', false);
-    });
-    $(this).prop('checked', true);
-  });
-
-  $('.color:odd').each(function(){
-    $(this).addClass('color1');
-  })
-
-  $('.color:even').each(function(){
-    $(this).addClass('color2');
-  })
-
   $('.account').click(function() {
     $('.account-settings').toggleClass('d-none');
+    $(".account-settings").siblings().toggleClass("inactiveLink")
   })
 });

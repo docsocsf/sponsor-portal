@@ -1,18 +1,22 @@
 const fs = require('fs')
 
+var check = (req,res, callback) => {
+  if(req.session.login){
+    if(req.session.type == 'sponsor'){
+      callback() 
+    }else if(req.session.type == 'member'){
+      res.redirect('/member') 
+    }
+  }else{
+    res.redirect('/') 
+  }
+}
+
 exports.setup = (app, db) => {
   
   //sponsor PAGE
   app.get('/sponsor', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'sponsor'){
-        next() 
-      }else if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }
-    }else{
-      res.redirect('/') 
-    }
+    check(req,res,next)
   }, (req,res) => {
     db.Sponsor.find({username: req.session.user},(err, sponsor) => {
       res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
@@ -21,15 +25,7 @@ exports.setup = (app, db) => {
   
   //sponsor Show CV
   app.post('/sponsor-show-cv/:path/:name', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }else if(req.session.type == 'sponsor'){
-        next() 
-      }else{
-        res.redirect('/') 
-      }
-    }
+    check(req,res,next)
   },(req,res) => {
     var data = fs.readFileSync(__dirname + '/cvs/' + req.params.path + '/' + req.params.name) 
     res.contentType('application/pdf') 
@@ -38,19 +34,11 @@ exports.setup = (app, db) => {
   
   //Add new Position
   app.post('/add-position', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }else if(req.session.type == 'sponsor'){
-        next() 
-      }else{
-        res.redirect('/') 
-      }
-    }
+    check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return next(err) 
-      if(!sponsor[0].positions.some(position => position.name === req.body.name)){
+      if(req.body.name && !sponsor[0].positions.some(position => position.name === req.body.name)){
         var data = {
           name: req.body.name,
           info: req.body.info,
@@ -62,22 +50,14 @@ exports.setup = (app, db) => {
           res.redirect('/sponsor')
         }) 
       }else{
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Position name already exists"})
+        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Position name is blank or already exists"})
       }
     }) 
   }) 
   
   //Remove Position
   app.post('/remove-position/:name', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }else if(req.session.type == 'sponsor'){
-        next() 
-      }else{
-        res.redirect('/') 
-      }
-    }
+    check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return next(err) 
@@ -88,18 +68,19 @@ exports.setup = (app, db) => {
       }) 
     }) 
   }) 
+
+  app.post('/remove-position/', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
+      if (err) return next(err)
+      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+    }) 
+  }) 
   
   //change-name
   app.post('/change-name', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }else if(req.session.type == 'sponsor'){
-        next() 
-      }else{
-        res.redirect('/') 
-      }
-    }
+    check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return next(err) 
@@ -113,15 +94,7 @@ exports.setup = (app, db) => {
   
   //change Username
   app.post('/change-username', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }else if(req.session.type == 'sponsor'){
-        next() 
-      }else{
-        res.redirect('/') 
-      }
-    }
+    check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return next(err) 
@@ -136,15 +109,7 @@ exports.setup = (app, db) => {
   
   //change Password
   app.post('/change-password', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }else if(req.session.type == 'sponsor'){
-        next() 
-      }else{
-        res.redirect('/') 
-      }
-    }
+    check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return next(err)
@@ -156,76 +121,6 @@ exports.setup = (app, db) => {
         }) 
       }else{
         res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Error while trying to change password. Please try again."})
-      }
-    }) 
-  }) 
-  
-  // ==============PORTAL===================
-  
-  //PORTAL LOGIN PAGE
-  app.get('/portal-login', (req,res) => {
-    res.render('portal-login') 
-  }) 
-  
-  //portal auth
-  app.post('/portal-login', (req,res,next) => {
-    if(req.session.docsoc){
-      res.redirect('/portal') 
-    }else{
-      next() 
-    }
-  }, (req,res) => {
-    var user = req.body.user 
-    var pass = req.body.pass 
-    if(user === 'docsoc' && pass === 'docsoc'){
-      req.session.docsoc = true 
-      res.redirect('/portal') 
-    }else{
-      res.redirect('/') 
-    }
-  })
-  
-  //PORTAL PAGE
-  app.get('/portal', (req,res,next) => {
-    if(req.session.docsoc){
-      next() 
-    }else{
-      res.redirect('/portal-login') 
-    }
-  }, (req,res) => {
-    db.Sponsor.find((err, s) => {
-      res.render('portal', {sponsors: s}) 
-    })
-  }) 
-  
-  //Add new sponsor
-  app.post('/new-sponsor', (req,res) => {
-    //make sponsor
-    var sponsor = new db.Sponsor({
-      username: req.body.user,
-      name: req.body.name,
-      password: req.body.pass,
-      rank: req.body.rank,
-      posts: [],
-      positions: []
-    }) 
-    //save sponsor
-    sponsor.save((err, user) => {
-      if (err) {
-        return next(err)
-      } else {
-        res.redirect('/portal') 
-      }
-    }) 
-  }) 
-  
-  //Remove db.Sponsor
-  app.post('/remove-sponsor/:user', (req,res) => {
-    db.Sponsor.remove({username: req.params.user} , (err) => {
-      if (err) {
-        return next(err)
-      } else {
-        res.redirect('/portal') 
       }
     }) 
   }) 

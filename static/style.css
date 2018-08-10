@@ -16,6 +16,11 @@ input[type=radio] {
   border-radius: 5px;
 }
 
+.inactiveLink {
+  pointer-events: none;
+  cursor: default;
+}
+
 /* === LOGIN === */
 
 .login{

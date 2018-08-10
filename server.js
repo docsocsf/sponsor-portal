@@ -19,6 +19,11 @@ member.setup(app, db)
 const sponsor = require('./sponsor.js')
 sponsor.setup(app, db)
 
+//===========================PORTAL=========================
+  
+const portal = require('./portal.js')
+portal.setup(app, db)
+
 //============================OTHER=========================
 
 //LOGOUT

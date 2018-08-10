@@ -2,14 +2,16 @@ include ./layout.pug
 .sponsor
   nav.header.navbar
     .container-fluid
-      h1.col-10 Hello there, #{name}
-      .col-1
+      h1.col-8 Hello there, #{name}
+      .col-2
         button.btn-primary.btn-lg.account Account
-      form.col-1(method="post" action="/logout")
-        button.btn-primary.btn-lg(type='submit') Logout        
+      .col-2
+        form(method="post" action="/logout")
+          button.btn-primary.btn-lg(type='submit') Logout        
   if error
     .alert.alert-danger(role="alert") 
-      strong oh snap! #{error}
+        strong oh snap! 
+        | #{error}
   .container.add-position.bg
       form(method="post" action="/add-position")
         br
@@ -31,7 +33,7 @@ include ./layout.pug
           .row.top-margin
             h2.col-4 Name: #{position.name}
             br
-            h3.col-7 Info: #{position.info}
+            h3.col-6 Info: #{position.info}
             br
             form.col-1(action="/remove-position/" + position.name method="post")
               button.btn.btn-outline-light(type='submit')
@@ -43,8 +45,8 @@ include ./layout.pug
                 .row
                   .cv.container
                     .row
-                      .col-5= user.FirstName + ' ' + user.Surname
-                      .col-6= user.email
+                      .col-lg-5.col-sm-11 Name: #{user.FirstName + ' ' + user.Surname}
+                      .col-lg-6.col-sm-11 Email: #{user.email}
                       .col-1.full-width 
                         form(action="/sponsor-show-cv/" + user.username + "/" + user.cv method="post")
                           button.btn.btn-outline-light.full-width(type='submit')
@@ -56,31 +58,34 @@ include ./layout.pug
       form(method="post" action="/change-name")
         label.col-5(for="name") 
           h2 Name: 
-        input.col-6(value=name, type="text", placeholder=name, name="name")
-        button.col-1.btn.btn-outline-light(type='submit')
+        input.col-5(value=name, type="text", placeholder=name, name="name")
+        button.col-2.btn.btn-outline-light(type='submit')
           span.octicon.octicon-check
-    .username
-      form(method="post" action="/change-username")
-        label.col-5(for="username") 
-          h2 Username: 
-        input.col-6(value=username, type="text", placeholder=username, name="username")
-        button.col-1.btn.btn-outline-light(type='submit')
-          span.octicon.octicon-check
+    //- .username
+    //-   form(method="post" action="/change-username")
+    //-     label.col-5(for="username") 
+    //-       h2 Username: 
+    //-     input.col-6(value=username, type="text", placeholder=username, name="username")
+    //-     button.col-1.btn.btn-outline-light(type='submit')
+    //-       span.octicon.octicon-check
     .pass
       form(method="post" action="/change-password")
         .container
           label
             h2 Password: 
-          .row
-            label.col-5(for="pass1") Old Password:
-            input.col-6(type="password", name="oldpass")  
-          .row
-            label.col-5(for="pass1") New Password:
-            input.col-6(type="password", name="pass1")
-          .row
-            label.col-5(for="pass1") Retype new Password:
-            input.col-6(type="password", name="pass2")
-          button.col-1.btn.btn-outline-light(type='submit')
+          .row.mr-md-auto.container-fluid
+            label.col-lg-5.col-sm-12(for="pass1") Old Password:
+            input.col-lg-7.col-sm-12(type="password", name="oldpass") 
+          br 
+          .row.mr-md-auto.container-fluid
+            label.col-lg-5.col-sm-12(for="pass1") New Password:
+            input.col-lg-7.col-sm-12(type="password", name="pass1")
+          br
+          .row.mr-md-auto.container-fluid
+            label.col-lg-5.col-sm-12(for="pass1") Retype new Password:
+            input.col-lg-7.col-sm-12(type="password", name="pass2")
+          br
+          button.col-lg-2.col-sm-5.btn.btn-outline-light(type='submit')
             span.octicon.octicon-check
     br
     button.btn-primary.btn-lg.account.col-3 Close

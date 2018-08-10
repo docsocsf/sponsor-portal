@@ -30,6 +30,7 @@ exports.setup = (app, db) => {
         s = {
           name: sponsor.name,
           username: sponsor.username,
+          rank: sponsor.rank,
           positions: []
         }
         sponsor.positions.forEach(position => {
