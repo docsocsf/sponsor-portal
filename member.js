@@ -161,7 +161,7 @@ exports.setup = (app, db) => {
       Surname: req.session.data.Surname,
       email: req.session.data.Email,
       username: req.session.data.Login,
-      cv: req.body.filename + ".pdf"
+      cv: req.body.filename
     }
 
     db.Sponsor.find({username: sponsor}, (err,result) => {

@@ -70,13 +70,13 @@ include ./layout.pug
                     .color2.col-lg-12.border-radius.cvs
                       .row
                         .col-3
-                          div=pos.name
+                          div Name: #{pos.name}
                         .col-4
-                          div=pos.info
+                          div Info: #{pos.info}
                         if pos.cv != undefined
                           .col-5.row
                             .col-8
-                              div=pos.cv
+                              div Your sent CV: #{pos.cv.slice(0, -4)}
                             .col-4
                               form(action="/member/remove-sponsor/" + s.username + "/" + pos.name method="post")
                                 button.btn.btn-outline-light.full-width(type='submit')
@@ -84,10 +84,10 @@ include ./layout.pug
                         else
                           form.col-5.row(action="/member/add-sponsor/" + s.username + "/" + pos.name method="post")
                             .col-8
-                              input(list="cvs" name="filename")
-                              datalist(id="cvs")
+                              label(for="filename") Your CV to send:&nbsp;
+                              select(name="filename")
                                 each file in files
-                                  option(value=file.slice(0, -4) name=file)
+                                  option(value=file) #{file.slice(0, -4)}
                             .col-4
                               button.btn.btn-outline-light(type='submit')
                                 span.octicon.octicon-check
