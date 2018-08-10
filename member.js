@@ -25,27 +25,30 @@ exports.setup = (app, db) => {
   //render member
   var renderMember = (req,res,err) => {
     db.Sponsor.find((error, sponsors) => {
-      rows = []
+      ss = []
       sponsors.forEach(sponsor => {
+        s = {
+          name: sponsor.name,
+          username: sponsor.username,
+          positions: []
+        }
         sponsor.positions.forEach(position => {
-          var row = {
-            sponsor: sponsor.name,
-            sponsorUsername: sponsor.username,
-            position: position.name,
+          var pos = {
+            name: position.name,
             info: position.info,
-            cv: 5
-          } 
+          }
           var maybeuser = position.users.filter(user => user.username === req.session.data.Login) 
           if(maybeuser.length > 0){
             var user = maybeuser[0] 
-            row.cv = req.session.files.indexOf(user.cv) 
+            pos.cv = user.cv
           }
-          rows.push(row) 
-        }) 
+          s.positions.push(pos) 
+        })
+        ss.push(s);
       })
       var data = {
         name: req.session.data.FirstName, 
-        rows: rows,
+        sponsors: ss,
         files: req.session.files, 
         error:err
       }
@@ -54,7 +57,7 @@ exports.setup = (app, db) => {
   }
 
   //upload CV
-  app.post('/upload-cv', (req,res,next) => {
+  app.post('/member/upload-cv', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
@@ -81,7 +84,7 @@ exports.setup = (app, db) => {
   }) 
 
   //Show CV
-  app.post('/member-show-cv/:name', (req,res,next) => {
+  app.post('/member/show-cv/:name', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name) 
@@ -90,7 +93,7 @@ exports.setup = (app, db) => {
   }) 
 
   //Rename CV
-  app.post('/rename-cv/:currname', (req,res,next) => {
+  app.post('/member/rename-cv/:currname', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     var path = __dirname + '/cvs/' + req.session.data.Login 
@@ -125,7 +128,7 @@ exports.setup = (app, db) => {
   }) 
 
   //Delete CV
-  app.post('/remove-cv/:name', (req,res,next) => {
+  app.post('/member/remove-cv/:name', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     //delete file
@@ -147,44 +150,50 @@ exports.setup = (app, db) => {
 
 
   //Send CV
-  app.post('/send-cv', (req,res,next) => {
+  app.post('/member/add-sponsor/:sponsor/:pos', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
+    var sponsor = req.params.sponsor
+    var position = req.params.pos
+
     var data = {
       FirstName: req.session.data.FirstName,
       Surname: req.session.data.Surname,
       email: req.session.data.Email,
-      username: req.session.data.Login
+      username: req.session.data.Login,
+      cv: req.body.filename + ".pdf"
     }
-    var cvs = [] 
-    //manipulating form data
-    for(var label in req.body){
-      var entry = label.split('-',3)
-      var cv = {
-        sponsor: entry[0],
-        position: entry[1],
-        file: entry[2]
-      }
-      cvs.push(cv) 
-    }
-    db.Sponsor.find((err, sponsors) => {
-      sponsors.forEach((sponsor) => {
-        sponsor.positions.forEach(position => {
-          //remove myself
-          position.users = position.users.filter(i => i.username !== req.session.data.Login) 
-          //if cv chosen, add user data to position
-          cvs.forEach(cv => {
-            if(cv.file !== 'undefined' && cv.sponsor === sponsor.username && cv.position === position.name){
-              data.cv = cv.file 
-              position.users.push(data) 
-            }
-          })
-        }) 
-        sponsor.save((err, user) => {
-          if (err) return next(err)
-        })  
+
+    db.Sponsor.find({username: sponsor}, (err,result) => {
+      result[0].positions.forEach(pos => {
+        if(pos.name == position){
+          pos.users.push(data)
+        }
+      })
+      result[0].save((err, user) => {
+        if (err) return next(err)
       }) 
-    }) 
+    })
+    res.redirect('/member') 
+  }) 
+
+  //Remove CV
+  app.post('/member/remove-sponsor/:sponsor/:pos', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    var sponsor = req.params.sponsor
+    var position = req.params.pos
+
+    db.Sponsor.find({username: sponsor}, (err,result) => {
+      result[0].positions.forEach(pos => {
+        if(pos.name == position){
+          pos.users = pos.users.filter(user => user.username != req.session.data.Login)
+        }
+      })
+      result[0].save((err, user) => {
+        if (err) return next(err)
+      }) 
+    })
     res.redirect('/member') 
   }) 
 }

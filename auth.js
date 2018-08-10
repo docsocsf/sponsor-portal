@@ -33,6 +33,7 @@ var options = {
 }
 
 exports.authUser = (user, pass, session, callback) => {
+  //for debugging
   console.log('User ' + user + ' trying to login...') 
   //KERBEROS AUTHENTICATION
   console.log('starting Kerberos Authentication...') 

@@ -22,18 +22,18 @@ include ./layout.pug
             .padding
               br
               br
-            form.rename-row-padding.rename-row.row.d-none(action="/rename-cv/"+file  method="post")
+            form.rename-row-padding.rename-row.row.d-none(action="/member/rename-cv/"+file  method="post")
               input.col-10(type="text", name="pdfname")
               button.col-2.btn.btn-outline-light(type='submit')
                 span.octicon.octicon-check
             .row.bottom-allign
-              form.col-4(action="/member-show-cv/"+file method="post")
+              form.col-4(action="/member/show-cv/"+file method="post")
                 button.btn.btn-outline-light.full-width(type='submit')
                   span.octicon.octicon-eye
               .col-4
                 button.rename.btn.btn-outline-light.full-width
                   span.octicon.octicon-pencil
-              form.col-4(action="/remove-cv/" + file method="post")
+              form.col-4(action="/member/remove-cv/" + file method="post")
                 button.btn.btn-outline-light.full-width(type='submit')
                   span.octicon.octicon-trashcan
       if(files.length < 4)
@@ -41,7 +41,7 @@ include ./layout.pug
           .card-body.cv
             .row
               h3.col Upload CV:
-            form(method="post" action="/upload-cv" encType="multipart/form-data")
+            form(method="post" action="/member/upload-cv" encType="multipart/form-data")
               .row.name-row-padding
                 label.col-4(for="pdfname" value="CV_" + 1) Name:
                 input.col-8(type="text", name="pdfname")
@@ -55,38 +55,39 @@ include ./layout.pug
     .row
       h1.col Send your CVs:
     br
-    .row
-      .send-cvs.container-fluid
+    each s in sponsors
+      .container-fluid
         .row
-          .col.color1.table-heading.head(style="border-top-left-radius: 5px") Sponsors
-          .col.color1.table-heading.head Position
-          .col.color1.table-heading.head Info
-          for i in [0,1,2,3,4]
-            if files[i] != undefined
-              .col.color.table-heading.head CV: #{files[i].slice(0, -4)} 
-          .col.color.table-heading.head(style="border-top-right-radius: 5px") none
-          if(files.length % 2 === 0)
-            .color
-        form(method="post" action="/send-cv")
-          for r in rows
-            fieldset
-            .row.send-row
-              .col.color1.table-heading
-                .align= r.sponsor
-              .col.color1.table-heading
-                .align= r.position
-              .col.color1.table-heading
-                .align= r.info
-              for i in [0,1,2,3,4,5]
-                if files[i] != undefined || i === 5
-                    if(i === r.cv) 
-                      .col.color 
-                        input.radio(type="radio" checked="checked" name=r.sponsorUsername + '-' + r.position + '-' + files[i])
-                    else
-                      .col.color
-                        input.radio(type="radio" name=r.sponsorUsername + '-' + r.position + '-' + files[i])
-              if(files.length % 2 === 0)
-                .color
-          br
-          .row
-            button.col-6.btn.btn-primary.btn-lg.send-cv-button(type='submit') Send CV
+          .cv.col-lg-11.col-sm-12.mr-md-auto.container-fluid
+            .row
+              .col-lg-2.col-sm-11.color2.mr-md-auto.container-fluid.border-radius
+                div=s.name
+              .col-lg-9.col-sm-11.mr-md-auto.container-fluid.border-radius
+                br
+                h1 Positions:
+                each pos in s.positions
+                  .row
+                    .color2.col-lg-12.border-radius.cvs
+                      .row
+                        .col-3
+                          div=pos.name
+                        .col-4
+                          div=pos.info
+                        if pos.cv != undefined
+                          .col-5.row
+                            .col-8
+                              div=pos.cv
+                            .col-4
+                              form(action="/member/remove-sponsor/" + s.username + "/" + pos.name method="post")
+                                button.btn.btn-outline-light.full-width(type='submit')
+                                  span.octicon.octicon-trashcan
+                        else
+                          form.col-5.row(action="/member/add-sponsor/" + s.username + "/" + pos.name method="post")
+                            .col-8
+                              input(list="cvs" name="filename")
+                              datalist(id="cvs")
+                                each file in files
+                                  option(value=file.slice(0, -4) name=file)
+                            .col-4
+                              button.btn.btn-outline-light(type='submit')
+                                span.octicon.octicon-check
