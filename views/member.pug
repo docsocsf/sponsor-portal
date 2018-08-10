@@ -2,8 +2,8 @@ include ./layout.pug
 .member
   nav.header.navbar
     .container-fluid
-      h1.col-11 Hello there, #{name}
-      form.col-1(method="post" action="/logout")
+      h1.col-10 Hello there, #{name}
+      form.col-2(method="post" action="/logout")
         button.btn-primary.btn-lg(type='submit') Logout
   .cvs.container-fluid
     .row
@@ -14,45 +14,46 @@ include ./layout.pug
         strong oh snap! 
         | #{error}
     .row
-      for i in [0,1,2,3,4]
-        .cv.mr-md-auto.container-fluid.card
-          .card-body
-            if files[i] != undefined
-              .card-title
-                h3.col Name: #{files[i].slice(0, -4)}
-              .padding
-                br
-                br
-              form.rename-row-padding.rename-row.row.d-none(action="/rename-cv/" + files[i]  method="post")
-                input.col-10(type="text", name="pdfname")
-                button.col-2.btn.btn-outline-light(type='submit')
-                  span.octicon.octicon-check
-              .row.bottom-allign
-                form.col-4(action="/member-show-cv/" + files[i] method="post")
-                  button.btn.btn-outline-light.full-width(type='submit')
-                    span.octicon.octicon-eye
-                .col-4
-                  button.rename.btn.btn-outline-light.full-width
-                    span.octicon.octicon-pencil
-                form.col-4(action="/remove-cv/" + files[i] method="post")
-                  button.btn.btn-outline-light.full-width(type='submit')
-                    span.octicon.octicon-trashcan
-            else
+      each file in files
+        .col-lg-3.col-sm-8.mr-md-auto.container-fluid
+          .card-body.cv
+            .card-title
+              h3.col Name: #{file.slice(0, -4)}
+            .padding
+              br
+              br
+            form.rename-row-padding.rename-row.row.d-none(action="/rename-cv/"+file  method="post")
+              input.col-10(type="text", name="pdfname")
+              button.col-2.btn.btn-outline-light(type='submit')
+                span.octicon.octicon-check
+            .row.bottom-allign
+              form.col-4(action="/member-show-cv/"+file method="post")
+                button.btn.btn-outline-light.full-width(type='submit')
+                  span.octicon.octicon-eye
+              .col-4
+                button.rename.btn.btn-outline-light.full-width
+                  span.octicon.octicon-pencil
+              form.col-4(action="/remove-cv/" + file method="post")
+                button.btn.btn-outline-light.full-width(type='submit')
+                  span.octicon.octicon-trashcan
+      if(files.length < 4)
+        .col-lg-3.col-sm-8.mr-md-auto.container-fluid
+          .card-body.cv
+            .row
+              h3.col Upload CV:
+            form(method="post" action="/upload-cv" encType="multipart/form-data")
+              .row.name-row-padding
+                label.col-4(for="pdfname" value="CV_" + 1) Name:
+                input.col-8(type="text", name="pdfname")
               .row
-                h3.col Upload CV:
-              form(method="post" action="/upload-cv" encType="multipart/form-data")
-                .row.name-row-padding
-                  label.col-4(for="pdfname" value="CV_" + 1) Name:
-                  input.col-8(type="text", name="pdfname")
-                .row
-                  input.col-9.upload-padding(type="file", name="file")
-                  button.col-2.btn.btn-outline-light.submit(type='submit')
-                    span.octicon.octicon-cloud-upload
+                input.col-9.upload-padding(type="file", name="file")
+                button.col-2.btn.btn-outline-light.submit(type='submit')
+                  span.octicon.octicon-cloud-upload
   br
   br
   .container-fluid
     .row
-      h1.col Send your CVs
+      h1.col Send your CVs:
     br
     .row
       .send-cvs.container-fluid

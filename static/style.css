@@ -85,7 +85,8 @@ input[type=radio] {
 .member .cv {
   background-color: #225590;
   color: white;
-  width: 18%;
+  margin-bottom: 20px;
+  border-radius: 10px;
 }
 
 .member .header, .sponsor .header{
