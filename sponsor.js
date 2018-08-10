@@ -24,7 +24,7 @@ exports.setup = (app, db) => {
   }) 
   
   //sponsor Show CV
-  app.post('/sponsor-show-cv/:path/:name', (req,res,next) => {
+  app.post('/sponsor/sponsor-show-cv/:path/:name', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     var data = fs.readFileSync(__dirname + '/cvs/' + req.params.path + '/' + req.params.name) 
@@ -33,7 +33,7 @@ exports.setup = (app, db) => {
   }) 
   
   //Add new Position
-  app.post('/add-position', (req,res,next) => {
+  app.post('/sponsor/add-position', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
@@ -56,7 +56,7 @@ exports.setup = (app, db) => {
   }) 
   
   //Remove Position
-  app.post('/remove-position/:name', (req,res,next) => {
+  app.post('/sponsor/remove-position/:name', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
@@ -69,7 +69,7 @@ exports.setup = (app, db) => {
     }) 
   }) 
 
-  app.post('/remove-position/', (req,res,next) => {
+  app.post('/sponsor/remove-position/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
@@ -79,7 +79,7 @@ exports.setup = (app, db) => {
   }) 
   
   //change-name
-  app.post('/change-name', (req,res,next) => {
+  app.post('/sponsor/change-name', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
@@ -93,7 +93,7 @@ exports.setup = (app, db) => {
   })
   
   //change Username
-  app.post('/change-username', (req,res,next) => {
+  app.post('/sponsor/change-username', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
@@ -108,7 +108,7 @@ exports.setup = (app, db) => {
   }) 
   
   //change Password
-  app.post('/change-password', (req,res,next) => {
+  app.post('/sponsor/change-password', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {

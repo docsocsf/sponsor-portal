@@ -53,9 +53,9 @@ include ./layout.pug
   br
   .container-fluid
     .row
-      h1.col Send your CVs:
+      h1.col Sponsors:
     br
-    each rank in ['Gold', 'Silver', 'Bronze']
+    each rank in ['Gold', 'Silver']
       .row
         .h2.col #{rank} Sponsors:
       each s in sponsors
@@ -68,30 +68,49 @@ include ./layout.pug
                     div=s.name
                   .col-lg-9.col-sm-11.mr-md-auto.container-fluid.border-radius
                     br
-                    h1 Positions:
+                    .row
+                      h2.col-12 Info:
+                    .row
+                      .color2.col-lg-12.border-radius.cvs 
+                        h3 This is some info
+                        p Email: something@something.com
+                        | phone: 00000000000
+                        | etc....
+                .cv.col-lg-12.col-sm-12.mr-md-auto.container-fluid
+                  .row
+                    h2.col-12 Posts:
+                  .row
+                    .color2.col-lg-12.border-radius.cvs 
+                      h3 This is Post 1
+                      p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris molestie lobortis ligula ac condimentum. Aenean faucibus est nec condimentum tempor. Donec fermentum, augue eget dignissim pharetra, mauris felis dictum ligula, tincidunt sodales est erat vitae tortor. 
+                    .color2.col-lg-12.border-radius.cvs 
+                      h3 This is Post 2
+                      p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris molestie lobortis ligula ac condimentum. Aenean faucibus est nec condimentum tempor. Donec fermentum, augue eget dignissim pharetra, mauris felis dictum ligula, tincidunt sodales est erat vitae tortor. Duis congue pulvinar tellus et feugiat. Nulla fermentum porttitor metus et sagittis. 
+                  .row
+                    h2.col-12 Positions:
+                  .row
                     each pos in s.positions
-                      .row
-                        .color2.col-lg-12.border-radius.cvs
-                          .row
-                            .col-3
-                              div Name: #{pos.name}
-                            .col-4
-                              div Info: #{pos.info}
-                            if pos.cv != undefined
-                              .col-5.row
-                                .col-8
-                                  div Your sent CV: #{pos.cv.slice(0, -4)}
-                                .col-4
-                                  form(action="/member/remove-sponsor/" + s.username + "/" + pos.name method="post")
-                                    button.btn.btn-outline-light.full-width(type='submit')
-                                      span.octicon.octicon-trashcan
-                            else
-                              form.col-5.row(action="/member/add-sponsor/" + s.username + "/" + pos.name method="post")
-                                .col-8
-                                  label(for="filename") Your CV to send:&nbsp;
-                                  select(name="filename")
-                                    each file in files
-                                      option(value=file) #{file.slice(0, -4)}
-                                .col-4
-                                  button.btn.btn-outline-light(type='submit')
-                                    span.octicon.octicon-check
+                      .color2.col-lg-12.border-radius.cvs
+                        .row
+                          .col-3
+                            div Name: #{pos.name}
+                          .col-4
+                            div Info: #{pos.info}
+                          if pos.cv != undefined
+                            .col-5.row
+                              .col-8
+                                div Your sent CV: #{pos.cv.slice(0, -4)}
+                              .col-4
+                                form(action="/member/remove-sponsor/" + s.username + "/" + pos.name method="post")
+                                  button.btn.btn-outline-light.full-width(type='submit')
+                                    span.octicon.octicon-trashcan
+                          else
+                            form.col-5.row(action="/member/add-sponsor/" + s.username + "/" + pos.name method="post")
+                              .col-8
+                                label(for="filename") Your CV to send:&nbsp;
+                                select(name="filename")
+                                  each file in files
+                                    option(value=file) #{file.slice(0, -4)}
+                              .col-4
+                                button.btn.btn-outline-light(type='submit')
+                                  span.octicon.octicon-check
