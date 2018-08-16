@@ -1,29 +1,28 @@
-const auth = require('./auth.js')
+const auth = require('./auth/auth.js')
+
+var check = (req,res, callback) => {
+  if(req.session.login){
+    if(req.session.type == 'sponsor'){
+      res.redirect('/sponsor') 
+    }else if(req.session.type == 'member'){
+      res.redirect('/member') 
+    }
+  }else{
+    callback()
+  }
+}
 
 exports.setup = (app, db) => {
+
   app.get('/',  (req,res,next) => {
-    if(req.session.login){
-      (req.session.type == 'sponsor') ? 
-      res.redirect('/sponsor') : 
-      res.redirect('/member') 
-    }else{
-      next() 
-    }
-  },(req,res) => {
+    check(req,res,next)
+  }, (req,res) => {
     res.render('login' , {member: true}) 
   }) 
   
   //MEMBER AUTH
   app.post('/member-login', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'sponsor'){
-        res.redirect('/sponsor') 
-      }else if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }
-    }else{
-      next() 
-    }
+    check(req,res,next)
   }, (req,res) => {
     var user = req.body.user 
     var pass = req.body.pass 
@@ -34,21 +33,18 @@ exports.setup = (app, db) => {
     })
   }) 
   
-  app.get('/member-login', (req,res) => {
+  app.get('/member-login',(req,res,next) => {
+    check(req,res,next)
+  }, (req,res) => {
     res.redirect('/') 
   })
   
+
+
+  
   //SPONSOR AUTH
-  app.post('/sponsor-login', (req,res,next) => {
-    if(req.session.login){
-      if(req.session.type == 'sponsor'){
-        res.redirect('/sponsor') 
-      }else if(req.session.type == 'member'){
-        res.redirect('/member') 
-      }
-    }else{
-      next() 
-    }
+  app.post('/sponsor-login',(req,res,next) => {
+    check(req,res,next)
   }, (req,res) => {
     var user = req.body.user 
     var pass = req.body.pass 
@@ -59,7 +55,9 @@ exports.setup = (app, db) => {
     })
   }) 
   
-  app.get('/sponsor-login', (req,res) => {
+  app.get('/sponsor-login', (req,res,next) => {
+    check(req,res,next)
+  }, (req,res) => {
     res.redirect('/') 
   })
 }

@@ -16,17 +16,31 @@ var SponsorSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  name: {
-    type: String
-  },
   password: {
     type: String,
     required: true,
   },
-  rank: {
-    type: String
+  info: {
+    name: {
+      type: String
+    },
+    email: {
+      type: String
+    },
+    rank: {
+      type: String
+    },
+    bespoke: {
+      type: Boolean
+    },
+    description: {
+      type: String
+    },
+    picture: {
+      type: String
+    },
   },
-  posts: [{
+  news: [{
     date: {
       type: String
     },
@@ -35,20 +49,29 @@ var SponsorSchema = new mongoose.Schema({
     },
     text: {
       type: String
+    },
+    link: {
+      type: String
     }
   }],
   positions: [{
     name: {
       type: String
     },
-    info: {
+    description: {
+      type: String
+    },
+    requirements: {
+      type: String
+    },
+    link: {
       type: String
     },
     users: [{
-      FirstName: {
+      firstname: {
         type: String
       },
-      Surname: {
+      surname: {
         type: String
       },
       email: {
@@ -57,9 +80,11 @@ var SponsorSchema = new mongoose.Schema({
       username: {
         type: String
       },
-      cv: {
-        type: String
-      }
+      documents: [{
+        name: {
+          type: String
+        }
+      }]
     }]
   }]
 }) 

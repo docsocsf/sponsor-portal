@@ -1,132 +1,74 @@
 include ./layout.pug
 .member
-  nav.header.navbar
+  nav.header.head
     .container-fluid
-      h1.col-10 Hello there, #{name}
-      form.col-2(method="post" action="/logout")
-        button.btn-primary.btn-lg(type='submit') Logout
-  .cvs.container-fluid
-    .row
-      h1.col Your CVs:
-    br
-    if error
-      .alert.alert-danger(role="alert") 
-        strong oh snap! 
-        | #{error}
-    .row
-      each file in files
-        .col-lg-3.col-sm-8.mr-md-auto.container-fluid
-          .card-body.cv
-            .card-title
-              h3.col Name: #{file.slice(0, -4)}
-            .padding
-              br
-              br
-            form.rename-row-padding.rename-row.row.d-none(action="/member/rename-cv/"+file  method="post")
-              input.col-10(type="text", name="pdfname")
-              button.col-2.btn.btn-outline-light(type='submit')
-                span.octicon.octicon-check
-            .row.bottom-allign
-              form.col-4(action="/member/show-cv/"+file method="post")
-                button.btn.btn-outline-light.full-width(type='submit')
-                  span.octicon.octicon-eye
-              .col-4
-                button.rename.btn.btn-outline-light.full-width
-                  span.octicon.octicon-pencil
-              form.col-4(action="/member/remove-cv/" + file method="post")
-                button.btn.btn-outline-light.full-width(type='submit')
-                  span.octicon.octicon-trashcan
-      if(files.length < 4)
-        .col-lg-3.col-sm-8.mr-md-auto.container-fluid
-          .card-body.cv
-            .row
-              h3.col Upload CV:
-            form(method="post" action="/member/upload-cv" encType="multipart/form-data")
-              .row.name-row-padding
-                label.col-4(for="pdfname" value="CV_" + 1) Name:
-                input.col-8(type="text", name="pdfname")
-              .row
-                input.col-9.upload-padding(type="file", name="file")
-                button.col-2.btn.btn-outline-light.submit(type='submit')
-                  span.octicon.octicon-cloud-upload
-  br
-  br
-  .container-fluid
-    .row
-      h1.col Sponsors:
-    br
-    each rank in ['Gold', 'Silver']
-      .row
-        .h2.col #{rank} Sponsors:
-      each s in sponsors
-        if(s.rank === rank)
-          .container-fluid
-            .row
-              .cv.col-lg-11.col-sm-12.mr-md-auto.container-fluid
+      .row.align-items-center
+        .col-7.d-inline-block
+          img.d-inline-block(src="static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
+          h1.d-inline-block DoCSoc Sponsor Portal
+        .col-5
+          .row.align-items-center.justify-content-end
+            .col-lg-8.col-sm-12
+              h2.float-right Hello there, #{name}
+            .col-lg-4.col-sm-6
+              form(method="post" action="/logout")
+                button.btn.btn-primary.btn-lg.btn-block(type='submit') Logout
+  ul#myTab.nav.nav-tabs.justify-content-center.header(role='tablist', style="margin-top: -2px;")
+    li.nav-item.col-md-auto.d-inline-block
+      a#gold-tab.nav-link.active(data-toggle='tab', href='#gold', role='tab', aria-controls='gold', aria-selected='true')
+        img.d-inline-block(src="static/assets/images/icons/gold.png" width="28" style="vertical-align: sub;")
+        h2.d-inline-block Gold
+    li.nav-item.col-md-auto.d-inline-block
+      a#silver-tab.nav-link(data-toggle='tab', href='#silver', role='tab', aria-controls='silver', aria-selected='false')
+        img.d-inline-block(src="static/assets/images/icons/silver.png" width="28" style="vertical-align: sub;")
+        h2.d-inline-block Silver
+    li.nav-item.col-md-auto.d-inline-block
+      a#bronze-tab.nav-link(data-toggle='tab', href='#bronze', role='tab', aria-controls='bronze', aria-selected='false')
+        img.d-inline-block(src="static/assets/images/icons/bronze.png" width="28" style="vertical-align: sub;")
+        h2.d-inline-block Bronze
+  .container
+    .row.justify-content-center.mt-5.mb-5
+      .col-lg-8.col-sm-12
+        h3.text-center These companies are generous enough to contribute to the Department of Computing Society, please check out the opportunities they have to offer!
+  #myTabContent.tab-content
+    #gold.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='gold-tab')
+      .container-fluid
+        .row.justify-content-center
+          .col-lg-8.col-sm-11
+            .card
+              .card-body
                 .row
-                  .col-lg-2.col-sm-11.color2.mr-md-auto.container-fluid.border-radius
-                    h1=s.name
-                    //- img(src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Facebook_logo_%28square%29.png/600px-Facebook_logo_%28square%29.png" width="100px")
-                  .col-lg-9.col-sm-11.mr-md-auto.container-fluid.border-radius
-                    br
-                    .row
-                      h2.col-12 Info:
-                    .row
-                      .color2.col-lg-12.border-radius.cvs 
-                        h3 This is some info
-                        p Email: something@something.com
-                        | phone: 00000000000
-                        | etc....
-                        br
-                        a(href="#") more info
-                //- .cv.col-lg-12.col-sm-12.mr-md-auto.container-fluid
-                //-   .row
-                //-     h2.col-12 Posts:
-                //-   .row
-                //-     .cv.col-lg-12.col-sm-12.mr-md-auto.container-fluid
-                //-       .row
-                //-         .col-lg-5.col-sm-11.color2.mr-md-auto.container-fluid.border-radius
-                //-           h3 This is Post 1
-                //-           p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris molestie lobortis ligula ac condimentum. Aenean faucibus est nec condimentum tempor. Donec fermentum, augue eget dignissim pharetra, mauris felis dictum ligula, tincidunt sodales est erat vitae tortor. 
-                //-           a(href="#") more info
-                //-         .col-lg-5.col-sm-11.color2.mr-md-auto.container-fluid.border-radius
-                //-           h3 This is Post 2
-                //-           p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris molestie lobortis ligula ac condimentum. Aenean faucibus est nec condimentum tempor. Donec fermentum, augue eget dignissim pharetra, mauris felis dictum ligula, tincidunt sodales est erat vitae tortor. Duis congue pulvinar tellus et feugiat. Nulla fermentum porttitor metus et sagittis. 
-                //-           a(href="#") more info
-                //-         .col-lg-5.col-sm-11.color2.mr-md-auto.container-fluid.border-radius
-                //-           h3 This is Post 3
-                //-           p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris molestie lobortis ligula ac condimentum. Aenean faucibus est nec condimentum tempor. Donec fermentum, augue eget dignissim pharetra, mauris felis dictum ligula, tincidunt sodales est erat vitae tortor. 
-                //-           a(href="#") more info
-                //-         .col-lg-5.col-sm-11.color2.mr-md-auto.container-fluid.border-radius
-                //-           h3 This is Post 4
-                //-           p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris molestie lobortis ligula ac condimentum. Aenean faucibus est nec condimentum tempor. Donec fermentum, augue eget dignissim pharetra, mauris felis dictum ligula, tincidunt sodales est erat vitae tortor. Duis congue pulvinar tellus et feugiat. Nulla fermentum porttitor metus et sagittis. 
-                //-           a(href="#") more info
-                .cv.col-lg-12.col-sm-12.mr-md-auto.container-fluid
-                  .row
-                    h2.col-12 Positions:
-                  .row
-                    each pos in s.positions
-                      .color2.col-lg-12.border-radius.cvs
-                        .row
-                          .col-3
-                            div Name: #{pos.name}
-                          .col-4
-                            div Info: #{pos.info}
-                          if pos.cv != undefined
-                            .col-5.row
-                              .col-8
-                                div Your sent CV: #{pos.cv.slice(0, -4)}
-                              .col-4
-                                form(action="/member/remove-sponsor/" + s.username + "/" + pos.name method="post")
-                                  button.btn.btn-outline-light.full-width(type='submit')
-                                    span.octicon.octicon-trashcan
-                          else
-                            form.col-5.row(action="/member/add-sponsor/" + s.username + "/" + pos.name method="post")
-                              .col-8
-                                label(for="filename") Your CV to send:&nbsp;
-                                select(name="filename")
-                                  each file in files
-                                    option(value=file) #{file.slice(0, -4)}
-                              .col-4
-                                button.btn.btn-outline-light(type='submit')
-                                  span.octicon.octicon-check
+                  .col-3
+                    img(src="static/assets/images/sponsors/facebook_logo.png" width="150px")
+                  .col-7
+                    h2.card-title sponsor.name
+                    p.card-text sponsor.description
+                    a.card-link(href='#') sponsor.link
+              ul.list-group.list-group-flush
+                li.list-group-item 
+                  h3 News
+                  .card
+                    .card-body
+                      h4.card-title sponsor.news[0].title
+                      p.card-text sponsor.news[0].description
+                      a.card-link(href='#') sponsor.news[0].link
+                li.list-group-item
+                  h3 Positions
+                  .card
+                    .card-body
+                      h4.card-title sponsor.position[0].title
+                      a.card-link(href='#') sponsor.position[0].link
+                      p.card-text sponsor.position[0].description
+                      p.card-text sponsor.position[0].requirements
+                      button.btn Apply 
+                        span.octicon.octicon-trashcan
+                    ul.list-group.list-group-flush
+                      li.list-group-item
+
+    #silver.tab-pane.fade(role='tabpanel', aria-labelledby='silver-tab') 
+      h1 Silver
+    #bronze.tab-pane.fade(role='tabpanel', aria-labelledby='bronze-tab')
+      h1 Bronze
+  br
+  br
+  br

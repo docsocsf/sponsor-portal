@@ -18,7 +18,6 @@ exports.setup = (app, db) => {
   app.get('/member', (req,res,next) => {
     check(req,res,next)
   }, (req,res) => {
-    req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
     renderMember(req,res) 
   }) 
 
@@ -28,20 +27,23 @@ exports.setup = (app, db) => {
       ss = []
       sponsors.forEach(sponsor => {
         s = {
-          name: sponsor.name,
           username: sponsor.username,
-          rank: sponsor.rank,
+          picture: sponsor.picture,
+          info: sponsor.info,
+          news: sponsor.news,
           positions: []
         }
         sponsor.positions.forEach(position => {
           var pos = {
             name: position.name,
-            info: position.info,
+            description: position.description,
+            requirements: position.requirements
           }
           var maybeuser = position.users.filter(user => user.username === req.session.data.Login) 
           if(maybeuser.length > 0){
             var user = maybeuser[0] 
-            pos.cv = user.cv
+            pos.email = user.email
+            pos.documents = user.documents
           }
           s.positions.push(pos) 
         })
@@ -50,7 +52,6 @@ exports.setup = (app, db) => {
       var data = {
         name: req.session.data.FirstName, 
         sponsors: ss,
-        files: req.session.files, 
         error:err
       }
       res.render('member',data) 

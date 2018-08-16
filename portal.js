@@ -41,10 +41,13 @@ exports.setup = (app, db) => {
     //make sponsor
     var sponsor = new db.Sponsor({
       username: req.body.user,
-      name: req.body.name,
       password: req.body.pass,
-      rank: req.body.rank,
-      posts: [],
+      info: {
+        name: req.body.name,
+        rank: req.body.rank,
+        // bespoke
+      },
+      news: [],
       positions: []
     }) 
     //save sponsor

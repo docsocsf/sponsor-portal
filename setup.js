@@ -1,6 +1,8 @@
 const express = require('express') 
 const session = require('express-session') 
 const fileUpload = require('express-fileupload') 
+const fs = require('fs')
+
 
 const app = express() 
 
@@ -24,5 +26,9 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+
+if(!fs.existsSync(__dirname + '/sponsors/')){
+  fs.mkdirSync(__dirname + '/sponsors/') 
+}
 
 exports.app = app;
