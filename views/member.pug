@@ -13,62 +13,196 @@ include ./layout.pug
             .col-lg-4.col-sm-6
               form(method="post" action="/logout")
                 button.btn.btn-primary.btn-lg.btn-block(type='submit') Logout
-  ul#myTab.nav.nav-tabs.justify-content-center.header(role='tablist', style="margin-top: -2px;")
-    li.nav-item.col-md-auto.d-inline-block
-      a#gold-tab.nav-link.active(data-toggle='tab', href='#gold', role='tab', aria-controls='gold', aria-selected='true')
-        img.d-inline-block(src="static/assets/images/icons/gold.png" width="28" style="vertical-align: sub;")
-        h2.d-inline-block Gold
-    li.nav-item.col-md-auto.d-inline-block
-      a#silver-tab.nav-link(data-toggle='tab', href='#silver', role='tab', aria-controls='silver', aria-selected='false')
-        img.d-inline-block(src="static/assets/images/icons/silver.png" width="28" style="vertical-align: sub;")
-        h2.d-inline-block Silver
-    li.nav-item.col-md-auto.d-inline-block
-      a#bronze-tab.nav-link(data-toggle='tab', href='#bronze', role='tab', aria-controls='bronze', aria-selected='false')
-        img.d-inline-block(src="static/assets/images/icons/bronze.png" width="28" style="vertical-align: sub;")
-        h2.d-inline-block Bronze
+      ul#myTab.nav.nav-tabs.justify-content-center.header(role='tablist', style="margin-top: -2px;")
+        li.nav-item.col-md-auto.d-inline-block
+          a#gold-tab.nav-link.active(data-toggle='tab', href='#gold', role='tab', aria-controls='gold', aria-selected='true')
+            img.d-inline-block(src="static/assets/images/icons/gold.png" width="28" style="vertical-align: sub;")
+            h2.d-inline-block Gold
+        li.nav-item.col-md-auto.d-inline-block
+          a#silver-tab.nav-link(data-toggle='tab', href='#silver', role='tab', aria-controls='silver', aria-selected='false')
+            img.d-inline-block(src="static/assets/images/icons/silver.png" width="28" style="vertical-align: sub;")
+            h2.d-inline-block Silver
+        li.nav-item.col-md-auto.d-inline-block
+          a#bronze-tab.nav-link(data-toggle='tab', href='#bronze', role='tab', aria-controls='bronze', aria-selected='false')
+            img.d-inline-block(src="static/assets/images/icons/bronze.png" width="28" style="vertical-align: sub;")
+            h2.d-inline-block Bronze
   .container
     .row.justify-content-center.mt-5.mb-5
       .col-lg-8.col-sm-12
         h3.text-center These companies are generous enough to contribute to the Department of Computing Society, please check out the opportunities they have to offer!
   #myTabContent.tab-content
+
     #gold.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='gold-tab')
       .container-fluid
         .row.justify-content-center
           .col-lg-8.col-sm-11
-            .card
-              .card-body
-                .row
-                  .col-3
-                    img(src="static/assets/images/sponsors/facebook_logo.png" width="150px")
-                  .col-7
-                    h2.card-title sponsor.name
-                    p.card-text sponsor.description
-                    a.card-link(href='#') sponsor.link
-              ul.list-group.list-group-flush
-                li.list-group-item 
-                  h3 News
-                  .card
-                    .card-body
-                      h4.card-title sponsor.news[0].title
-                      p.card-text sponsor.news[0].description
-                      a.card-link(href='#') sponsor.news[0].link
-                li.list-group-item
-                  h3 Positions
-                  .card
-                    .card-body
-                      h4.card-title sponsor.position[0].title
-                      a.card-link(href='#') sponsor.position[0].link
-                      p.card-text sponsor.position[0].description
-                      p.card-text sponsor.position[0].requirements
-                      button.btn Apply 
-                        span.octicon.octicon-trashcan
-                    ul.list-group.list-group-flush
+            each sponsor in sponsors
+              if(sponsor.info.rank === 'Gold')
+                .card
+                  .card-body
+                    .row
+                      .col-3
+                        img(src="static/assets/images/sponsors/" + sponsor.info.picture width="150px")
+                      .col-7
+                        h2.card-title=sponsor.info.name
+                        p.card-text=sponsor.info.description
+                        a.card-link(href=sponsor.info.link) Read More
+                  ul.list-group.list-group-flush
+                    if(sponsor.news.length != 0)
+                      li.list-group-item 
+                        h3 News
+                        each news in sponsor.news
+                          .card
+                            .card-body
+                              h4.card-title=news.title
+                              p.card-text=news.description
+                              a.card-link(href=news.link) Read More
+                    if(sponsor.positions.length != 0)
                       li.list-group-item
+                        h3 Positions
+                        each pos in sponsor.positions
+                          .card
+                            .card-body
+                              h4.card-title=pos.title
+                              p.card-text=pos.description
+                              p.card-text=pos.requirements
+                              p
+                                a.card-link(href=pos.link) Read More
+                            ul.list-group.list-group-flush
+                              if(pos.applied)
 
+                              else
+                                li.list-group-item
+                                  a#apply-dropdown(href="")
+                                    h4 Apply 
+                                      span.octicon.octicon-chevron-down 
+                                  .container.d-none#apply
+                                    br
+                                    form(method="post" action="'/member/apply/' + sponsor.username + '/' + position.name" encType="multipart/form-data")
+                                      .row
+                                        h4 Personal Information:
+                                      .row
+                                        p This is how the Sponsor will contact you
+                                      .row.justify-content-center
+                                        label.col-auto(for="email") Your email:
+                                        input.col-9(type="text", name="email")
+                                      br
+                                      .row
+                                        h4 Documents:
+                                      .row
+                                        p Please add all requirements documented above
+                                      .row
+                                        .col-auto
+                                          .row.justify-content-center
+                                              label.col-auto(for="documentname" + i) Name:
+                                              input.col-auto(type="text", name="documentname" + i)
+                                              input.col-5.upload-padding(type="file", name="document" + i)
+                                          for i in [1,2,3,4,5,6,7,8,9]
+                                            .row.justify-content-center.d-none
+                                              label.col-auto(for="documentname" + i) Name:
+                                              input.col-auto(type="text", name="documentname" + i)
+                                              input.col-5.upload-padding(type="file", name="document" + i)
+                                        .col-auto
+                                          button.col-auto.btn#show-document
+                                            span.octicon.octicon-plus
+                                      br
+                                      .row.float-right
+                                          button.btn(type='submit') Apply 
+                                            span.octicon.octicon-check
+                                    
     #silver.tab-pane.fade(role='tabpanel', aria-labelledby='silver-tab') 
-      h1 Silver
+      .container-fluid
+        .row.justify-content-center
+          .col-lg-8.col-sm-11
+            each sponsor in sponsors
+              if(sponsor.info.rank === 'Silver')
+                .card
+                  .card-body
+                    .row
+                      .col-3
+                        img(src="static/assets/images/sponsors/" + sponsor.info.picture width="150px")
+                      .col-7
+                        h2.card-title=sponsor.info.name
+                        p.card-text=sponsor.info.description
+                        a.card-link(href=sponsor.info.link) Read More
+                  ul.list-group.list-group-flush
+                    if(sponsor.news.length != 0)
+                      li.list-group-item 
+                        h3 News
+                        each news in sponsor.news
+                          .card
+                            .card-body
+                              h4.card-title=news.title
+                              p.card-text=news.description
+                              a.card-link(href=news.link) Read More
+                    if(sponsor.positions.length != 0)
+                      li.list-group-item
+                        h3 Positions
+                        each pos in sponsor.positions
+                          .card
+                            .card-body
+                              h4.card-title=pos.title
+                              p.card-text=pos.description
+                              p.card-text=pos.requirements
+                              p
+                                a.card-link(href=pos.link) Read More
+                            ul.list-group.list-group-flush
+                              if(pos.applied)
+
+                              else
+                                li.list-group-item
+                                  a#apply-dropdown(href="")
+                                    h4 Apply 
+                                      span.octicon.octicon-chevron-down 
+                                  .container.d-none#apply
+                                    br
+                                    form(method="post" action="'/member/apply/' + sponsor.username + '/' + position.name" encType="multipart/form-data")
+                                      .row
+                                        h4 Personal Information:
+                                      .row
+                                        p This is how the Sponsor will contact you
+                                      .row.justify-content-center
+                                        label.col-auto(for="email") Your email:
+                                        input.col-9(type="text", name="email")
+                                      br
+                                      .row
+                                        h4 Documents:
+                                      .row
+                                        p Please add all requirements documented above
+                                      .row
+                                        .col-auto
+                                          .row.justify-content-center
+                                              label.col-auto(for="documentname" + i) Name:
+                                              input.col-auto(type="text", name="documentname" + i)
+                                              input.col-5.upload-padding(type="file", name="document" + i)
+                                          for i in [1,2,3,4,5,6,7,8,9]
+                                            .row.justify-content-center.d-none
+                                              label.col-auto(for="documentname" + i) Name:
+                                              input.col-auto(type="text", name="documentname" + i)
+                                              input.col-5.upload-padding(type="file", name="document" + i)
+                                        .col-auto
+                                          button.col-auto.btn#show-document
+                                            span.octicon.octicon-plus
+                                      br
+                                      .row.float-right
+                                          button.btn(type='submit') Apply 
+                                            span.octicon.octicon-check
+       
     #bronze.tab-pane.fade(role='tabpanel', aria-labelledby='bronze-tab')
-      h1 Bronze
+      .container-fluid
+        .row.justify-content-center
+          .col-lg-8.col-sm-11
+            each sponsor in sponsors
+              if(sponsor.info.rank === 'Bronze')
+                .card
+                  .card-body
+                    .row
+                      .col-3
+                        img(src="static/assets/images/sponsors/" + sponsor.info.picture width="150px")
+                      .col-7
+                        h2.card-title=sponsor.info.name
+                        p.card-text=sponsor.info.description
+                        a.card-link(href=sponsor.info.link) Read More
   br
   br
   br

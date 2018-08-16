@@ -28,7 +28,6 @@ exports.setup = (app, db) => {
       sponsors.forEach(sponsor => {
         s = {
           username: sponsor.username,
-          picture: sponsor.picture,
           info: sponsor.info,
           news: sponsor.news,
           positions: []
@@ -37,11 +36,13 @@ exports.setup = (app, db) => {
           var pos = {
             name: position.name,
             description: position.description,
-            requirements: position.requirements
+            requirements: position.requirements,
+            applied: false
           }
           var maybeuser = position.users.filter(user => user.username === req.session.data.Login) 
           if(maybeuser.length > 0){
-            var user = maybeuser[0] 
+            var user = maybeuser[0]
+            pos.applied = true 
             pos.email = user.email
             pos.documents = user.documents
           }
@@ -51,6 +52,7 @@ exports.setup = (app, db) => {
       })
       var data = {
         name: req.session.data.FirstName, 
+        email: req.session.data.Email,
         sponsors: ss,
         error:err
       }

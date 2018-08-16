@@ -19,7 +19,7 @@ exports.setup = (app, db) => {
     check(req,res,next)
   }, (req,res) => {
     db.Sponsor.find({username: req.session.user},(err, sponsor) => {
-      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+      res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
   

@@ -39,6 +39,9 @@ var SponsorSchema = new mongoose.Schema({
     picture: {
       type: String
     },
+    link: {
+      type: String
+    }
   },
   news: [{
     date: {
