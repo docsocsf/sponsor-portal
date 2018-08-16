@@ -45,6 +45,7 @@ exports.setup = (app, db) => {
       info: {
         name: req.body.name,
         rank: req.body.rank,
+        picture: req.body.user+ '_logo.png'
         // bespoke
       },
       news: [],

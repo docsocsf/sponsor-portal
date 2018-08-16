@@ -50,7 +50,7 @@ body {
   width: 500px;
   height: 500px;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 5px;
   margin: auto;
   margin-top: 10%;
   color: white;
@@ -65,11 +65,11 @@ body {
 }
 
 .login .member-tab {
-  border-top-left-radius: 10px;
+  border-top-left-radius: 5px;
 }
 
 .login .sponsor-tab {
-  border-top-right-radius: 10px;
+  border-top-right-radius: 5px;
 }
 
 .login .login-tab{

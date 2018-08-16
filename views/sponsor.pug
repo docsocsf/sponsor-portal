@@ -14,7 +14,7 @@ include ./layout.pug
               form(method="post" action="/logout")
                 button.btn.btn-primary.btn-lg.btn-block(type='submit') Logout
       ul#myTab.nav.nav-tabs.justify-content-center.header(role='tablist', style="margin-top: -2px;")
-        if(sponsor.info.rank != Bronze)
+        if(sponsor.info.rank != 'Bronze')
           li.nav-item.col-md-auto.d-inline-block
             a#positions-tab.nav-link.active(data-toggle='tab', href='#positions', role='tab', aria-controls='positions', aria-selected='false')
               h2.d-inline-block Positions
@@ -22,11 +22,11 @@ include ./layout.pug
             a#news-tab.nav-link(data-toggle='tab', href='#news', role='tab', aria-controls='news', aria-selected='false')
               h2.d-inline-block News
         li.nav-item.col-md-auto.d-inline-block
-          a#info-tab.nav-link(data-toggle='tab', href='#info', role='tab', aria-controls='info', aria-selected='true')
+          a#info-tab.nav-link(data-toggle='tab', href='#info', role='tab', aria-controls='info', aria-selected='true' class=(sponsor.info.rank === 'Bronze' ? 'active' : ''))
             h2.d-inline-block Info
 
   #myTabContent.tab-content.mt-5.mb-5
-    #positions.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='positions-tab') 
+    #positions.tab-pane.fade.show(role='tabpanel', aria-labelledby='positions-tab' class=(sponsor.info.rank === 'Bronze' ? '' : 'active')) 
       .container-fluid
         .row.justify-content-center
           .col-lg-8.col-sm-11
@@ -69,7 +69,7 @@ include ./layout.pug
                 .row.justify-content-center.mt-2.mb-2
                   button.btn.btn-primary.btn-lg.col-10(type='submit') Add
 
-    #info.tab-pane.fade.show(role='tabpanel', aria-labelledby='info-tab')
+    #info.tab-pane.fade.show(role='tabpanel', aria-labelledby='info-tab' class=(sponsor.info.rank === 'Bronze' ? 'active' : ''))
       .container-fluid
         .row.justify-content-center
           .col-lg-8.col-sm-11
