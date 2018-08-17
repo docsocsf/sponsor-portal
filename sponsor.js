@@ -24,10 +24,10 @@ exports.setup = (app, db) => {
   }) 
   
   //sponsor Show CV
-  app.post('/sponsor/sponsor-show-cv/:path/:name', (req,res,next) => {
+  app.post('/sponsor/sponsor-show-cv/:pos/:user/:name', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var data = fs.readFileSync(__dirname + '/cvs/' + req.params.path + '/' + req.params.name) 
+    var data = fs.readFileSync(__dirname + '/sponsors/positions/' +  req.params.pos + '/' + req.params.user + '/' + req.params.name) 
     res.contentType('application/pdf') 
     res.send(data) 
   }) 
@@ -41,16 +41,18 @@ exports.setup = (app, db) => {
       if(req.body.name && !sponsor[0].positions.some(position => position.name === req.body.name)){
         var data = {
           name: req.body.name,
-          info: req.body.info,
+          description: req.body.description,
+          requirements: req.body.requirements,
+          link: req.body.link,
           users: []
         }
         sponsor[0].positions.push(data) 
         sponsor[0].save((err, user) => {
           if (err) return next(err) 
-          res.redirect('/sponsor')
+          res.render('sponsor', {sponsor: sponsor[0]})
         }) 
       }else{
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Position name is blank or already exists"})
+        res.render('sponsor', {sponsor: sponsor[0], error: "Position name is blank or already exists"})
       }
     }) 
   }) 
@@ -64,7 +66,7 @@ exports.setup = (app, db) => {
       sponsor[0].positions = sponsor[0].positions.filter(position => position.name !== req.params.name) 
       sponsor[0].save((err, user) => {
         if (err) return next(err) 
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+        res.render('sponsor', {sponsor: sponsor[0]})
       }) 
     }) 
   }) 
@@ -74,36 +76,7 @@ exports.setup = (app, db) => {
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return next(err)
-      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
-    }) 
-  }) 
-  
-  //change-name
-  app.post('/sponsor/change-name', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
-      sponsor[0].name = req.body.name
-      sponsor[0].save((err, user) => {
-        if (err) return next(err) 
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
-      }) 
-    }) 
-  })
-  
-  //change Username
-  app.post('/sponsor/change-username', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
-      sponsor[0].username = req.body.username
-      req.session.user = req.body.username
-      sponsor[0].save((err, user) => {
-        if (err) return next(err) 
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
-      }) 
+      res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
   

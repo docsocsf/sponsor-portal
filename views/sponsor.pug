@@ -4,7 +4,7 @@ include ./layout.pug
     .container-fluid
       .row.align-items-center
         .col-7.d-inline-block
-          img.d-inline-block(src="static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
+          img.d-inline-block(src="/static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
           h1.d-inline-block DoCSoc Sponsor Portal
         .col-5
           .row.align-items-center.justify-content-end
@@ -34,20 +34,55 @@ include ./layout.pug
               .card-body
                 h2.card-title Add New Position:
                 form(method="post" action="/sponsor/add-position")
-                .row.mt-2.mb-2
-                  label.col-2(for="name") Name: 
-                  input.col-9(type="text", name="name")
-                .row.mt-2.mb-2
-                  label.col-2(for="description") Description: 
-                  input.col-9(type="text", name="description" style="height:100px")
-                .row.mt-2.mb-2
-                  label.col-2(for="requirements") Requirements: 
-                  input.col-9(type="text", name="requirements" style="height:100px")
-                .row.mt-2.mb-2
-                  label.col-2(for="link") Link: 
-                  input.col-9(type="text", name="link")
-                .row.justify-content-center.mt-2.mb-2
-                  button.btn.btn-primary.btn-lg.col-10(type='submit') Add
+                  .row.mt-2.mb-2
+                    label.col-2(for="name") Name: 
+                    input.col-9(type="text", name="name")
+                  .row.mt-2.mb-2
+                    label.col-2(for="description") Description: 
+                    textarea.col-9(type="text", name="description")
+                  .row.mt-2.mb-2
+                    label.col-2(for="requirements") Requirements: 
+                    textarea.col-9(type="text", name="requirements")
+                  .row.mt-2.mb-2
+                    label.col-2(for="link") Link: 
+                    input.col-9(type="text", name="link")
+                  .row.justify-content-center.mt-2.mb-2
+                    button.btn.btn-primary.btn-lg.col-10(type='submit') Add
+            .card.mt-4
+              .card-body
+                h2.card-title Your Positions:
+              ul.list-group.list-group-flush
+                each position in sponsor.positions
+                  li.list-group-item  
+                    .card
+                      .card-body
+                        h2.card-title Name: #{position.name}
+                        p.card-text Description: #{position.description}
+                        p.card-text Requirements: #{position.requirements}
+                        p Link: 
+                          a.card-link(href=position.link) #{position.link}
+                        form.col-1(action="/sponsor/remove-position/" + position.name method="post")
+                          button.btn(type='submit') Delete 
+                            span.octicon.octicon-trashcan
+                      ul.list-group.list-group-flush
+                        li.list-group-item 
+                          .card
+                            .card-body
+                              h3.card-title DoCSoc Members Applied:
+                            ul.list-group.list-group-flush
+                            each user in position.users
+                              li.list-group-item  
+                                .col-lg-5.col-sm-11 Name: #{user.firstname + ' ' + user.surname}
+                                .col-lg-6.col-sm-11 Email: #{user.email}
+                                .card
+                                  .card-body
+                                    h3.card-title Documents:
+                                  ul.list-group.list-group-flush
+                                  each document in user.documents
+                                    li.list-group-item  
+                                      .col-lg-5.col-sm-11=document.name
+                                      // - Download button
+
 
     #news.tab-pane.fade.show(role='tabpanel', aria-labelledby='news-tab')
       .container-fluid
@@ -57,17 +92,18 @@ include ./layout.pug
               .card-body
                 h2.card-title Add New News Story:
                 form(method="post" action="/sponsor/add-position")
-                .row.mt-2.mb-2
-                  label.col-2(for="title") Title: 
-                  input.col-9(type="text", name="title")
-                .row.mt-2.mb-2
-                  label.col-2(for="article") Article: 
-                  input.col-9(type="text", name="article" style="height:100px")
-                .row.mt-2.mb-2
-                  label.col-2(for="link") Link: 
-                  input.col-9(type="text", name="link")
-                .row.justify-content-center.mt-2.mb-2
-                  button.btn.btn-primary.btn-lg.col-10(type='submit') Add
+                  .row.mt-2.mb-2
+                    label.col-2(for="title") Title: 
+                    input.col-9(type="text", name="title")
+                  .row.mt-2.mb-2
+                    label.col-2(for="article") Article: 
+                    textarea.col-9(type="text", name="article")
+                  .row.mt-2.mb-2
+                    label.col-2(for="link") Link: 
+                    input.col-9(type="text", name="link")
+                  .row.justify-content-center.mt-2.mb-2
+                    button.btn.btn-primary.btn-lg.col-10(type='submit') Add
+                
 
     #info.tab-pane.fade.show(role='tabpanel', aria-labelledby='info-tab' class=(sponsor.info.rank === 'Bronze' ? 'active' : ''))
       .container-fluid
@@ -77,19 +113,19 @@ include ./layout.pug
               .card-body
                 h2.card-title Edit Your Info:
                 form(method="post" action="/sponsor/add-position")
-                .row.mt-2.mb-2
-                  label.col-2(for="name") Name: 
-                  input.col-9(type="text", name="name")
-                .row.mt-2.mb-2
-                  label.col-2(for="email") Email: 
-                  input.col-9(type="text", name="email")
-                .row.mt-2.mb-2
-                  label.col-2(for="description") Description: 
-                  input.col-9(type="text", name="description" style="height:100px")
-                .row.mt-2.mb-2
-                  label.col-2(for="link") Link: 
-                  input.col-9(type="text", name="link")
-                .row.justify-content-center.mt-2.mb-2
-                  button.btn.btn-primary.btn-lg.col-10(type='submit') Save
+                  .row.mt-2.mb-2
+                    label.col-2(for="name") Name: 
+                    input.col-9(type="text", name="name")
+                  .row.mt-2.mb-2
+                    label.col-2(for="email") Email: 
+                    input.col-9(type="text", name="email")
+                  .row.mt-2.mb-2
+                    label.col-2(for="description") Description: 
+                    textarea.col-9(type="text", name="description")
+                  .row.mt-2.mb-2
+                    label.col-2(for="link") Link: 
+                    input.col-9(type="text", name="link")
+                  .row.justify-content-center.mt-2.mb-2
+                    button.btn.btn-primary.btn-lg.col-10(type='submit') Save
 
     

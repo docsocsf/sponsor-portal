@@ -37,6 +37,7 @@ exports.setup = (app, db) => {
             name: position.name,
             description: position.description,
             requirements: position.requirements,
+            link: position.link,
             applied: false
           }
           var maybeuser = position.users.filter(user => user.username === req.session.data.Login) 
@@ -60,144 +61,33 @@ exports.setup = (app, db) => {
     }) 
   }
 
-  //upload CV
-  app.post('/member/upload-cv', (req,res,next) => {
+  app.post('/member/apply/:sponsor/:posname', (req,res,next) => {
     check(req,res,next)
-  },(req,res) => {
-    req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
-    if (!req.files.file) {
-      //check for no file uploaded
-      req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
-      renderMember(req,res, 'No file uploaded') 
-    }else if (!req.body.pdfname){
-      //check for no file name
-      req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
-      renderMember(req,res, 'Invalid File Name') 
-    }else if(req.session.files.includes(req.body.pdfname + '.pdf')){
-      //check for duplicate file name
-      req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
-      renderMember(req,res, 'Duplicate File Name') 
-    }else{
-      let sampleFile = req.files.file 
-      sampleFile.mv(__dirname + '/cvs/' + req.session.data.Login + '/' + req.body.pdfname + '.pdf', function(err) {
-        if (err) return res.status(500).send(err) 
-        req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
-        res.redirect('/member') 
-      }) 
-    }
-  }) 
-
-  //Show CV
-  app.post('/member/show-cv/:name', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    var data = fs.readFileSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name) 
-    res.contentType('application/pdf') 
-    res.send(data) 
-  }) 
-
-  //Rename CV
-  app.post('/member/rename-cv/:currname', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    var path = __dirname + '/cvs/' + req.session.data.Login 
-    if(req.session.files.includes(req.body.pdfname + '.pdf')){
-      //check for duplicate file name
-      req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
-      renderMember(req,res, 'Duplicate File Name') 
-    }else{
-      //rename
-      var oldCV = req.params.currname 
-      var newCV = req.body.pdfname + '.pdf' 
-      fs.renameSync(path  + '/' + oldCV, path  + '/' + newCV) 
-      req.session.files = fs.readdirSync(path) 
-      
-      //remove from sponsor
-      db.Sponsor.find((error, sponsors) => {
-        sponsors.forEach(sponsor => {
-          sponsor.positions.forEach(position => {
-            position.users.forEach(user => {
-              if(user.username === req.session.data.Login && user.cv === oldCV) {
-                user.cv = newCV 
-              }
-            }) 
+  }, (req,res) => {
+    db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
+      if (err) return next(err)
+      data = {
+        firstname: req.session.data.FirstName,
+        surname: req.session.data.Surname,
+        email:req.body.email,
+        username: req.session.data.Login,
+        documents: []
+      }
+      for(let i=0; i<10; i++){
+        if(req.files['document'+i]){
+          //Implement check names
+          req.files['document'+i].mv('directory/' + req.files['document'+i].name, function(err) {
+            if (err) return res.status(500).send(err) 
           }) 
-          sponsor.save((err, user) => {
-            if (err) return next(err)
-          })  
-        }) 
-        res.redirect('/member') 
-      }) 
-    }
-  }) 
-
-  //Delete CV
-  app.post('/member/remove-cv/:name', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    //delete file
-    fs.unlinkSync(__dirname + '/cvs/' + req.session.data.Login + '/' + req.params.name) 
-    req.session.files = fs.readdirSync(__dirname + '/cvs/' + req.session.data.Login) 
-    //remove from sponsors
-    db.Sponsor.find((error, sponsors) => {
-      sponsors.forEach(sponsor => {
-        sponsor.positions.forEach(position => {
-          position.users = position.users.filter(user => (user.username !== req.session.data.Login || (user.username === req.session.data.Login && user.cv !== req.params.name))) 
-        }) 
-        sponsor.save((err, user) => {
-          if (err) return next(err)
-        }) 
-      }) 
-    }) 
-    res.redirect('/member') 
-  }) 
-
-
-  //Send CV
-  app.post('/member/add-sponsor/:sponsor/:pos', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    var sponsor = req.params.sponsor
-    var position = req.params.pos
-
-    var data = {
-      FirstName: req.session.data.FirstName,
-      Surname: req.session.data.Surname,
-      email: req.session.data.Email,
-      username: req.session.data.Login,
-      cv: req.body.filename
-    }
-
-    db.Sponsor.find({username: sponsor}, (err,result) => {
-      result[0].positions.forEach(pos => {
-        if(pos.name == position){
-          pos.users.push(data)
-        }
-      })
-      result[0].save((err, user) => {
-        if (err) return next(err)
-      }) 
+        } 
+      }
+      renderMember(req,res) 
     })
-    res.redirect('/member') 
-  }) 
+  })
 
-  //Remove CV
-  app.post('/member/remove-sponsor/:sponsor/:pos', (req,res,next) => {
+  app.get('/member/apply/:sponsor/:posname', (req,res,next) => {
     check(req,res,next)
-  },(req,res) => {
-    var sponsor = req.params.sponsor
-    var position = req.params.pos
-
-    db.Sponsor.find({username: sponsor}, (err,result) => {
-      result[0].positions.forEach(pos => {
-        if(pos.name == position){
-          pos.users = pos.users.filter(user => user.username != req.session.data.Login)
-        }
-      })
-      result[0].save((err, user) => {
-        if (err) return next(err)
-      }) 
-    })
-    res.redirect('/member') 
-  }) 
+  }, (req,res) => { 
+    res.redirect('/')
+  })
 }

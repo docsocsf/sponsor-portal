@@ -43,6 +43,9 @@ body {
   padding-top: 20px;
 }
 
+textarea {
+  resize: none;
+}
 /* === LOGIN === */
 
 .login{

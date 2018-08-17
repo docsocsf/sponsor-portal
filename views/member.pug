@@ -4,7 +4,7 @@ include ./layout.pug
     .container-fluid
       .row.align-items-center
         .col-7.d-inline-block
-          img.d-inline-block(src="static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
+          img.d-inline-block(src="/static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
           h1.d-inline-block DoCSoc Sponsor Portal
         .col-5
           .row.align-items-center.justify-content-end
@@ -16,22 +16,21 @@ include ./layout.pug
       ul#myTab.nav.nav-tabs.justify-content-center.header(role='tablist', style="margin-top: -2px;")
         li.nav-item.col-md-auto.d-inline-block
           a#gold-tab.nav-link.active(data-toggle='tab', href='#gold', role='tab', aria-controls='gold', aria-selected='true')
-            img.d-inline-block(src="static/assets/images/icons/gold.png" width="28" style="vertical-align: sub;")
+            img.d-inline-block(src="/static/assets/images/icons/gold.png" width="28" style="vertical-align: sub;")
             h2.d-inline-block Gold
         li.nav-item.col-md-auto.d-inline-block
           a#silver-tab.nav-link(data-toggle='tab', href='#silver', role='tab', aria-controls='silver', aria-selected='false')
-            img.d-inline-block(src="static/assets/images/icons/silver.png" width="28" style="vertical-align: sub;")
+            img.d-inline-block(src="/static/assets/images/icons/silver.png" width="28" style="vertical-align: sub;")
             h2.d-inline-block Silver
         li.nav-item.col-md-auto.d-inline-block
           a#bronze-tab.nav-link(data-toggle='tab', href='#bronze', role='tab', aria-controls='bronze', aria-selected='false')
-            img.d-inline-block(src="static/assets/images/icons/bronze.png" width="28" style="vertical-align: sub;")
+            img.d-inline-block(src="/static/assets/images/icons/bronze.png" width="28" style="vertical-align: sub;")
             h2.d-inline-block Bronze
   .container
     .row.justify-content-center.mt-5.mb-5
       .col-lg-8.col-sm-12
         h3.text-center These companies are generous enough to contribute to the Department of Computing Society, please check out the opportunities they have to offer!
   #myTabContent.tab-content
-
     #gold.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='gold-tab')
       .container-fluid
         .row.justify-content-center
@@ -42,7 +41,7 @@ include ./layout.pug
                   .card-body
                     .row
                       .col-3
-                        img(src="static/assets/images/sponsors/" + sponsor.info.picture width="150px")
+                        img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="150px")
                       .col-7
                         h2.card-title=sponsor.info.name
                         p.card-text=sponsor.info.description
@@ -55,7 +54,7 @@ include ./layout.pug
                           .card
                             .card-body
                               h4.card-title=news.title
-                              p.card-text=news.description
+                              p.card-text #{news.text}
                               a.card-link(href=news.link) Read More
                     if(sponsor.positions.length != 0)
                       li.list-group-item
@@ -63,14 +62,14 @@ include ./layout.pug
                         each pos in sponsor.positions
                           .card
                             .card-body
-                              h4.card-title=pos.title
-                              p.card-text=pos.description
-                              p.card-text=pos.requirements
+                              h4.card-title=pos.name
+                              p.card-text Description: #{pos.description}
+                              p.card-text Requirements: #{pos.requirements}
                               p
                                 a.card-link(href=pos.link) Read More
                             ul.list-group.list-group-flush
                               if(pos.applied)
-
+                                // - Implement applied
                               else
                                 li.list-group-item
                                   a#apply-dropdown(href="")
@@ -78,7 +77,7 @@ include ./layout.pug
                                       span.octicon.octicon-chevron-down 
                                   .container.d-none#apply
                                     br
-                                    form(method="post" action="'/member/apply/' + sponsor.username + '/' + position.name" encType="multipart/form-data")
+                                    form(method="post" action='/member/apply/' + sponsor.username + '/' + pos.name encType="multipart/form-data")
                                       .row
                                         h4 Personal Information:
                                       .row
@@ -94,9 +93,9 @@ include ./layout.pug
                                       .row
                                         .col-auto
                                           .row.justify-content-center
-                                              label.col-auto(for="documentname" + i) Name:
-                                              input.col-auto(type="text", name="documentname" + i)
-                                              input.col-5.upload-padding(type="file", name="document" + i)
+                                              label.col-auto(for="documentname0") Name:
+                                              input.col-auto(type="text", name="documentname0")
+                                              input.col-5.upload-padding(type="file", name="document0")
                                           for i in [1,2,3,4,5,6,7,8,9]
                                             .row.justify-content-center.d-none
                                               label.col-auto(for="documentname" + i) Name:
@@ -120,7 +119,7 @@ include ./layout.pug
                   .card-body
                     .row
                       .col-3
-                        img(src="static/assets/images/sponsors/" + sponsor.info.picture width="150px")
+                        img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="150px")
                       .col-7
                         h2.card-title=sponsor.info.name
                         p.card-text=sponsor.info.description
@@ -141,14 +140,14 @@ include ./layout.pug
                         each pos in sponsor.positions
                           .card
                             .card-body
-                              h4.card-title=pos.title
+                              h4.card-title=pos.name
                               p.card-text=pos.description
                               p.card-text=pos.requirements
                               p
                                 a.card-link(href=pos.link) Read More
                             ul.list-group.list-group-flush
                               if(pos.applied)
-
+                                // - Implement Applied
                               else
                                 li.list-group-item
                                   a#apply-dropdown(href="")
@@ -198,7 +197,7 @@ include ./layout.pug
                   .card-body
                     .row
                       .col-3
-                        img(src="static/assets/images/sponsors/" + sponsor.info.picture width="150px")
+                        img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="150px")
                       .col-7
                         h2.card-title=sponsor.info.name
                         p.card-text=sponsor.info.description
