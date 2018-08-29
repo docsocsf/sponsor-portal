@@ -65,7 +65,8 @@ exports.setup = (app, db) => {
     check(req,res,next)
   }, (req,res) => {
     db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
-      if (err) return next(err)
+      if (err) return
+      var path = './sponsors/'+ req.params.sponsor + '/' + req.params.posname + '/' + req.session.data.Login + '/'
       data = {
         firstname: req.session.data.FirstName,
         surname: req.session.data.Surname,
@@ -73,21 +74,36 @@ exports.setup = (app, db) => {
         username: req.session.data.Login,
         documents: []
       }
+      if(!fs.existsSync(path)){
+        fs.mkdirSync(path) 
+      }
       for(let i=0; i<10; i++){
         if(req.files['document'+i]){
           //Implement check names
-          req.files['document'+i].mv('directory/' + req.files['document'+i].name, function(err) {
+          var ext = req.files['document'+i].name.split('.').pop();
+          req.files['document'+i].mv(path + req.body['documentname'+i] + '.' + ext, function(err) {
             if (err) return res.status(500).send(err) 
           }) 
+          data.documents.push({
+            name: req.body['documentname'+i] + '.' + ext
+          })
         } 
       }
-      renderMember(req,res) 
+      sponsor[0].positions.forEach(position => {
+        if(position.name === req.params.posname){
+          position.users.push(data)
+        }
+      });
+      sponsor[0].save((err, user) => {
+        if (err) return 
+        renderMember(req,res) 
+      }) 
     })
   })
 
   app.get('/member/apply/:sponsor/:posname', (req,res,next) => {
     check(req,res,next)
   }, (req,res) => { 
-    res.redirect('/')
+    renderMember(req,res)
   })
 }

@@ -37,7 +37,7 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
+      if (err) return 
       if(req.body.name && !sponsor[0].positions.some(position => position.name === req.body.name)){
         var data = {
           name: req.body.name,
@@ -46,9 +46,13 @@ exports.setup = (app, db) => {
           link: req.body.link,
           users: []
         }
+        var path = './sponsors/' + req.session.user + '/' +  req.body.name + '/'
+        if(!fs.existsSync(path)){
+          fs.mkdirSync(path) 
+        }
         sponsor[0].positions.push(data) 
         sponsor[0].save((err, user) => {
-          if (err) return next(err) 
+          if (err) return 
           res.render('sponsor', {sponsor: sponsor[0]})
         }) 
       }else{
@@ -62,10 +66,10 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
+      if (err) return   
       sponsor[0].positions = sponsor[0].positions.filter(position => position.name !== req.params.name) 
       sponsor[0].save((err, user) => {
-        if (err) return next(err) 
+        if (err) return   
         res.render('sponsor', {sponsor: sponsor[0]})
       }) 
     }) 
@@ -75,7 +79,7 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err)
+      if (err) return  
       res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
@@ -85,11 +89,11 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err)
+      if (err) return  
       if(sponsor[0].password === req.body.oldpass && req.body.pass1 === req.body.pass2) {
         sponsor[0].password = req.body.pass1
         sponsor[0].save((err, user) => {
-          if (err) return next(err) 
+          if (err) return   
           res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
         }) 
       }else{

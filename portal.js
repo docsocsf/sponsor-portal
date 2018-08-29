@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 exports.setup = (app, db) => {
 
   //PORTAL LOGIN PAGE
@@ -51,10 +53,15 @@ exports.setup = (app, db) => {
       news: [],
       positions: []
     }) 
+    //Make sponsor folder
+    var path = './sponsors/' + req.body.user + '/'
+    if(!fs.existsSync(path)){
+      fs.mkdirSync(path) 
+    }
     //save sponsor
     sponsor.save((err, user) => {
       if (err) {
-        return next(err)
+        return  
       } else {
         res.redirect('/portal') 
       }
@@ -65,7 +72,7 @@ exports.setup = (app, db) => {
   app.post('/remove-sponsor/:user', (req,res) => {
     db.Sponsor.remove({username: req.params.user} , (err) => {
       if (err) {
-        return next(err)
+        return  
       } else {
         res.redirect('/portal') 
       }

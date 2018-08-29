@@ -69,13 +69,16 @@ include ./layout.pug
                                 a.card-link(href=pos.link) Read More
                             ul.list-group.list-group-flush
                               if(pos.applied)
-                                // - Implement applied
+                                li.list-group-item
+                                  a.apply-remove(href="#")
+                                      h4 Remove application 
+                                        span.octicon.octicon-trashcan 
                               else
                                 li.list-group-item
-                                  a#apply-dropdown(href="")
+                                  a.apply-dropdown(href="#")
                                     h4 Apply 
                                       span.octicon.octicon-chevron-down 
-                                  .container.d-none#apply
+                                  .container.d-none.apply
                                     br
                                     form(method="post" action='/member/apply/' + sponsor.username + '/' + pos.name encType="multipart/form-data")
                                       .row
@@ -93,12 +96,12 @@ include ./layout.pug
                                       .row
                                         .col-auto
                                           .row.justify-content-center
-                                              label.col-auto(for="documentname0") Name:
+                                              label.col-auto(for="documentname0") Document Name:
                                               input.col-auto(type="text", name="documentname0")
                                               input.col-5.upload-padding(type="file", name="document0")
                                           for i in [1,2,3,4,5,6,7,8,9]
                                             .row.justify-content-center.d-none
-                                              label.col-auto(for="documentname" + i) Name:
+                                              label.col-auto(for="documentname" + i) Document Name:
                                               input.col-auto(type="text", name="documentname" + i)
                                               input.col-5.upload-padding(type="file", name="document" + i)
                                         .col-auto
@@ -108,6 +111,7 @@ include ./layout.pug
                                       .row.float-right
                                           button.btn(type='submit') Apply 
                                             span.octicon.octicon-check
+                          br
                                     
     #silver.tab-pane.fade(role='tabpanel', aria-labelledby='silver-tab') 
       .container-fluid

@@ -33,9 +33,9 @@ $(function() {
       $(this).addClass('d-none')
   });
 
-  $('#apply-dropdown').click(function(e){
+  $('.apply-dropdown').click(function(e){
     e.preventDefault()
-    $(this).closest('li').find('#apply').toggleClass('d-none')
+    $(this).closest('li').find('.apply').toggleClass('d-none')
   })
 
   $('.account').click(function() {

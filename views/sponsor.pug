@@ -51,38 +51,33 @@ include ./layout.pug
             .card.mt-4
               .card-body
                 h2.card-title Your Positions:
-              ul.list-group.list-group-flush
                 each position in sponsor.positions
-                  li.list-group-item  
-                    .card
-                      .card-body
-                        h2.card-title Name: #{position.name}
-                        p.card-text Description: #{position.description}
-                        p.card-text Requirements: #{position.requirements}
-                        p Link: 
-                          a.card-link(href=position.link) #{position.link}
-                        form.col-1(action="/sponsor/remove-position/" + position.name method="post")
-                          button.btn(type='submit') Delete 
-                            span.octicon.octicon-trashcan
-                      ul.list-group.list-group-flush
-                        li.list-group-item 
+                  .card
+                    .card-body
+                      h2.card-title Name: #{position.name}
+                      p.card-text Description: #{position.description}
+                      p.card-text Requirements: #{position.requirements}
+                      p Link: 
+                        a.card-link(href=position.link) #{position.link}
+                      form.col-1(action="/sponsor/remove-position/" + position.name method="post")
+                        button.btn(type='submit') Delete 
+                          span.octicon.octicon-trashcan
+                    ul.list-group.list-group-flush
+                      li.list-group-item 
+                        h3.card-title DoCSoc Members Applied:
+                        each user in position.users
                           .card
                             .card-body
-                              h3.card-title DoCSoc Members Applied:
+                              h3 Name: #{user.firstname + ' ' + user.surname}
+                              h3 Email: #{user.email}
+                              br
+                              h4 Documents:
                             ul.list-group.list-group-flush
-                            each user in position.users
-                              li.list-group-item  
-                                .col-lg-5.col-sm-11 Name: #{user.firstname + ' ' + user.surname}
-                                .col-lg-6.col-sm-11 Email: #{user.email}
-                                .card
-                                  .card-body
-                                    h3.card-title Documents:
-                                  ul.list-group.list-group-flush
-                                  each document in user.documents
-                                    li.list-group-item  
-                                      .col-lg-5.col-sm-11=document.name
-                                      // - Download button
-
+                              each document in user.documents
+                                li.list-group-item  
+                                  .col-lg-5.col-sm-11=document.name
+                                  // - Download button
+                  br
 
     #news.tab-pane.fade.show(role='tabpanel', aria-labelledby='news-tab')
       .container-fluid
@@ -91,13 +86,13 @@ include ./layout.pug
             .card
               .card-body
                 h2.card-title Add New News Story:
-                form(method="post" action="/sponsor/add-position")
+                form(method="post" action="/sponsor/add-news")
                   .row.mt-2.mb-2
                     label.col-2(for="title") Title: 
                     input.col-9(type="text", name="title")
                   .row.mt-2.mb-2
-                    label.col-2(for="article") Article: 
-                    textarea.col-9(type="text", name="article")
+                    label.col-2(for="text") Article: 
+                    textarea.col-9(type="text", name="text")
                   .row.mt-2.mb-2
                     label.col-2(for="link") Link: 
                     input.col-9(type="text", name="link")
