@@ -1,35 +1,67 @@
 include ./layout.pug
-.login
-  .header.border-radius
-    if member
-      .member-tab.login-tab.active-tab Members
-      .sponsor-tab.login-tab.inactive-tab Sponsors
-    else
-      .member-tab.login-tab.inactive-tab Members
-      .sponsor-tab.login-tab.active-tab Sponsors
-  form(method="post" action="/member-login").member-login.d-none
-    h1 Member Login:
-      if error && member
-        .error #{error}
-      else 
-        br
-      .form-group
-        label(for="user") Username: 
-        input(type="text", name="user")
-      .form-group
-        label(for="pass") Password: 
-        input(type="password", name="pass")
-      button.btn.btn-primary.btn-lg(type='submit') Login
-  form(method="post" action="/sponsor-login").sponsor-login.d-none
-    h1 Sponsor Login:
-      if error && !member
-        .error #{error}
-      else
-        br
-      .form-group
-        label(for="user") Username: 
-        input(type="text", name="user")
-      .form-group
-        label(for="pass") Password: 
-        input(type="password", name="pass")
-      button.btn.btn-primary.btn-lg(type='submit') Login
+.container
+  .row.align-items-center.justify-content-center
+    .col-lg-6.col-sm-10.mt-5.login.logo
+      .row.align-items-start.justify-content-center
+        img.d-inline-block(src="/static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
+        h1.d-inline-block DoCSoc Sponsor Portal
+  .row.align-items-center.justify-content-center
+    .col-lg-6.col-sm-10.mt-5.login
+      .row.align-items-start.justify-content-center
+        if member
+          .col-6.member-tab.login-tab.active-tab.text-center Members
+          .col-6.sponsor-tab.login-tab.inactive-tab.text-center Sponsors
+        else
+          .col-6.member-tab.login-tab.inactive-tab.text-center Members
+          .col-6.sponsor-tab.login-tab.active-tab.text-center Sponsors
+      .row.align-items-start.justify-content-center
+        form(method="post" action="/member-login").member-login.d-none.col
+          .row.mt-3
+            .col
+              h1 Member Login:
+          .row
+            .col
+              if error && member
+                .error #{error}
+              else 
+                br
+          .row
+            .col
+              .row.justify-content-center
+                label(for="user").col-12 
+                  h2 Username: 
+                input(type="text", name="user").col-6.center
+          .row.mt-3
+            .col
+              .row.justify-content-center
+                label(for="pass").col-12 
+                  h2 Password: 
+                input(type="password", name="pass").col-6.center
+          .row.mt-5.mb-5
+            .col
+              button.btn.btn-primary.btn-lg(type='submit') Login
+        form(method="post" action="/sponsor-login").sponsor-login.d-none.col
+          .row.mt-3
+            .col
+              h1 Sponsor Login:
+          .row
+            .col
+              if error && member
+                .error #{error}
+              else 
+                br
+          .row
+            .col
+              .row.justify-content-center
+                label(for="user").col-12 
+                  h2 Username: 
+                input(type="text", name="user").col-6.center
+          .row.mt-3
+            .col
+              .row.justify-content-center
+                label(for="pass").col-12 
+                  h2 Password: 
+                input(type="password", name="pass").col-6.center
+          .row.mt-5.mb-5
+            .col
+              button.btn.btn-primary.btn-lg(type='submit') Login
