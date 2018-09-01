@@ -39,9 +39,6 @@ exports.setup = (app, db) => {
     res.redirect('/') 
   })
   
-
-
-  
   //SPONSOR AUTH
   app.post('/sponsor-login',(req,res,next) => {
     check(req,res,next)

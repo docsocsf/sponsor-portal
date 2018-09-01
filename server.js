@@ -33,7 +33,7 @@ app.post('/logout', (req,res) => {
 }) 
 
 app.get('*', function(req, res){
-  res.redirect('/member') 
+  res.redirect('/login') 
 });
 
 
