@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  deploy:
     docker:
       - image: circleci/node:10.9-browsers
     steps:
@@ -9,6 +9,10 @@ jobs:
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build -t icdocsoc/portal -f docker/Dockerfile .
       - run: docker push icdocsoc/portal
+      - add_ssh_keys:
+          fingerprints:
+            - "0f:92:9a:b8:16:72:b9:d5:88:55:f0:60:68:34:ac:8a"
+      - run: ssh -p 443 -o "StrictHostKeyChecking=no" -vv circleci@portal.docsoc.co.uk "update-portal"
   test:
     docker:
       - image: circleci/node:10.9.0-browsers
@@ -19,10 +23,10 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - build:
+      - deploy:
           requires:
             - test
           filters:
             branches:
-              only: develop
+              only: master
       - test
