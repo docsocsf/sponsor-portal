@@ -2,7 +2,7 @@ const krb5 = require('node-krb5')
 const rp = require('request-promise') 
 const fs = require('fs') 
 
-const authpath = __dirname + '/auth/auth.json' 
+const authpath = __dirname + '/auth.json' 
 
 exports.authSponsor = (user, pass, db, session, callback) => {
   db.Sponsor.find({username: user}, (err,result) => {
@@ -48,9 +48,6 @@ exports.authUser = (user, pass, session, callback) => {
       console.log('Kerberos Authentication success.') 
       console.log('Starting DoCSoc Member Check...') 
       //REQUEST EACTIVITIES if auth file older than 24 hours
-      if(!fs.existsSync(__dirname + '/auth/')){
-        fs.mkdirSync(__dirname + '/auth/') 
-      }
       if (fs.existsSync(authpath)) {
         var stat = fs.statSync(authpath) 
         if (err) {
@@ -82,7 +79,7 @@ exports.authUser = (user, pass, session, callback) => {
 }
 
 //check memeber is docsoc
-checkMember = (session,user, callback) => {
+checkMember = (session, user, callback) => {
   var auth = fs.readFileSync(authpath) 
   var data = JSON.parse(auth).find(el => el.Login === user) 
   if(data) {
@@ -94,14 +91,6 @@ checkMember = (session,user, callback) => {
     session.type = 'member' 
     session.data = data 
     //make folder
-    if(!fs.existsSync(__dirname + '/cvs/')){
-      fs.mkdirSync(__dirname + '/cvs/') 
-    }
-    if(!fs.existsSync(__dirname + '/cvs/' + user)){
-      fs.mkdirSync(__dirname + '/cvs/' + user) 
-    }
-    //add filenames to session
-    session.files = fs.readdirSync(__dirname + '/cvs/' + user) 
     callback(true)
     return
   }else{

@@ -1,13 +1,15 @@
 const express = require('express') 
 const session = require('express-session') 
 const fileUpload = require('express-fileupload') 
+const fs = require('fs')
+
 
 const app = express() 
 
 app.set('view engine', 'pug') 
-app.set('views', __dirname + '/views') 
+app.set('views', './views') 
 
-app.use('/static', express.static(__dirname + '/static')) 
+app.use('/static', express.static('./static')) 
 
 app.use(fileUpload()) 
 
@@ -24,5 +26,13 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
+
+if(!fs.existsSync('./sponsors/')){
+  fs.mkdirSync('./sponsors/') 
+}
+
+if(!fs.existsSync('./temp/')){
+  fs.mkdirSync('./temp/') 
+}
 
 exports.app = app;

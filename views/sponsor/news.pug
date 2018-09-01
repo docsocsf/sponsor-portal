@@ -1,0 +1,19 @@
+#news.tab-pane.fade.show(role='tabpanel', aria-labelledby='news-tab')
+  .container-fluid
+    .row.justify-content-center
+      .col-lg-8.col-sm-11
+        .card
+          .card-body
+            h2.card-title Add New News Post:
+            form(method="post" action="/sponsor/add-news")
+              .row.mt-2.mb-2
+                label.col-2(for="title") Title: 
+                input.col-9(type="text", name="title")
+              .row.mt-2.mb-2
+                label.col-2(for="text") Article: 
+                textarea.col-9(type="text", name="text")
+              .row.mt-2.mb-2
+                label.col-2(for="link") Link: 
+                input.col-9(type="text", name="link")
+              .row.justify-content-center.mt-2.mb-2
+                button.btn.btn-primary.btn-lg.col-10(type='submit') Add

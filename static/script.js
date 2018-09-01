@@ -24,11 +24,19 @@ $(function() {
     }
   });
 
-  $('.rename').click(function(e){
+  $('#show-document').click(function(e){
     e.preventDefault();
-    $(this).parent().parent().siblings('.rename-row').toggleClass('d-none');
-    $(this).parent().parent().siblings('.padding').toggleClass('d-none');
+    let element = $(this).closest('.row').find('.d-none').first()
+    if(element.length) 
+      element.removeClass('d-none')
+    else
+      $(this).addClass('d-none')
   });
+
+  $('.apply-dropdown').click(function(e){
+    e.preventDefault()
+    $(this).closest('ul').find('.apply').first().toggleClass('d-none')
+  })
 
   $('.account').click(function() {
     $('.account-settings').toggleClass('d-none');

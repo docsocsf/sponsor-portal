@@ -1,4 +1,5 @@
-const fs = require('fs')
+const fs = require('fs-extra')
+const zipFolder = require('zip-folder')
 
 var check = (req,res, callback) => {
   if(req.session.login){
@@ -19,17 +20,55 @@ exports.setup = (app, db) => {
     check(req,res,next)
   }, (req,res) => {
     db.Sponsor.find({username: req.session.user},(err, sponsor) => {
-      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+      res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
   
-  //sponsor Show CV
-  app.post('/sponsor/sponsor-show-cv/:path/:name', (req,res,next) => {
+  //Show document
+  app.post('/sponsor/show/:pos/:filename/:document', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var data = fs.readFileSync(__dirname + '/cvs/' + req.params.path + '/' + req.params.name) 
-    res.contentType('application/pdf') 
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename + '/' + req.params.document
+    var data = fs.readFileSync(path) 
     res.send(data) 
+  }) 
+
+  //Download member
+  app.post('/sponsor/download/user/:pos/:filename/', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename
+    var zippath = './temp/' + req.params.filename + '.zip'
+    zipFolder(path, zippath, function(err) {
+      if(err) {
+          console.log('oh no!', err);
+      } else {
+        res.download(zippath, () => {
+          if(fs.existsSync(zippath)){
+            fs.removeSync(zippath) 
+          }
+        })
+      }
+    });
+  }) 
+  
+  //Download Position
+  app.post('/sponsor/download/pos/:pos/', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos
+    var zippath = './temp/' + req.params.pos + '.zip'
+    zipFolder(path, zippath, function(err) {
+      if(err) {
+          console.log('oh no!', err);
+      } else {
+        res.download(zippath, () => {
+          if(fs.existsSync(zippath)){
+            fs.removeSync(zippath) 
+          }
+        })
+      }
+    });
   }) 
   
   //Add new Position
@@ -37,20 +76,26 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
-      if(req.body.name && !sponsor[0].positions.some(position => position.name === req.body.name)){
+      if (err) return 
+      if(req.body.name.trim() && !sponsor[0].positions.some(position => position.name === req.body.name.trim())){
         var data = {
-          name: req.body.name,
-          info: req.body.info,
+          name: req.body.name.trim(),
+          description: req.body.description,
+          requirements: req.body.requirements,
+          link: req.body.link,
           users: []
+        }
+        var path = './sponsors/' + req.session.user + '/' +  req.body.name.trim() + '/'
+        if(!fs.existsSync(path)){
+          fs.mkdirSync(path) 
         }
         sponsor[0].positions.push(data) 
         sponsor[0].save((err, user) => {
-          if (err) return next(err) 
-          res.redirect('/sponsor')
+          if (err) return 
+          res.render('sponsor', {sponsor: sponsor[0]})
         }) 
       }else{
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Position name is blank or already exists"})
+        res.render('sponsor', {sponsor: sponsor[0], error: "Position name is blank or already exists"})
       }
     }) 
   }) 
@@ -60,50 +105,24 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
+      if (err) return   
+      var path = './sponsors/' + req.session.user + '/' +  req.params.name + '/'
+      if(fs.existsSync(path)){
+        fs.removeSync(path) 
+      }
       sponsor[0].positions = sponsor[0].positions.filter(position => position.name !== req.params.name) 
       sponsor[0].save((err, user) => {
-        if (err) return next(err) 
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+        if (err) return   
+        res.render('sponsor', {sponsor: sponsor[0]})
       }) 
     }) 
   }) 
-
   app.post('/sponsor/remove-position/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err)
-      res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
-    }) 
-  }) 
-  
-  //change-name
-  app.post('/sponsor/change-name', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
-      sponsor[0].name = req.body.name
-      sponsor[0].save((err, user) => {
-        if (err) return next(err) 
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
-      }) 
-    }) 
-  })
-  
-  //change Username
-  app.post('/sponsor/change-username', (req,res,next) => {
-    check(req,res,next)
-  },(req,res) => {
-    db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err) 
-      sponsor[0].username = req.body.username
-      req.session.user = req.body.username
-      sponsor[0].save((err, user) => {
-        if (err) return next(err) 
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
-      }) 
+      if (err) return  
+      res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
   
@@ -112,11 +131,11 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
-      if (err) return next(err)
+      if (err) return  
       if(sponsor[0].password === req.body.oldpass && req.body.pass1 === req.body.pass2) {
         sponsor[0].password = req.body.pass1
         sponsor[0].save((err, user) => {
-          if (err) return next(err) 
+          if (err) return   
           res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
         }) 
       }else{

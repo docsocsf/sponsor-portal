@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 exports.setup = (app, db) => {
 
   //PORTAL LOGIN PAGE
@@ -41,16 +43,25 @@ exports.setup = (app, db) => {
     //make sponsor
     var sponsor = new db.Sponsor({
       username: req.body.user,
-      name: req.body.name,
       password: req.body.pass,
-      rank: req.body.rank,
-      posts: [],
+      info: {
+        name: req.body.name,
+        rank: req.body.rank,
+        picture: req.body.user+ '_logo.png'
+        // bespoke
+      },
+      news: [],
       positions: []
     }) 
+    //Make sponsor folder
+    var path = './sponsors/' + req.body.user + '/'
+    if(!fs.existsSync(path)){
+      fs.mkdirSync(path) 
+    }
     //save sponsor
     sponsor.save((err, user) => {
       if (err) {
-        return next(err)
+        return  
       } else {
         res.redirect('/portal') 
       }
@@ -61,7 +72,7 @@ exports.setup = (app, db) => {
   app.post('/remove-sponsor/:user', (req,res) => {
     db.Sponsor.remove({username: req.params.user} , (err) => {
       if (err) {
-        return next(err)
+        return  
       } else {
         res.redirect('/portal') 
       }

@@ -1,15 +1,18 @@
+html{
+  background-color: #f5f5f5 !important;
+}
 body {
   font-family: 'Source Sans Pro', sans-serif;
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
+  background-color: #f5f5f5 !important;
 }
 
-input[type=radio] {
-  transform: scale(2.5);
-  vertical-align: middle;
-  margin-top:20%;
+.nav-link.active{
+  background-color: #f5f5f5 !important;
+  border-color: #f5f5f5 !important;
 }
 
 .border-radius {
@@ -21,18 +24,40 @@ input[type=radio] {
   cursor: default;
 }
 
+.header{
+  background-color: #225590;
+  color: white;
+}
+
+.nav-link{
+  color: white;
+}
+
+.nav-link:hover{
+  color: white;
+  border-color: #f5f5f5 !important;
+}
+
+.head {
+  padding-top: 20px;
+}
+
+textarea {
+  resize: none;
+}
 /* === LOGIN === */
 
 .login{
   background-color: #225590;
-  width: 500px;
-  height: 500px;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 5px;
   margin: auto;
-  margin-top: 10%;
   color: white;
   font-size: 1rem;
+}
+
+.logo {
+  padding-top: 10px;
 }
 
 .error {
@@ -43,19 +68,16 @@ input[type=radio] {
 }
 
 .login .member-tab {
-  border-top-left-radius: 10px;
+  border-top-left-radius: 5px;
 }
 
 .login .sponsor-tab {
-  border-top-right-radius: 10px;
+  border-top-right-radius: 5px;
 }
 
 .login .login-tab{
-  display: inline-block;
-  width: 50%;
   height: 50px;
   background-color: #59d;
-  margin: 0;
   vertical-align: middle;
   line-height: 50px;
   font-size: 1.2em;
@@ -70,84 +92,14 @@ input[type=radio] {
   background-color: #225590;
 }
 
-.login form {
-  line-height: 50px;
+.center{
+  text-align: center;
 }
-
-.login .form-group input {
-  width: 70%;
-  height: 30px;
-  margin-bottom: 20px;
-  font-size: 1rem;
-}
-
 
 
 
 /* === MEMBER === */
 
-.member .cvs {
-  padding-top:20px;
-  padding-bottom: 10px;
-}
-
-.member .cv {
-  background-color: #225590;
-  color: white;
-  margin-bottom: 20px;
-  border-radius: 10px;
-}
-
-.member .header, .sponsor .header{
-  background-color: #225590;
-  color: white;
-}
-
-.member .rename-row-padding {
-  padding: 5px 15px 5px 15px;
-}
-
-.member .name-row-padding {
-  padding: 15px 25px 15px 0px;
-}
-
-.member .upload-padding {
-  padding: 0 5px 0 15px;
-}
-
-.member .full-width {
-  width: 100%;
-  margin: auto;
-}
-
-.member .submit {
-  width: 10%;
-}
-
-.member .table-heading {
-  font-weight: 500;
-  line-height: 1.7;
-  font-size: 1.5rem;
-}
-
-.member .head {
-  font-size: 1.7rem;
-}
-
-.color1 {
-  background-color: #225590;
-  color: white;
-  text-align: center;
-}
-
-.color2 {
-  background-color:#48c;
-  color: white;
-  text-align: center;
-  margin-top:10px;
-  margin-bottom:10px;
-  padding: 5px;
-}
 
 
 /* === SPONSOR === */
