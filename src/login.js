@@ -1,4 +1,4 @@
-const auth = require('./auth/auth.js')
+const auth = require('../auth/auth.js')
 
 var check = (req,res, callback) => {
   if(req.session.login){

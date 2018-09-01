@@ -14,7 +14,7 @@ app.use('/static', express.static('./static'))
 app.use(fileUpload()) 
 
 //PORT
-app.set('port', process.env.PORT || 8080) 
+app.set('port', process.env.PORT || 80) 
 
 //JSON PARSER
 app.use(express.urlencoded({extended: false}))  
@@ -27,12 +27,12 @@ app.use(session({
   saveUninitialized: true
 }))
 
-if(!fs.existsSync('./sponsors/')){
-  fs.mkdirSync('./sponsors/') 
+if(!fs.existsSync('../sponsors/')){
+  fs.mkdirSync('../sponsors/') 
 }
 
-if(!fs.existsSync('./temp/')){
-  fs.mkdirSync('./temp/') 
+if(!fs.existsSync('../temp/')){
+  fs.mkdirSync('../temp/') 
 }
 
 exports.app = app;
