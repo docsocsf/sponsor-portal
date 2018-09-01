@@ -1,0 +1,28 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.9-browsers
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run: docker build -t icdocsoc/portal -f docker/Dockerfile .
+      - run: docker push icdocsoc/portal
+  test:
+    docker:
+      - image: circleci/node:10.9.0-browsers
+    steps:
+      - checkout
+      - run: echo "Tests should be here!"
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build:
+          requires:
+            - test
+          filters:
+            branches:
+              only: develop
+      - test
