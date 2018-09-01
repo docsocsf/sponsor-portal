@@ -1,4 +1,5 @@
-const fs = require('fs')
+const fs = require('fs-extra')
+const zipFolder = require('zip-folder')
 
 var check = (req,res, callback) => {
   if(req.session.login){
@@ -23,13 +24,51 @@ exports.setup = (app, db) => {
     }) 
   }) 
   
-  //sponsor Show CV
-  app.post('/sponsor/sponsor-show-cv/:pos/:user/:name', (req,res,next) => {
+  //Show document
+  app.post('/sponsor/show/:pos/:filename/:document', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var data = fs.readFileSync(__dirname + '/sponsors/positions/' +  req.params.pos + '/' + req.params.user + '/' + req.params.name) 
-    res.contentType('application/pdf') 
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename + '/' + req.params.document
+    var data = fs.readFileSync(path) 
     res.send(data) 
+  }) 
+
+  //Download member
+  app.post('/sponsor/download/user/:pos/:filename/', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename
+    var zippath = './temp/' + req.params.filename + '.zip'
+    zipFolder(path, zippath, function(err) {
+      if(err) {
+          console.log('oh no!', err);
+      } else {
+        res.download(zippath, () => {
+          if(fs.existsSync(zippath)){
+            fs.removeSync(zippath) 
+          }
+        })
+      }
+    });
+  }) 
+  
+  //Download Position
+  app.post('/sponsor/download/pos/:pos/', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos
+    var zippath = './temp/' + req.params.pos + '.zip'
+    zipFolder(path, zippath, function(err) {
+      if(err) {
+          console.log('oh no!', err);
+      } else {
+        res.download(zippath, () => {
+          if(fs.existsSync(zippath)){
+            fs.removeSync(zippath) 
+          }
+        })
+      }
+    });
   }) 
   
   //Add new Position
@@ -38,15 +77,15 @@ exports.setup = (app, db) => {
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return 
-      if(req.body.name && !sponsor[0].positions.some(position => position.name === req.body.name)){
+      if(req.body.name.trim() && !sponsor[0].positions.some(position => position.name === req.body.name.trim())){
         var data = {
-          name: trim(req.body.name),
+          name: req.body.name.trim(),
           description: req.body.description,
           requirements: req.body.requirements,
           link: req.body.link,
           users: []
         }
-        var path = './sponsors/' + req.session.user + '/' +  req.body.name + '/'
+        var path = './sponsors/' + req.session.user + '/' +  req.body.name.trim() + '/'
         if(!fs.existsSync(path)){
           fs.mkdirSync(path) 
         }
@@ -67,6 +106,10 @@ exports.setup = (app, db) => {
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return   
+      var path = './sponsors/' + req.session.user + '/' +  req.params.name + '/'
+      if(fs.existsSync(path)){
+        fs.removeSync(path) 
+      }
       sponsor[0].positions = sponsor[0].positions.filter(position => position.name !== req.params.name) 
       sponsor[0].save((err, user) => {
         if (err) return   
@@ -74,7 +117,6 @@ exports.setup = (app, db) => {
       }) 
     }) 
   }) 
-
   app.post('/sponsor/remove-position/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {

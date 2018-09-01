@@ -8,15 +8,32 @@
             form(method="post" action="/sponsor/add-position")
               .row.mt-2.mb-2
                 label.col-2(for="name") Name: 
-                input.col-9(type="text", name="name")
+                input.col-9(type="text", name="name", value=sponsor.info.name)
               .row.mt-2.mb-2
                 label.col-2(for="email") Email: 
-                input.col-9(type="text", name="email")
+                input.col-9(type="text", name="email", value=sponsor.info.email)
               .row.mt-2.mb-2
                 label.col-2(for="description") Description: 
-                textarea.col-9(type="text", name="description")
+                textarea.col-9(type="text", name="description", value=sponsor.info.description)
               .row.mt-2.mb-2
                 label.col-2(for="link") Link: 
-                input.col-9(type="text", name="link")
+                input.col-9(type="text", name="link", value=sponsor.info.link)
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Save
+    .row.justify-content-center.mt-3
+      .col-lg-8.col-sm-11
+        .card
+          .card-body
+            h2.card-title Change Password:
+            form(method="post" action="/sponsor/add-position")
+              .row.mt-2.mb-2
+                label.col-2(for="old") Old Password: 
+                input.col-9(type="password", name="old")
+              .row.mt-2.mb-2
+                label.col-2(for="new") New Password: 
+                input.col-9(type="password", name="new")
+              .row.mt-2.mb-2
+                label.col-2(for="new2") One more time: 
+                input.col-9(type="password", name="new2")
+              .row.justify-content-center.mt-2.mb-2
+                button.btn.btn-primary.btn-lg.col-10(type='submit') Change

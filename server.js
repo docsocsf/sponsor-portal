@@ -32,6 +32,10 @@ app.post('/logout', (req,res) => {
   res.redirect('/') 
 }) 
 
+app.get('*', function(req, res){
+  res.redirect('/member') 
+});
+
 
 //SERVER LISTEN
 app.listen(app.get('port'), function(){

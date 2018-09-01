@@ -46,7 +46,7 @@ include ./layout.pug
               h1 Sponsor Login:
           .row
             .col
-              if error && member
+              if error && !member
                 .error #{error}
               else 
                 br

@@ -47,7 +47,7 @@
               ul.list-group.list-group-flush
                 li.list-group-item  
                   a.apply-dropdown(href="#")
-                    h4 DoCSoc Members That Have Applied 
+                    h4 DoCSoc Members That Have Applied (#{position.users.length}) 
                       span.octicon.octicon-chevron-down
                 li.list-group-item.apply.d-none
                   each user in position.users
@@ -59,7 +59,7 @@
                               h5 Name: #{user.firstname + ' ' + user.surname}
                               p Email: #{user.email}
                             .col-2
-                              form(action="/sponsor/download/user/" + position.name + '/' + user.username + '/' + user.surname + '/' + user.firstname method="post")
+                              form(action="/sponsor/download/user/" + position.name + '/' + user.firstname + ' ' + user.surname + ' ' + user.username method="post")
                                 button.btn(type='submit') 
                                   span.octicon.octicon-desktop-download
                         ul.list-group.list-group-flush
@@ -73,6 +73,6 @@
                                 .row
                                   .col-10=document.name
                                   .col-2
-                                    form(action="/sponsor/download/file/" + position.name + '/' + user.username + '/' + user.surname + '/' + user.firstname + '/' + document.name method="post")
+                                    form(action="/sponsor/show/" + position.name + '/' + user.firstname + ' ' + user.surname + ' ' + user.username + '/' + document.name method="post")
                                       button.btn(type='submit') 
-                                        span.octicon.octicon-desktop-download
+                                        span.octicon.octicon-eye

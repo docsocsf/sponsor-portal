@@ -7,9 +7,9 @@ const fs = require('fs')
 const app = express() 
 
 app.set('view engine', 'pug') 
-app.set('views', __dirname + '/views') 
+app.set('views', './views') 
 
-app.use('/static', express.static(__dirname + '/static')) 
+app.use('/static', express.static('./static')) 
 
 app.use(fileUpload()) 
 
@@ -27,8 +27,12 @@ app.use(session({
   saveUninitialized: true
 }))
 
-if(!fs.existsSync(__dirname + '/sponsors/')){
-  fs.mkdirSync(__dirname + '/sponsors/') 
+if(!fs.existsSync('./sponsors/')){
+  fs.mkdirSync('./sponsors/') 
+}
+
+if(!fs.existsSync('./temp/')){
+  fs.mkdirSync('./temp/') 
 }
 
 exports.app = app;
