@@ -1,0 +1,12 @@
+.container-fluid
+  .row.align-items-center
+    .col-7.d-inline-block
+      img.d-inline-block(src="/static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
+      h1.d-inline-block DoCSoc Sponsor Portal
+    .col-5
+      .row.align-items-center.justify-content-end
+        .col-lg-8.col-sm-12
+          h2.float-right Hello there, #{sponsor.info.name}
+        .col-lg-4.col-sm-6
+          form(method="post" action="/logout")
+            button.btn.btn-primary.btn-lg.btn-block(type='submit') Logout

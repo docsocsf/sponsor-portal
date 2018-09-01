@@ -40,7 +40,7 @@ exports.setup = (app, db) => {
       if (err) return 
       if(req.body.name && !sponsor[0].positions.some(position => position.name === req.body.name)){
         var data = {
-          name: req.body.name,
+          name: trim(req.body.name),
           description: req.body.description,
           requirements: req.body.requirements,
           link: req.body.link,

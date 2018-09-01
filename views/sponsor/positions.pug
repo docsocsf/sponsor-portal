@@ -1,0 +1,78 @@
+#positions.tab-pane.fade.show(role='tabpanel', aria-labelledby='positions-tab' class=(sponsor.info.rank === 'Bronze' ? '' : 'active')) 
+  .container-fluid
+    .row.justify-content-center
+      .col-lg-8.col-sm-11
+        .card
+          .card-body
+            h2.card-title Add New Position:
+            form(method="post" action="/sponsor/add-position")
+              .row.mt-2.mb-2
+                label.col-2(for="name") Name: 
+                input.col-9(type="text", name="name")
+              .row.mt-2.mb-2
+                label.col-2(for="description") Description: 
+                textarea.col-9(type="text", name="description")
+              .row.mt-2.mb-2
+                label.col-2(for="requirements") Requirements: 
+                textarea.col-9(type="text", name="requirements")
+              .row.mt-2.mb-2
+                label.col-2(for="link") Link: 
+                input.col-9(type="text", name="link")
+              .row.justify-content-center.mt-2.mb-2
+                button.btn.btn-primary.btn-lg.col-10(type='submit') Add
+    .row.justify-content-center.mt-4
+      .col
+        h2.center Your Positions:
+    .row.justify-content-center
+      .col-lg-8.col-sm-11
+        each position in sponsor.positions.reverse()
+          .card.mt-3
+            .card-body
+              .row
+                .col
+                  h2.card-title #{position.name}
+                  h4.card-text Description: #{position.description}
+                  h4.card-text Requirements: #{position.requirements}
+                  h4 Link: 
+                    a.card-link(href=position.link) #{position.link}
+                  form.col-1(action="/sponsor/remove-position/" + position.name method="post")
+                    button.btn(type='submit') Delete 
+                      span.octicon.octicon-trashcan   
+                if(position.users.length > 0)
+                  .col-3
+                    form(action="/sponsor/download/pos/" + position.name method="post")
+                      button.btn(type='submit') Download All 
+                        span.octicon.octicon-desktop-download
+            if(position.users.length > 0)
+              ul.list-group.list-group-flush
+                li.list-group-item  
+                  a.apply-dropdown(href="#")
+                    h4 DoCSoc Members That Have Applied 
+                      span.octicon.octicon-chevron-down
+                li.list-group-item.apply.d-none
+                  each user in position.users
+                    .col-lg-6.col-sm-12
+                      .card
+                        .card-body
+                          .row
+                            .col-10
+                              h5 Name: #{user.firstname + ' ' + user.surname}
+                              p Email: #{user.email}
+                            .col-2
+                              form(action="/sponsor/download/user/" + position.name + '/' + user.username + '/' + user.surname + '/' + user.firstname method="post")
+                                button.btn(type='submit') 
+                                  span.octicon.octicon-desktop-download
+                        ul.list-group.list-group-flush
+                          li.list-group-item  
+                            a.apply-dropdown(href="#")
+                              h5 Documents 
+                                span.octicon.octicon-chevron-down
+                          .apply.d-none
+                            each document in user.documents
+                              li.list-group-item
+                                .row
+                                  .col-10=document.name
+                                  .col-2
+                                    form(action="/sponsor/download/file/" + position.name + '/' + user.username + '/' + user.surname + '/' + user.firstname + '/' + document.name method="post")
+                                      button.btn(type='submit') 
+                                        span.octicon.octicon-desktop-download
