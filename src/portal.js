@@ -54,7 +54,7 @@ exports.setup = (app, db) => {
       positions: []
     }) 
     //Make sponsor folder
-    var path = './sponsors/' + req.body.user + '/'
+    var path = '../sponsors/' + req.body.user + '/'
     if(!fs.existsSync(path)){
       fs.mkdirSync(path) 
     }
