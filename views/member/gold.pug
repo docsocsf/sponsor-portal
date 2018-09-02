@@ -23,7 +23,7 @@
                     h3 News (#{sponsor.news.length}) 
                       span.octicon.octicon-chevron-down
                 li.list-group-item.apply.d-none
-                  each news in sponsor.news
+                  each news in sponsor.news.reverse()
                     .card.mt-2
                       .card-body
                         h4.card-title=news.title
@@ -36,7 +36,7 @@
                     h3 Opportunities (#{sponsor.news.length}) 
                       span.octicon.octicon-chevron-down
                 li.list-group-item.apply.d-none
-                  each pos in sponsor.positions
+                  each pos in sponsor.positions.reverse()
                     .card.mt-2
                       .card-body
                         h4.card-title=pos.name

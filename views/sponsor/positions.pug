@@ -57,7 +57,7 @@
                           .row
                             .col-10
                               h5 Name: #{user.firstname + ' ' + user.surname}
-                              p Email: #{user.email}
+                              a.card-link(href="mailto:"+user.email)=user.email
                             .col-2
                               form(action="/sponsor/download/user/" + position.name + '/' + user.firstname + ' ' + user.surname + ' ' + user.username method="post")
                                 button.btn(type='submit') 
