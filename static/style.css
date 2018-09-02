@@ -176,3 +176,10 @@ table {
 th, td {
   border: 1px solid black !important
 }
+
+.bespoke {
+  position: absolute;
+  width: 40px;
+  right: -10px;
+  top: -10px;
+}

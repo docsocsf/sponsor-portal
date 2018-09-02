@@ -3,11 +3,10 @@
     .row.justify-content-center
       .col-lg-8.col-sm-11
         each sponsor in sponsors.filter(s => s.info.rank === 'Gold').sort(function() { return 0.5 - Math.random() })
-          if(sponsor.info.bespoke)
-            .bespoke
-              img(src="/static/assets/images/icons/gold_bespoke" width="150px")
-          .card.mt-2.mb-2
+          .card.mt-4.mb-2
             .card-body
+              if(sponsor.info.bespoke)
+                img(src="/static/assets/images/icons/gold_bespoke.png" width="150px").bespoke
               .row
                 .col-3
                   img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="150px")

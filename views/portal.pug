@@ -15,11 +15,16 @@ h1 Hello there DoCSoc
             label(for="pass") Password: 
             input.form-control(type="password", name="pass")
           div.form-group
-            label(for="pass") Rank: 
+            label(for="rank") Rank: 
             select(name="rank").form-control
               option(value="Gold") Gold
               option(value="Silver") Silver
               option(value="Bronze") Bronze
+          div.form-group
+            label(for="bespoke") Bespoke: 
+            select(name="bespoke").form-control
+              option(value="true") true
+              option(value="false") false
           button.btn.btn-primary(type='submit') Add
 
 h1.mt-5 Sponsors
@@ -37,7 +42,7 @@ table(style = "width:4000px").ml-3.mt-4
     th news
     th positions
   each s in sponsors
-    form(method="post" action="/edit-sponsor")
+    form(method="post" action="/edit-sponsor/"+s.username)
       tr
         th=s.username
         th
@@ -52,7 +57,7 @@ table(style = "width:4000px").ml-3.mt-4
         th
           input.form-control(type="text", name="s.info.rank", value=s.info.rank)
         th
-          input.form-control(type="text", name="s.info.bespoke", value=s.info.bespoke)
+          input.form-control(type="text", name="s.info.bespoke", value=s.info.bespoke.toString())
         th
           input.form-control(type="text", name="s.info.description", value=s.info.description)
         th
@@ -67,15 +72,13 @@ table(style = "width:4000px").ml-3.mt-4
                 th title
                 th text
                 th link
-              each n, i in s.news
+              each n in s.news
                 tr
                   th=n.date
+                  th=n.title
                   th
-                    input.form-control(type="text", name="n.title."+i, value=n.title)
-                  th
-                    input.form-control(type="text", name="n.text."+i, value=n.text)
-                  th
-                    input.form-control(type="text", name="n.link."+i, value=n.link)
+                    textarea.form-control(type="text" disabled)=n.text
+                  th=n.link
         th 
           if(s.positions.length > 0)
             table(style = "width:100%")
@@ -88,6 +91,7 @@ table(style = "width:4000px").ml-3.mt-4
               each p,i in s.positions
                 tr 
                   th
+                    input.form-control(type="text", name="p.id."+i, value=p.name).d-none
                     input.form-control(type="text", name="p.name."+i, value=p.name)
                   th
                     input.form-control(type="text", name="p.description."+i, value=p.description)
