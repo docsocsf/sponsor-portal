@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "test": "node server.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "local": "node app.js --no-https"
   },
   "author": "George Soteriou",
   "license": "ISC",
@@ -38,7 +39,9 @@
     "which": "^1.3.1",
     "zip-folder": "^1.0.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "args-parser": "^1.1.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/georgesoteriou/DocSoc-portal.git"
