@@ -1,5 +1,6 @@
 // setup express app
 const setup = require('./src/setup.js')
+const args = require('args-parser')(process.argv)
 const app = setup.app
 
 // setup mongoDB database
@@ -36,7 +37,44 @@ app.get('*', function (req, res) {
   res.redirect('/')
 })
 
-// SERVER LISTEN
-app.listen(app.get('port'), function () {
-  console.log('Server listening on port ' + app.get('port'))
-})
+if (args['no-https']) { // If no https then just use app.listen
+  console.log('no-https option selected, running on just http')
+  app.listen(app.get('port'), function () {
+    console.log('Server listening on port ' + app.get('port'))
+  })
+} else { // Use greenlock to force https
+  console.log('HTTPS enforced')
+  require('greenlock-express').create({
+
+  // Let's Encrypt v2 is ACME draft 11
+    version: 'draft-11',
+
+    // Note: If at first you don't succeed, switch to staging to debug
+    // https://acme-staging-v02.api.letsencrypt.org/directory
+    server: 'https://acme-v02.api.letsencrypt.org/directory',
+
+    // Where the certs will be saved, MUST have write access
+    configDir: './secure/',
+
+    // You MUST change this to a valid email address
+    email: 'docsoc@imperial.ac.uk',
+
+    // You MUST change these to valid domains
+    // NOTE: all domains will validated and listed on the certificate
+    approveDomains: ['portal.docsoc.co.uk'],
+
+    // You MUST NOT build clients that accept the ToS without asking the user
+    agreeTos: true,
+
+    app: app,
+
+    // Join the community to get notified of important updates
+    communityMember: false,
+
+    // Contribute telemetry data to the project
+    telemetry: false
+
+    //, debug: true
+
+  }).listen(80, 443)
+}
