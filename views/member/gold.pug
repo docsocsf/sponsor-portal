@@ -2,7 +2,7 @@
   .container-fluid
     .row.justify-content-center
       .col-lg-8.col-sm-11
-        each sponsor in sponsors.filter(s => s.info.rank === 'Gold').sort(function() { return 0.5 - Math.random() })
+        each sponsor in sponsors.filter(s => s.info.rank === 'Gold').sort(function(a,b) {if( a.info.bespoke &&  b.info.bespoke) return 0.5 - Math.random(); if( a.info.bespoke && !b.info.bespoke) return -0.9; if(!a.info.bespoke &&  b.info.bespoke) return 0.9; if(!a.info.bespoke && !b.info.bespoke) return 0.5 - Math.random()})
           .card.mt-4.mb-2
             .card-body
               if(sponsor.info.bespoke)

@@ -117,9 +117,9 @@ table(style = "width:4000px").ml-3.mt-4
                             th=u.documents.map(d => d = d.name)
         th
           button.btn.btn-primary(type='submit') Save
-        th
-          form(method="post" action="/remove-sponsor/"+s.username)
-            button.btn.btn-primary(type='submit') Remove
+    th
+      form(method="post" action="/remove-sponsor/"+s.username)
+        button.btn.btn-primary(type='submit') Remove
 
 form(method="post" action="/logout")
   button.btn.btn-primary(type='submit') Logout

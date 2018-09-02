@@ -104,8 +104,6 @@ exports.setup = (app, db) => {
         }
       }
 
-      console.log(sponsor[0].info.bespoke)
-
       sponsor[0].save((err, user) => {
         if (err) return 
         res.redirect('/portal')
@@ -122,8 +120,8 @@ exports.setup = (app, db) => {
       } else {
         if(fs.existsSync('../sponsors/' + req.params.user)){
           fs.removeSync('../sponsors/' + req.params.user)
-          res.redirect('/portal')  
         }
+        res.redirect('/portal')  
       }
     }) 
   }) 
