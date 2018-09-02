@@ -22,7 +22,7 @@ include ./layout.pug
           .row
             .col
               if err && member
-                .err #{err}
+                .error #{err}
               else 
                 br
           .row
@@ -47,7 +47,7 @@ include ./layout.pug
           .row
             .col
               if err && !member
-                .err #{err}
+                .error #{err}
               else 
                 br
           .row
