@@ -53,7 +53,7 @@ require('greenlock-express').create({
 
   // You MUST change these to valid domains
   // NOTE: all domains will validated and listed on the certificate
-, approveDomains: [ 'portal.docsoc.co.uk' ]
+, approveDomains: ['portal.docsoc.co.uk']
 
   // You MUST NOT build clients that accept the ToS without asking the user
 , agreeTos: true
