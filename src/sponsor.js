@@ -24,28 +24,31 @@ exports.setup = (app, db) => {
     }) 
   }) 
   
+  //=====================POSITIONS========================
+  
   //Show document
   app.post('/sponsor/show/:pos/:filename/:document', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var path = '../sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename + '/' + req.params.document
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename + '/' + req.params.document
     var data = fs.readFileSync(path) 
     res.send(data) 
   }) 
-
+  
   //Download member
   app.post('/sponsor/download/user/:pos/:filename/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var path = '../sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename
-    var zippath = '../temp/' + req.params.filename + '.zip'
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename
+    var zippath = './temp/' + req.params.filename + '.zip'
     zipFolder(path, zippath, function(err) {
       if(err) {
-          console.log('oh no!', err);
+        console.log('oh no!', err);
       } else {
         res.download(zippath, () => {
           if(fs.existsSync(zippath)){
             fs.removeSync(zippath) 
+            res.redirect('/sponsor/#positions-tab')
           }
         })
       }
@@ -56,15 +59,16 @@ exports.setup = (app, db) => {
   app.post('/sponsor/download/pos/:pos/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var path = '../sponsors/' + req.session.user + '/' +  req.params.pos
-    var zippath = '../temp/' + req.params.pos + '.zip'
+    var path = './sponsors/' + req.session.user + '/' +  req.params.pos
+    var zippath = './temp/' + req.params.pos + '.zip'
     zipFolder(path, zippath, function(err) {
       if(err) {
-          console.log('oh no!', err);
+        console.log('oh no!', err);
       } else {
         res.download(zippath, () => {
           if(fs.existsSync(zippath)){
-            fs.removeSync(zippath) 
+            fs.removeSync(zippath)
+            res.redirect('/sponsor/#positions-tab')
           }
         })
       }
@@ -85,17 +89,17 @@ exports.setup = (app, db) => {
           link: req.body.link,
           users: []
         }
-        var path = '../sponsors/' + req.session.user + '/' +  req.body.name.trim() + '/'
+        var path = './sponsors/' + req.session.user + '/' +  req.body.name.trim() + '/'
         if(!fs.existsSync(path)){
           fs.mkdirSync(path) 
         }
         sponsor[0].positions.push(data) 
         sponsor[0].save((err, user) => {
           if (err) return 
-          res.render('sponsor', {sponsor: sponsor[0]})
+          res.redirect('/sponsor/#positions-tab')
         }) 
       }else{
-        res.render('sponsor', {sponsor: sponsor[0], error: "Position name is blank or already exists"})
+        res.render('sponsor', {sponsor: sponsor[0], err: "Position name is blank or already exists"})
       }
     }) 
   }) 
@@ -106,25 +110,84 @@ exports.setup = (app, db) => {
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return   
-      var path = '../sponsors/' + req.session.user + '/' +  req.params.name + '/'
+      var path = './sponsors/' + req.session.user + '/' +  req.params.name + '/'
       if(fs.existsSync(path)){
         fs.removeSync(path) 
       }
       sponsor[0].positions = sponsor[0].positions.filter(position => position.name !== req.params.name) 
       sponsor[0].save((err, user) => {
         if (err) return   
-        res.render('sponsor', {sponsor: sponsor[0]})
+        res.redirect('/sponsor/#positions-tab')
       }) 
     }) 
   }) 
   app.post('/sponsor/remove-position/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
+    res.redirect('/sponsor/#positions-tab')
+  }) 
+  
+  //=======================================NEWS=================================
+  
+  // Add news
+  app.post('/sponsor/add-news', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return  
-      res.render('sponsor', {sponsor: sponsor[0]})
+      var news = {
+        date: (new Date()).toString(),
+        title: req.body.title,
+        text: req.body.text,
+        link: req.body.link
+      }
+      sponsor[0].news.push(news)
+      sponsor[0].save((err, user) => {
+        if (err) return   
+        res.redirect('/sponsor/#news-tab')
+      }) 
+    }) 
+  })
+
+
+  //Remove News
+  app.post('/sponsor/remove-news/:date', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
+      if (err) return   
+      sponsor[0].news = sponsor[0].news.filter(n => n.date !== req.params.date) 
+      sponsor[0].save((err, user) => {
+        if (err) return   
+        res.redirect('/sponsor/#news-tab')
+      }) 
     }) 
   }) 
+  app.post('/sponsor/remove-news/', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    res.redirect('/sponsor/#news-tab')
+  }) 
+  
+  //=====================================ACCOUNT=================================
+  
+  //Update info
+  app.post('/sponsor/update-info', (req,res,next) => {
+    check(req,res,next)
+  },(req,res) => {
+    db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
+      if (err) return  
+      sponsor[0].info.email = req.body.email
+      sponsor[0].info.description = req.body.description
+      sponsor[0].info.link = req.body.link
+      sponsor[0].save((err, user) => {
+        if (err) return   
+        res.redirect('/sponsor/#info-tab')
+      }) 
+    }) 
+  })
+  
+  
   
   //change Password
   app.post('/sponsor/change-password', (req,res,next) => {
@@ -132,14 +195,14 @@ exports.setup = (app, db) => {
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return  
-      if(sponsor[0].password === req.body.oldpass && req.body.pass1 === req.body.pass2) {
-        sponsor[0].password = req.body.pass1
+      if(req.body.new && sponsor[0].password === req.body.old && req.body.new === req.body.new2) {
+        sponsor[0].password = req.body.new
         sponsor[0].save((err, user) => {
           if (err) return   
-          res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions})
+          res.redirect('/sponsor/#info-tab')       
         }) 
       }else{
-        res.render('sponsor', {name: sponsor[0].name, username: sponsor[0].username, positions: sponsor[0].positions, error: "Error while trying to change password. Please try again."})
+        res.render('sponsor', {sponsor: sponsor[0], err: "Error while trying to change password. Please try again."})
       }
     }) 
   }) 

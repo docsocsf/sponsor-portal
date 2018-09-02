@@ -166,3 +166,20 @@ textarea {
   border-radius: 5px;
   color: white;
 }
+
+
+table {
+  border: 4px solid black !important
+
+}
+
+th, td {
+  border: 1px solid black !important
+}
+
+.bespoke {
+  position: absolute;
+  width: 40px;
+  right: -10px;
+  top: -10px;
+}

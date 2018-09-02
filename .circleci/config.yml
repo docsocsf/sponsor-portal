@@ -11,8 +11,8 @@ jobs:
       - run: docker push icdocsoc/portal
       - add_ssh_keys:
           fingerprints:
-            - "0f:92:9a:b8:16:72:b9:d5:88:55:f0:60:68:34:ac:8a"
-      - run: ssh -p 443 -o "StrictHostKeyChecking=no" -vv circleci@portal.docsoc.co.uk "update-portal"
+            - "d3:9b:6d:d3:87:3c:7b:97:7a:04:9c:e6:da:64:b7:00"
+      - run: ssh -o "StrictHostKeyChecking=no" -vv docsoc@shell1.doc.ic.ac.uk "update-portal"
   test:
     docker:
       - image: circleci/node:10.9.0-browsers
