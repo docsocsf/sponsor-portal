@@ -1,7 +1,7 @@
 const mongoose = require('mongoose') 
 
 //MONGOOSE
-mongoose.connect('mongodb://localhost/portal') 
+mongoose.connect('mongodb://127.0.0.1/portal') 
 var db = mongoose.connection 
 db.on('error', console.error.bind(console, 'connection error:')) 
 db.once('open', function() {

@@ -28,7 +28,7 @@ exports.setup = (app, db) => {
   app.post('/sponsor/show/:pos/:filename/:document', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename + '/' + req.params.document
+    var path = '../sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename + '/' + req.params.document
     var data = fs.readFileSync(path) 
     res.send(data) 
   }) 
@@ -37,8 +37,8 @@ exports.setup = (app, db) => {
   app.post('/sponsor/download/user/:pos/:filename/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename
-    var zippath = './temp/' + req.params.filename + '.zip'
+    var path = '../sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename
+    var zippath = '../temp/' + req.params.filename + '.zip'
     zipFolder(path, zippath, function(err) {
       if(err) {
           console.log('oh no!', err);
@@ -56,8 +56,8 @@ exports.setup = (app, db) => {
   app.post('/sponsor/download/pos/:pos/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    var path = './sponsors/' + req.session.user + '/' +  req.params.pos
-    var zippath = './temp/' + req.params.pos + '.zip'
+    var path = '../sponsors/' + req.session.user + '/' +  req.params.pos
+    var zippath = '../temp/' + req.params.pos + '.zip'
     zipFolder(path, zippath, function(err) {
       if(err) {
           console.log('oh no!', err);
@@ -85,7 +85,7 @@ exports.setup = (app, db) => {
           link: req.body.link,
           users: []
         }
-        var path = './sponsors/' + req.session.user + '/' +  req.body.name.trim() + '/'
+        var path = '../sponsors/' + req.session.user + '/' +  req.body.name.trim() + '/'
         if(!fs.existsSync(path)){
           fs.mkdirSync(path) 
         }
@@ -106,7 +106,7 @@ exports.setup = (app, db) => {
   },(req,res) => {
     db.Sponsor.find({username: req.session.user} , (err, sponsor) => {
       if (err) return   
-      var path = './sponsors/' + req.session.user + '/' +  req.params.name + '/'
+      var path = '../sponsors/' + req.session.user + '/' +  req.params.name + '/'
       if(fs.existsSync(path)){
         fs.removeSync(path) 
       }
