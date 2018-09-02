@@ -14,6 +14,18 @@ var check = (req,res, callback) => {
 }
 
 exports.setup = (app, db) => {
+
+
+db.Sponsor.find((error, sponsors) => {
+  sponsors.forEach(sponsor => {
+    if(sponsor.bespoke == undefined) {
+      sponsor.bespoke = false;
+    }
+    sponsor.save((err, user) => {
+      if (err) return 
+    })
+  })
+})
   
   //sponsor PAGE
   app.get('/sponsor', (req,res,next) => {
