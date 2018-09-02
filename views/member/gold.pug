@@ -47,9 +47,9 @@
                       ul.list-group.list-group-flush
                         if(pos.applied)
                           li.list-group-item
-                            a.apply-remove(href="#")
-                                h4 Remove application 
-                                  span.octicon.octicon-trashcan 
+                            form.col-1(action="/member/unapply/"+ sponsor.username + '/' + pos.name method="post")
+                              button.btn(type='submit') Remove application 
+                                span.octicon.octicon-trashcan   
                         else
                           li.list-group-item
                             a.apply-dropdown(href="#")
@@ -64,25 +64,26 @@
                                   p This is how the Sponsor will contact you
                                 .row.justify-content-center
                                   label.col-auto(for="email") Your email:
-                                  input.col-9(type="text", name="email")
+                                  input.col-9(type="text", name="email", value=email)
                                 br
                                 .row
                                   h4 Documents:
-                                .row
-                                  p Please add all requirements documented above
-                                .row
-                                  .col-auto
-                                    .row.justify-content-center
-                                        label.col-auto(for="documentname0") Document Name:
-                                        input.col-auto(type="text", name="documentname0")
-                                        input.col-5.upload-padding(type="file", name="document0")
-                                    for i in [1,2,3,4,5,6,7,8,9]
-                                      .row.justify-content-center.d-none
-                                        label.col-auto(for="documentname" + i) Document Name:
-                                        input.col-auto(type="text", name="documentname" + i)
-                                        input.col-5.upload-padding(type="file", name="document" + i)
-                                  .col-auto
-                                    button.col-auto.btn#show-document
+                                .documents
+                                  .row
+                                    .col-12
+                                      .row.justify-content-start
+                                          label.col-auto(for="documentname0") Document Name:
+                                          input.col-auto(type="text", name="documentname0")
+                                          input.col-5.upload-padding(type="file", name="document0")
+                                      for i in [1,2,3,4,5,6,7,8,9]
+                                        .row.justify-content-start.d-none
+                                          label.col-auto(for="documentname" + i) Document Name:
+                                          input.col-auto(type="text", name="documentname" + i)
+                                          input.col-4.upload-padding(type="file", name="document" + i)
+                                          button.col-auto.btn.btn-sm(type='button').hide-document
+                                            span.octicon.octicon-x
+                                  .row
+                                    button.col-auto.btn(type='button').show-document Add Document 
                                       span.octicon.octicon-plus
                                 br
                                 .row.float-right

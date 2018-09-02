@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 
 exports.setup = (app, db) => {
 
@@ -54,7 +54,7 @@ exports.setup = (app, db) => {
       positions: []
     }) 
     //Make sponsor folder
-    var path = '../sponsors/' + req.body.user + '/'
+    var path = './sponsors/' + req.body.user + '/'
     if(!fs.existsSync(path)){
       fs.mkdirSync(path) 
     }
@@ -118,8 +118,8 @@ exports.setup = (app, db) => {
       if (err) {
         return  
       } else {
-        if(fs.existsSync('../sponsors/' + req.params.user)){
-          fs.removeSync('../sponsors/' + req.params.user)
+        if(fs.existsSync('./sponsors/' + req.params.user)){
+          fs.removeSync('./sponsors/' + req.params.user)
         }
         res.redirect('/portal')  
       }

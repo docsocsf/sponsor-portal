@@ -1,4 +1,10 @@
 $(function() {
+  if (!Array.prototype.last){
+    Array.prototype.last = function(){
+        return this[this.length - 1];
+    };
+  };
+
 
   if(window.location.hash === '#positions-tab') {
     $('#positions-tab').tab('show')
@@ -39,13 +45,27 @@ $(function() {
     window.location.hash = e.target['id'] 
   })
 
-  $('#show-document').click(function(e){
+  $('.show-document').click(function(e){
     e.preventDefault();
-    let element = $(this).closest('.row').find('.d-none').first()
-    if(element.length) 
-      element.removeClass('d-none')
-    else
+    let documents = $(this).closest('.documents').find('.d-none')
+    documents.first().removeClass('d-none')
+    if(documents.length <= 1) 
       $(this).addClass('d-none')
+  })
+
+  $("input:file").change(function (){
+    var filename = $(this).val().split('\\').last().split('.')
+    var extension = filename.pop()
+    $(this).prev().val(filename)
+  })
+
+  $('.hide-document').click(function(e){
+    e.preventDefault();
+    $(this).parent().addClass('d-none')
+    $(this).siblings("input").each(function(){
+      $(this).val('')
+    })
+    $(this).closest('.documents').find('.show-document').removeClass('d-none')
   });
 
   $('.apply-dropdown').click(function(e){

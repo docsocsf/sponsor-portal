@@ -27,12 +27,12 @@ app.use(session({
   saveUninitialized: true
 }))
 
-if(!fs.existsSync('../sponsors/')){
-  fs.mkdirSync('../sponsors/') 
+if(!fs.existsSync('./sponsors/')){
+  fs.mkdirSync('./sponsors/') 
 }
 
-if(!fs.existsSync('../temp/')){
-  fs.mkdirSync('../temp/') 
+if(!fs.existsSync('./temp/')){
+  fs.mkdirSync('./temp/') 
 }
 
 exports.app = app;
