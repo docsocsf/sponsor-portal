@@ -55,7 +55,8 @@
                             a.apply-dropdown(href="#")
                               h4 Apply 
                                 span.octicon.octicon-chevron-down 
-                            .container.d-none.apply
+                          li.list-group-item.apply.d-none
+                            .container
                               br
                               form(method="post" action='/member/apply/' + sponsor.username + '/' + pos.name encType="multipart/form-data")
                                 .row
@@ -63,25 +64,30 @@
                                 .row
                                   p This is how the Sponsor will contact you
                                 .row.justify-content-center
-                                  label.col-auto(for="email") Your email:
+                                  label.col-auto(for="email").mt-2 Your email:
                                   input.col-9(type="text", name="email", value=email)
                                 br
                                 .row
                                   h4 Documents:
+                                .row
+                                  p Make sure you upload all requirements
                                 .documents
                                   .row
                                     .col-12
-                                      .row.justify-content-start
-                                          label.col-auto(for="documentname0") Document Name:
-                                          input.col-auto(type="text", name="documentname0")
-                                          input.col-5.upload-padding(type="file", name="document0")
-                                      for i in [1,2,3,4,5,6,7,8,9]
-                                        .row.justify-content-start.d-none
-                                          label.col-auto(for="documentname" + i) Document Name:
-                                          input.col-auto(type="text", name="documentname" + i)
-                                          input.col-4.upload-padding(type="file", name="document" + i)
-                                          button.col-auto.btn.btn-sm(type='button').hide-document
-                                            span.octicon.octicon-x
+                                      for i in [0,1,2,3,4,5,6,7,8,9]
+                                        - var klass = (i === 0 ? '' : 'd-none')
+                                        .row.justify-content-start.mb-2(class = klass)
+                                          label.col.mt-2(for="documentname" + i) Document Name:
+                                          input.col-5(type="text", name="documentname" + i)
+                                          label.col-1.mt-2
+                                          button.col-2.btn.mr-2.upload(type='button') Upload 
+                                            span.octicon.octicon-cloud-upload
+                                              input(type="file", style = 'display:none' name="document" + i)
+                                          if(i)
+                                            button.col-1.btn.btn-sm(type='button').hide-document
+                                              span.octicon.octicon-x
+                                          else
+                                            .col-1
                                   .row
                                     button.col-auto.btn(type='button').show-document Add Document 
                                       span.octicon.octicon-plus

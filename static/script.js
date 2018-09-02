@@ -53,12 +53,6 @@ $(function() {
       $(this).addClass('d-none')
   })
 
-  $("input:file").change(function (){
-    var filename = $(this).val().split('\\').last().split('.')
-    var extension = filename.pop()
-    $(this).prev().val(filename)
-  })
-
   $('.hide-document').click(function(e){
     e.preventDefault();
     $(this).parent().addClass('d-none')
@@ -67,6 +61,20 @@ $(function() {
     })
     $(this).closest('.documents').find('.show-document').removeClass('d-none')
   });
+
+  $("input:file").change(function (){
+    var button = $(this).parent().parent()
+    var filename = $(this).val().split('\\').last().split('.')
+    var extension = ''
+    if(filename.length > 1)
+      extension = '.' + filename.pop()
+    button.prev().prev().val(filename)
+    button.prev().html(extension)
+  })
+
+  $(".upload").bind("click",function (){
+    $(this).find('input')[0].click()
+  })
 
   $('.apply-dropdown').click(function(e){
     e.preventDefault()

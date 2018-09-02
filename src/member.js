@@ -62,7 +62,7 @@ exports.setup = (app, db) => {
   }, (req,res) => {
     db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
       if (err) return
-      var path = './sponsors/'+ req.params.sponsor + '/' + req.params.posname + '/' + req.session.data.firstname + ' ' + req.session.data.surname + ' ' + req.session.data.Login + '/'
+      var path = './sponsors/'+ req.params.sponsor + '/' + req.params.posname + '/' + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
       data = {
         firstname: req.session.data.FirstName,
         surname: req.session.data.Surname,
@@ -109,7 +109,7 @@ exports.setup = (app, db) => {
   }, (req,res) => {
     db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
       if (err) return
-      var path = './sponsors/'+ req.params.sponsor + '/' + req.params.posname + '/' + req.session.data.Login + '/'
+      var path = './sponsors/'+ req.params.sponsor + '/' + req.params.posname + '/' + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
       if(fs.existsSync(path)){
         fs.removeSync(path) 
       }

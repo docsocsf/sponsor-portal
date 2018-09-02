@@ -31,8 +31,7 @@ exports.setup = (app, db) => {
     check(req,res,next)
   },(req,res) => {
     var path = './sponsors/' + req.session.user + '/' +  req.params.pos + '/' + req.params.filename + '/' + req.params.document
-    var data = fs.readFileSync(path) 
-    res.send(data) 
+    res.download(path)
   }) 
   
   //Download member
@@ -48,7 +47,6 @@ exports.setup = (app, db) => {
         res.download(zippath, () => {
           if(fs.existsSync(zippath)){
             fs.removeSync(zippath) 
-            res.redirect('/sponsor/#positions-tab')
           }
         })
       }
@@ -68,7 +66,6 @@ exports.setup = (app, db) => {
         res.download(zippath, () => {
           if(fs.existsSync(zippath)){
             fs.removeSync(zippath)
-            res.redirect('/sponsor/#positions-tab')
           }
         })
       }
