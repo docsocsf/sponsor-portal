@@ -57,4 +57,12 @@ $(function() {
     $('.account-settings').toggleClass('d-none');
     $(".account-settings").siblings().toggleClass("inactiveLink")
   })
+
+  $('.pass').click(function() {
+    if($(this).parent().prev()[0].type === "password") {
+      $(this).parent().prev()[0].type = "text"
+    } else {
+      $(this).parent().prev()[0].type = "password"
+    }
+  })
 });

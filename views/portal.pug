@@ -1,35 +1,121 @@
-html
-  body
-    h1 Hello there DoCSoc
-    form(method="post" action="/new-sponsor")
-      h1 Add a new sponsor:
-        div.form-group
-          label(for="user") Username: 
-          input.form-control(type="text", placeholder="Sponsor Username", name="user")
-        div.form-group
-          label(for="name") Name: 
-          input.form-control(type="text", placeholder="Sponsor Username", name="name")
-        div.form-group
-          label(for="pass") Password: 
-          input(type="password", name="pass")
-        div.form-group
-          label(for="pass") Rank: 
-          select(name="rank")
-            option(value="Gold") Gold
-            option(value="Silver") Silver
-            option(value="Bronze") Bronze
-        button.btn.btn-primary(type='submit') Add
-    h2 All sponsors: 
-    ul
-      for sponsor in sponsors
-        li= sponsor
-        ul
-          for position in sponsor.positions
-            li= position
-            ul
-              for user in position.users
-                li= user
-        form(method="post" action="/remove-sponsor/"+sponsor.username)
-          button.btn.btn-primary(type='submit') Remove
-    form(method="post" action="/logout")
-      button.btn.btn-primary(type='submit') Logout
+include ./layout.pug
+h1 Hello there DoCSoc
+.container-fluid.mt-4
+  .row
+    .col-4
+      form(method="post" action="/new-sponsor")
+        h1 Add a new sponsor:
+          div.form-group
+            label(for="user") Username: 
+            input.form-control(type="text", placeholder="Sponsor Username", name="user")
+          div.form-group
+            label(for="name") Name: 
+            input.form-control(type="text", placeholder="Sponsor Username", name="name")
+          div.form-group
+            label(for="pass") Password: 
+            input.form-control(type="password", name="pass")
+          div.form-group
+            label(for="pass") Rank: 
+            select(name="rank").form-control
+              option(value="Gold") Gold
+              option(value="Silver") Silver
+              option(value="Bronze") Bronze
+          button.btn.btn-primary(type='submit') Add
+
+h1.mt-5 Sponsors
+table(style = "width:4000px").ml-3.mt-4
+  tr 
+    th username
+    th password
+    th name
+    th email
+    th rank
+    th bespoke (true/false)
+    th description
+    th picture
+    th link
+    th news
+    th positions
+  each s in sponsors
+    form(method="post" action="/edit-sponsor")
+      tr
+        th=s.username
+        th
+          input.form-control(type="password", name="s.password", value=s.password)
+          .row
+            div.col-9 Show Password:
+            input.col-2.form-control(type="checkbox").pass
+        th
+          input.form-control(type="text", name="s.info.name", value=s.info.name)
+        th
+          input.form-control(type="text", name="s.info.email", value=s.info.email)
+        th
+          input.form-control(type="text", name="s.info.rank", value=s.info.rank)
+        th
+          input.form-control(type="text", name="s.info.bespoke", value=s.info.bespoke)
+        th
+          input.form-control(type="text", name="s.info.description", value=s.info.description)
+        th
+          input.form-control(type="text", name="s.info.picture", value=s.info.picture)
+        th
+          input.form-control(type="text", name="s.info.link", value=s.info.link)
+        th 
+          if(s.news.length > 0)
+            table(style = "width:100%")
+              tr
+                th date
+                th title
+                th text
+                th link
+              each n, i in s.news
+                tr
+                  th=n.date
+                  th
+                    input.form-control(type="text", name="n.title."+i, value=n.title)
+                  th
+                    input.form-control(type="text", name="n.text."+i, value=n.text)
+                  th
+                    input.form-control(type="text", name="n.link."+i, value=n.link)
+        th 
+          if(s.positions.length > 0)
+            table(style = "width:100%")
+              tr 
+                th name
+                th description
+                th requirements
+                th link 
+                th users
+              each p,i in s.positions
+                tr 
+                  th
+                    input.form-control(type="text", name="p.name."+i, value=p.name)
+                  th
+                    input.form-control(type="text", name="p.description."+i, value=p.description)
+                  th
+                    input.form-control(type="text", name="p.requirements."+i, value=p.requirements)
+                  th
+                    input.form-control(type="text", name="p.link."+i, value=p.link)
+                  th 
+                    if(p.users.length > 0)
+                      table(style = "width:100%")
+                        tr   
+                          th firstname
+                          th surname
+                          th email
+                          th username
+                          th documents
+                        each u in p.users
+                          tr   
+                            th=u.firstname
+                            th=u.surname
+                            th=u.email
+                            th=u.username
+                            th=u.documents.map(d => d = d.name)
+        th
+          button.btn.btn-primary(type='submit') Save
+        th
+          form(method="post" action="/remove-sponsor/"+s.username)
+            button.btn.btn-primary(type='submit') Remove
+
+form(method="post" action="/logout")
+  button.btn.btn-primary(type='submit') Logout
