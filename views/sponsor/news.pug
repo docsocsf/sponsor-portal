@@ -17,3 +17,21 @@
                 input.col-9(type="text", name="link")
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Add
+    .row.justify-content-center.mt-4
+      .col
+        h2.center Your News:
+    .row.justify-content-center
+      .col-lg-8.col-sm-11
+        each news in sponsor.news
+          .card.mt-3              
+            .row
+              .col
+                .card-body
+                  h2.card-title #{news.title}
+                  .card-text #{news.text}
+                  a.card-link(href=news.link) #{news.link}
+              .col-2.mt-3
+                form(action="/sponsor/remove-news/" + news.date method="post")
+                  button.btn(type='submit') Delete 
+                    span.octicon.octicon-trashcan   
+              
