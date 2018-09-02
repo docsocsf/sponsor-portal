@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+# Check if newer image available
+sudo docker-compose -f /var/www/DoCSoc-portal/docker-compose.yml pull
+# Run service
+sudo docker-compose -f /var/www/DoCSoc-portal/docker-compose.yml up -d
