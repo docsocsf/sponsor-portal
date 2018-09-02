@@ -23,6 +23,8 @@ exports.setup = (app, db) => {
       res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
+
+  //=====================POSITIONS========================
   
   //Show document
   app.post('/sponsor/show/:pos/:filename/:document', (req,res,next) => {
@@ -95,7 +97,7 @@ exports.setup = (app, db) => {
           res.render('sponsor', {sponsor: sponsor[0]})
         }) 
       }else{
-        res.render('sponsor', {sponsor: sponsor[0], error: "Position name is blank or already exists"})
+        res.render('sponsor', {sponsor: sponsor[0], err: "Position name is blank or already exists"})
       }
     }) 
   }) 
@@ -125,6 +127,17 @@ exports.setup = (app, db) => {
       res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
+
+  //=======================================NEWS=================================
+
+
+
+
+
+
+
+
+  //=====================================ACCOUNT=================================
   
   //change Password
   app.post('/sponsor/change-password', (req,res,next) => {

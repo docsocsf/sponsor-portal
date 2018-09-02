@@ -16,7 +16,7 @@ exports.authSponsor = (user, pass, db, session, callback) => {
       session.user = user 
       callback(true)
     }else{
-      callback({member: false, error: 'Wrong username or password'}) 
+      callback({member: false, err: 'Wrong username or password'}) 
     }
     return
   })
@@ -42,7 +42,7 @@ exports.authUser = (user, pass, session, callback) => {
       //WRONG PASSWORD/INVALID USER
       console.log('err ' + err) 
       //res.send('wrong username or password') 
-      callback( {member: true, error: 'Wrong username or password'} )
+      callback( {member: true, err: 'Wrong username or password'} )
       return
     }else{
       console.log('Kerberos Authentication success.') 
@@ -96,7 +96,7 @@ checkMember = (session, user, callback) => {
   }else{
     //NON DOCSOC USER
     console.log('Not member of DoCSoc') 
-    callback( {member: true, error: 'Not a DoCSoc Member!'} )
+    callback( {member: true, err: 'Not a DoCSoc Member!'} )
     return
   }
 }

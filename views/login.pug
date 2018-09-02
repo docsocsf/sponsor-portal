@@ -21,8 +21,8 @@ include ./layout.pug
               h1 Member Login:
           .row
             .col
-              if error && member
-                .error #{error}
+              if err && member
+                .err #{err}
               else 
                 br
           .row
@@ -46,8 +46,8 @@ include ./layout.pug
               h1 Sponsor Login:
           .row
             .col
-              if error && !member
-                .error #{error}
+              if err && !member
+                .err #{err}
               else 
                 br
           .row
