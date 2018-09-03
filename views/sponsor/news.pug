@@ -22,7 +22,7 @@
         h2.center Your News:
     .row.justify-content-center
       .col-lg-8.col-sm-11
-        each news in sponsor.news
+        each news in sponsor.news.reverse()
           .card.mt-3              
             .row
               .col
