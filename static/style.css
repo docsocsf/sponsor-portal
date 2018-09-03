@@ -10,6 +10,11 @@ body {
   background-color: #f5f5f5 !important;
 }
 
+.story{
+  white-space: pre-wrap !important;
+  text-align: justify;
+}
+
 .nav-link.active{
   background-color: #f5f5f5 !important;
   border-color: #f5f5f5 !important;
@@ -53,7 +58,6 @@ textarea {
   border-radius: 5px;
   margin: auto;
   color: white;
-  font-size: 1rem;
 }
 
 .logo {
@@ -61,7 +65,6 @@ textarea {
 }
 
 .error {
-  font-size: 1rem;
   color: red;
   margin: 0;
   padding: 0;
@@ -182,4 +185,42 @@ th, td {
   width: 40px;
   right: -10px;
   top: -10px;
+}
+
+textarea {
+  height: 120px;
+}
+
+/* xs < 768 */
+@media screen and (max-width: 767px) {
+  body {
+      font-size: 1.4em !important
+  }
+}
+
+/* sm */
+@media screen and (min-width: 768px) {
+  body {
+      font-size: 1.3em !important
+  }
+  h2 {
+    font-size: 1.7em !important
+  }
+  h4 {
+    font-size: 1.5em !important
+  }
+}
+
+/* md */
+@media screen and (min-width: 992px) {
+  body {
+      font-size: 1.1em !important
+  }
+}
+
+/* lg */
+@media screen and (min-width: 1200px) {
+  body {
+      font-size: 1em !important
+  }
 }

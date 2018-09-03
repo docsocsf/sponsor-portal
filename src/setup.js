@@ -35,4 +35,8 @@ if(!fs.existsSync('./temp/')){
   fs.mkdirSync('./temp/') 
 }
 
+if(!fs.existsSync('./secure/')){
+  fs.mkdirSync('./secure/') 
+}
+
 exports.app = app;
