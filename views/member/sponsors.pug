@@ -1,0 +1,99 @@
+-var klass = (rank === 'gold') ? 'show active' : ''
+.tab-pane.fade(id=rank class = klass role='tabpanel', aria-labelledby=rank+'-tab')
+  .container-fluid
+    .row.justify-content-center
+      .col-lg-8.col-sm-11
+        each sponsor in sponsors.filter(s => s.info.rank === (rank.charAt(0).toUpperCase() + rank.slice(1))).sort(function(a,b) {if( a.info.bespoke &&  b.info.bespoke) return 0.5 - Math.random(); if( a.info.bespoke && !b.info.bespoke) return -0.9; if(!a.info.bespoke &&  b.info.bespoke) return 0.9; if(!a.info.bespoke && !b.info.bespoke) return 0.5 - Math.random()})
+          .card.mt-4.mb-2
+            .card-body
+              if(sponsor.info.bespoke)
+                img(src="/static/assets/images/icons/"+rank+"_bespoke.png" width="150px").bespoke
+              .row
+                .col-3
+                  img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="150px")
+                .col-7
+                  h2.card-title=sponsor.info.name
+                  p.card-text=sponsor.info.description
+                  a.card-link(href="mailto:"+sponsor.info.email)=sponsor.info.email
+                  if(sponsor.info.link)
+                    a.card-link(href=sponsor.info.link) Read More
+            if(rank != 'bronze')
+              ul.list-group.list-group-flush
+                if(sponsor.news.length != 0)
+                  li.list-group-item 
+                    a.apply-dropdown(href="#")
+                      h3 News (#{sponsor.news.length}) 
+                        span.octicon.octicon-chevron-down
+                  li.list-group-item.apply.d-none
+                    each news in sponsor.news.reverse()
+                      .card.mt-2
+                        .card-body
+                          h4.card-title=news.title
+                          p.card-text=news.text
+                          a.card-link(href=news.link) Read More
+              ul.list-group.list-group-flush
+                if(sponsor.positions.length != 0)
+                  li.list-group-item 
+                    a.apply-dropdown(href="#")
+                      h3 Opportunities (#{sponsor.news.length}) 
+                        span.octicon.octicon-chevron-down
+                  li.list-group-item.apply.d-none
+                    each pos in sponsor.positions.reverse()
+                      .card.mt-2
+                        .card-body
+                          h4.card-title=pos.name
+                          p.card-text Description: #{pos.description}
+                          p.card-text Requirements: #{pos.requirements}
+                          p
+                            a.card-link(href=pos.link) Read More
+                        ul.list-group.list-group-flush
+                          if(pos.applied)
+                            li.list-group-item
+                              form.col-1(action="/member/unapply/"+ sponsor.username + '/' + pos.name method="post")
+                                button.btn(type='submit') Remove application 
+                                  span.octicon.octicon-trashcan   
+                          else
+                            li.list-group-item
+                              a.apply-dropdown(href="#")
+                                h4 Apply 
+                                  span.octicon.octicon-chevron-down 
+                            li.list-group-item.apply.d-none
+                              .container
+                                br
+                                form(method="post" action='/member/apply/' + sponsor.username + '/' + pos.name encType="multipart/form-data")
+                                  .row
+                                    h4 Personal Information:
+                                  .row
+                                    p This is how the Sponsor will contact you
+                                  .row.justify-content-center
+                                    label.col-auto(for="email").mt-2 Your email:
+                                    input.col-9(type="text", name="email", value=email)
+                                  br
+                                  .row
+                                    h4 Documents:
+                                  .row
+                                    p Make sure you upload all requirements
+                                  .documents
+                                    .row
+                                      .col-12
+                                        for i in [0,1,2,3,4,5,6,7,8,9]
+                                          - var klass = (i === 0 ? '' : 'd-none')
+                                          .row.justify-content-start.mb-2(class = klass)
+                                            label.col.mt-2(for="documentname" + i) Document Name:
+                                            input.col-5(type="text", name="documentname" + i)
+                                            label.col-1.mt-2
+                                            button.col-2.btn.mr-2.upload(type='button') Upload 
+                                              span.octicon.octicon-cloud-upload
+                                                input(type="file", style = 'display:none' name="document" + i)
+                                            if(i)
+                                              button.col-1.btn.btn-sm(type='button').hide-document
+                                                span.octicon.octicon-x
+                                            else
+                                              .col-1
+                                    .row
+                                      button.col-auto.btn(type='button').show-document Add Document 
+                                        span.octicon.octicon-plus
+                                  br
+                                  .row.float-right
+                                      button.btn(type='submit') Apply 
+                                        span.octicon.octicon-check

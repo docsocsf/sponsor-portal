@@ -28,7 +28,7 @@
               .col
                 .card-body
                   h2.card-title #{news.title}
-                  .card-text #{news.text}
+                  .card-text.story #{news.text}
                   a.card-link(href=news.link) #{news.link}
               .col-2.mt-3
                 form(action="/sponsor/remove-news/" + news.date method="post")

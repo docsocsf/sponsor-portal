@@ -7,17 +7,17 @@
             h2.card-title Add New Position:
             form(method="post" action="/sponsor/add-position")
               .row.mt-2.mb-2
-                label.col-2(for="name") Name: 
-                input.col-9(type="text", name="name")
+                label.col-lg-2.col-sm-3.mr-1.ml-2(for="name") Name: 
+                input.col-lg-9.col-sm-8(type="text", name="name")
               .row.mt-2.mb-2
-                label.col-2(for="description") Description: 
-                textarea.col-9(type="text", name="description")
+                label.col-lg-2.col-sm-3.mr-1.ml-2(for="description") Description: 
+                textarea.col-lg-9.col-sm-8(type="text", name="description")
               .row.mt-2.mb-2
-                label.col-2(for="requirements") Requirements: 
-                textarea.col-9(type="text", name="requirements")
+                label.col-lg-2.col-sm-3.mr-1.ml-2(for="requirements") Requirements: 
+                textarea.col-lg-9.col-sm-8(type="text", name="requirements")
               .row.mt-2.mb-2
-                label.col-2(for="link") Link: 
-                input.col-9(type="text", name="link")
+                label.col-lg-2.col-sm-3.mr-1.ml-2(for="link") Link: 
+                input.col-lg-9.col-sm-8(type="text", name="link")
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Add
     .row.justify-content-center.mt-4
@@ -31,8 +31,10 @@
               .row
                 .col
                   h2.card-title #{position.name}
-                  h4.card-text Description: #{position.description}
-                  h4.card-text Requirements: #{position.requirements}
+                  h4.card-text Description: 
+                  p.story #{position.description}
+                  h4.card-text Requirements: 
+                  p.story #{position.requirements}
                   h4 Link: 
                     a.card-link(href=position.link) #{position.link}
                   form.col-1(action="/sponsor/remove-position/" + position.name method="post")

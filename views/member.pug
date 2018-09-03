@@ -8,6 +8,9 @@ include ./layout.pug
       .col-lg-8.col-sm-12
         h3.text-center These companies are generous enough to contribute to the Department of Computing Society, please check out the opportunities they have to offer!
   #myTabContent.tab-content
-    include ./member/gold.pug
-    include ./member/silver.pug
-    include ./member/bronze.pug
+    - var rank = 'gold'
+    include ./member/sponsors.pug
+    - var rank = 'silver'
+    include ./member/sponsors.pug
+    - var rank = 'bronze'
+    include ./member/sponsors.pug
