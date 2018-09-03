@@ -12,7 +12,7 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "d3:9b:6d:d3:87:3c:7b:97:7a:04:9c:e6:da:64:b7:00"
-      - run: ssh -o "StrictHostKeyChecking=no" -vv docsoc@shell1.doc.ic.ac.uk "update-portal"
+      - run: ssh -o "StrictHostKeyChecking=no" -p 10022 -vv circleci@portal.docsoc.co.uk "update-portal"
   test:
     docker:
       - image: circleci/node:10.9.0-browsers
