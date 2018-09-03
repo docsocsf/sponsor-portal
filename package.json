@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "test": "node server.js",
     "start": "node app.js",
-    "local": "node app.js --no-https"
+    "test": "node app.js --no-https"
   },
   "author": "George Soteriou",
   "license": "ISC",
