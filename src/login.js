@@ -27,9 +27,7 @@ exports.setup = (app, db) => {
     var user = req.body.user 
     var pass = req.body.pass 
     auth.authUser(user, pass, req.session, (ret) => {
-      (ret === true) ? 
-      res.redirect('/member') : 
-      res.render('login', ret)
+      (ret === true) ? res.redirect('/member') : res.render('login', ret)
     })
   }) 
   
