@@ -13,7 +13,7 @@
                   img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="150px")
                 .col-7
                   h2.card-title=sponsor.info.name
-                  p.card-text=sponsor.info.description
+                  p.card-text.story=sponsor.info.description
                   a.card-link(href="mailto:"+sponsor.info.email)=sponsor.info.email
                   if(sponsor.info.link)
                     a.card-link(href=sponsor.info.link) Read More
@@ -29,7 +29,7 @@
                       .card.mt-2
                         .card-body
                           h4.card-title=news.title
-                          p.card-text=news.text
+                          p.card-text.story=news.text
                           a.card-link(href=news.link) Read More
               ul.list-group.list-group-flush
                 if(sponsor.positions.length != 0)
@@ -41,9 +41,11 @@
                     each pos in sponsor.positions.reverse()
                       .card.mt-2
                         .card-body
-                          h4.card-title=pos.name
-                          p.card-text Description: #{pos.description}
-                          p.card-text Requirements: #{pos.requirements}
+                          h4.card-title=pos.name 
+                          p.story #{pos.description}
+                          br
+                          h5.card-text Requirements: 
+                          p.story #{pos.requirements}
                           p
                             a.card-link(href=pos.link) Read More
                         ul.list-group.list-group-flush

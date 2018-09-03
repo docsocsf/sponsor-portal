@@ -78,7 +78,16 @@ $(function() {
 
   $('.apply-dropdown').click(function(e){
     e.preventDefault()
-    $(this).closest('ul').find('.apply').first().toggleClass('d-none')
+    var element = $(this).closest('ul').find('.apply').first()
+    if(element.hasClass('d-none')){
+      element.hide()
+      element.removeClass('d-none')
+      element.slideDown()
+    } else {
+      element.slideUp(function(){
+        element.addClass('d-none')
+      })
+    }
   })
 
   $('.account').click(function() {
