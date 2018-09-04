@@ -12,7 +12,6 @@ body {
 
 .story{
   white-space: pre-wrap !important;
-  text-align: justify;
 }
 
 .nav-link.active{
