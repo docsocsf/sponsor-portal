@@ -29,4 +29,4 @@ WORKDIR /portal
 RUN npm install
 
 # Start Service
-CMD ["npm", "start"]
+CMD ["npm", "run", "local"]
