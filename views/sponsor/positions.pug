@@ -1,28 +1,33 @@
 #positions.tab-pane.fade.show(role='tabpanel', aria-labelledby='positions-tab' class=(sponsor.info.rank === 'Bronze' ? '' : 'active')) 
   .container-fluid
     .row.justify-content-center
+      .col-lg-7.col-sm-10.text-center.mb-4
+        h3.small-font By adding a new opportunity here, DoCSoc members will be able to apply for the opportunity 
+          | by providing the nessesary documents. You will then be able to see who applied and download 
+          | the documents they provided.
+    .row.justify-content-center
       .col-lg-8.col-sm-11
         .card
           .card-body
-            h2.card-title Add New Position:
+            h2.card-title Add New Opportunity:
             form(method="post" action="/sponsor/add-position")
               .row.mt-2.mb-2
-                label.col-lg-2.col-sm-3.mr-1.ml-2(for="name") Name: 
-                input.col-lg-9.col-sm-8(type="text", name="name")
+                label.col-lg-3.col-sm-4(for="name") Name: 
+                input.col-lg-8.col-sm-7(type="text", name="name")
               .row.mt-2.mb-2
-                label.col-lg-2.col-sm-3.mr-1.ml-2(for="description") Description: 
-                textarea.col-lg-9.col-sm-8(type="text", name="description")
+                label.col-lg-3.col-sm-4(for="description") Description: 
+                textarea.col-lg-8.col-sm-7(type="text", name="description")
               .row.mt-2.mb-2
-                label.col-lg-2.col-sm-3.mr-1.ml-2(for="requirements") Requirements: 
-                textarea.col-lg-9.col-sm-8(type="text", name="requirements")
+                label.col-lg-3.col-sm-4(for="requirements") Requirements: 
+                textarea.col-lg-8.col-sm-7(type="text", name="requirements")
               .row.mt-2.mb-2
-                label.col-lg-2.col-sm-3.mr-1.ml-2(for="link") Link: 
-                input.col-lg-9.col-sm-8(type="text", name="link")
+                label.col-lg-3.col-sm-4(for="link") Learn more Link: 
+                input.col-lg-8.col-sm-7(type="text", name="link")
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Add
     .row.justify-content-center.mt-4
       .col
-        h2.center Your Positions:
+        h2.center Opportunities you have added:
     .row.justify-content-center
       .col-lg-8.col-sm-11
         each position in sponsor.positions.reverse()
@@ -32,9 +37,9 @@
                 .col
                   h2.card-title #{position.name}
                   h4.card-text Description: 
-                  p.story #{position.description}
+                  .story.mb-4 #{position.description}
                   h4.card-text Requirements: 
-                  p.story #{position.requirements}
+                  .story.mb-4 #{position.requirements}
                   h4 Link: 
                     a.card-link(href=position.link) #{position.link}
                   form.col-1(action="/sponsor/remove-position/" + position.name method="post")
