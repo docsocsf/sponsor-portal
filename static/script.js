@@ -6,11 +6,11 @@ $(function() {
   };
 
 
-  if(window.location.hash === '#positions-tab') {
+  if(window.location.hash === '#positions-tab-nav') {
     $('#positions-tab').tab('show')
-  } else if(window.location.hash === '#news-tab') {
+  } else if(window.location.hash === '#news-tab-nav') {
     $('#news-tab').tab('show')
-  } else if(window.location.hash === '#info-tab') {
+  } else if(window.location.hash === '#info-tab-nav') {
     $('#info-tab').tab('show')
   }
 
@@ -42,7 +42,7 @@ $(function() {
   });
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-    window.location.hash = e.target['id'] 
+    window.location.hash = e.target['id'] + '-nav' 
   })
 
   $('.show-document').click(function(e){
