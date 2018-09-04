@@ -1,20 +1,24 @@
 #info.tab-pane.fade.show(role='tabpanel', aria-labelledby='info-tab' class=(sponsor.info.rank === 'Bronze' ? 'active' : ''))
   .container-fluid
     .row.justify-content-center
+      .col-lg-7.col-sm-10.text-center.mb-4
+        h3.small-font The following Email, Description and Link will be desplayed under your 
+          | company logo and name in the members portal.
+    .row.justify-content-center
       .col-lg-8.col-sm-11
         .card
           .card-body
             h2.card-title Edit Your Info:
             form(method="post" action="/sponsor/update-info")
               .row.mt-2.mb-2
-                label.col-2(for="email") Email: 
-                input.col-9(type="text", name="email", value=sponsor.info.email)
+                label.col-lg-3.col-sm-4(for="email") Email: 
+                input.col-lg-8.col-sm-7(type="text", name="email", value=sponsor.info.email)
               .row.mt-2.mb-2
-                label.col-2(for="description") Description: 
-                textarea.col-9(type="text", name="description")=sponsor.info.description
+                label.col-lg-3.col-sm-4(for="description") Description: 
+                textarea.col-lg-8.col-sm-7(type="text", name="description")=sponsor.info.description
               .row.mt-2.mb-2
-                label.col-2(for="link") Link: 
-                input.col-9(type="text", name="link", value=sponsor.info.link)
+                label.col-lg-3.col-sm-4(for="link") Learn More Link: 
+                input.col-lg-8.col-sm-7(type="text", name="link", value=sponsor.info.link)
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Save
     .row.justify-content-center.mt-3
@@ -24,13 +28,13 @@
             h2.card-title Change Password:
             form(method="post" action="/sponsor/change-password")
               .row.mt-2.mb-2
-                label.col-lg-2.col-sm-3.mr-1.ml-2(for="old") Old Password: 
-                input.col-lg-9.col-sm-8(type="password", name="old")
+                label.col-lg-3.col-sm-4(for="old") Old Password: 
+                input.col-lg-8.col-sm-7(type="password", name="old")
               .row.mt-2.mb-2
-                label.col-lg-2.col-sm-3.mr-1.ml-2(for="new") New Password: 
-                input.col-lg-9.col-sm-8(type="password", name="new")
+                label.col-lg-3.col-sm-4(for="new") New Password: 
+                input.col-lg-8.col-sm-7(type="password", name="new")
               .row.mt-2.mb-2
-                label.col-lg-2.col-sm-3.mr-1.ml-2(for="new2") One more time: 
-                input.col-lg-9.col-sm-8(type="password", name="new2")
+                label.col-lg-3.col-sm-4(for="new2") One more time: 
+                input.col-lg-8.col-sm-7(type="password", name="new2")
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Change

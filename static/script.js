@@ -78,6 +78,7 @@ $(function() {
 
   $('.apply-dropdown').click(function(e){
     e.preventDefault()
+    $(this).find('span').toggleClass('octicon-chevron-up octicon-chevron-down ')
     var element = $(this).closest('ul').find('.apply').first()
     if(element.hasClass('d-none')){
       element.hide()
@@ -92,7 +93,7 @@ $(function() {
 
   $('.account').click(function() {
     $('.account-settings').toggleClass('d-none');
-    $(".account-settings").siblings().toggleClass("inactiveLink")
+    $('.account-settings').siblings().toggleClass("inactiveLink")
   })
 
   $('.pass').click(function() {
