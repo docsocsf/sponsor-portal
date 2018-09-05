@@ -61,14 +61,14 @@ exports.setup = (app, db) => {
     check(req,res,next)
   }, (req,res) => {
     //check if valid path
-    var sponsorpath = './sponsors/' + req.session.user + '/'
+    var sponsorpath = './sponsors/' + req.params.sponsor + '/'
     if(!fs.existsSync(sponsorpath)){
-      console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      console.log(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
-    var pospath = sponsorpath + req.params.pos + '/'
+    var pospath = sponsorpath + req.params.posname + '/'
     if(!fs.existsSync(pospath)){
-      console.log(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      console.log(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
@@ -115,14 +115,14 @@ exports.setup = (app, db) => {
     check(req,res,next)
   }, (req,res) => {
     //check if valid path
-    var sponsorpath = './sponsors/' + req.session.user + '/'
+    var sponsorpath = './sponsors/' + req.params.sponsor + '/'
     if(!fs.existsSync(sponsorpath)){
-      console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      console.log(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
-    var pospath = sponsorpath + req.params.pos + '/'
+    var pospath = sponsorpath + req.params.posname + '/'
     if(!fs.existsSync(pospath)){
-      console.log(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      console.log(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
