@@ -60,9 +60,24 @@ exports.setup = (app, db) => {
   app.post('/member/apply/:sponsor/:posname', (req,res,next) => {
     check(req,res,next)
   }, (req,res) => {
+    //check if valid path
+    var sponsorpath = './sponsors/' + req.session.user + '/'
+    if(!fs.existsSync(sponsorpath)){
+      console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      res.redirect('/member')
+    }
+    var pospath = sponsorpath + req.params.pos + '/'
+    if(!fs.existsSync(pospath)){
+      console.log(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      res.redirect('/member')
+    }
+    var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
+    if(!fs.existsSync(path)){
+      fs.mkdirSync(path) 
+    }
+
     db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
       if (err) return
-      var path = './sponsors/'+ req.params.sponsor + '/' + req.params.posname + '/' + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
       data = {
         firstname: req.session.data.FirstName,
         surname: req.session.data.Surname,
@@ -70,13 +85,11 @@ exports.setup = (app, db) => {
         username: req.session.data.Login,
         documents: []
       }
-      if(!fs.existsSync(path)){
-        fs.mkdirSync(path) 
-      }
       for(let i=0; i<10; i++){
         if(req.files['document'+i]){
-          //Implement check names
+          //TODO: Implement check names
           var ext = req.files['document'+i].name.split('.').pop();
+          //Save files
           req.files['document'+i].mv(path + req.body['documentname'+i] + '.' + ext, function(err) {
             if (err) return res.status(500).send(err) 
           }) 
@@ -96,23 +109,29 @@ exports.setup = (app, db) => {
       }) 
     })
   })
-  app.get('/member/apply/:sponsor/:posname', (req,res,next) => {
-    check(req,res,next)
-  }, (req,res) => { 
-    res.redirect('/member')
-  })
-
 
   //unapply
   app.post('/member/unapply/:sponsor/:posname', (req,res,next) => {
     check(req,res,next)
   }, (req,res) => {
+    //check if valid path
+    var sponsorpath = './sponsors/' + req.session.user + '/'
+    if(!fs.existsSync(sponsorpath)){
+      console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      res.redirect('/member')
+    }
+    var pospath = sponsorpath + req.params.pos + '/'
+    if(!fs.existsSync(pospath)){
+      console.log(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      res.redirect('/member')
+    }
+    var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
+    if(fs.existsSync(path)){
+      fs.removeSync(path) 
+    }
+
     db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
       if (err) return
-      var path = './sponsors/'+ req.params.sponsor + '/' + req.params.posname + '/' + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
-      if(fs.existsSync(path)){
-        fs.removeSync(path) 
-      }
       sponsor[0].positions.forEach(position => {
         if(position.name === req.params.posname){
           position.users = position.users.filter(user => user.username !== req.session.data.Login) 

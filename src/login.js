@@ -31,12 +31,6 @@ exports.setup = (app, db) => {
     })
   }) 
   
-  app.get('/member-login',(req,res,next) => {
-    check(req,res,next)
-  }, (req,res) => {
-    res.redirect('/') 
-  })
-  
   //SPONSOR AUTH
   app.post('/sponsor-login',(req,res,next) => {
     check(req,res,next)
@@ -44,15 +38,8 @@ exports.setup = (app, db) => {
     var user = req.body.user 
     var pass = req.body.pass 
     auth.authSponsor(user,pass,db,req.session, (ret) => {
-      (ret === true) ? 
-      res.redirect('/sponsor') : 
-      res.render('login', ret) 
+      (ret === true) ? res.redirect('/sponsor') : res.render('login', ret) 
     })
   }) 
   
-  app.get('/sponsor-login', (req,res,next) => {
-    check(req,res,next)
-  }, (req,res) => {
-    res.redirect('/') 
-  })
 }
