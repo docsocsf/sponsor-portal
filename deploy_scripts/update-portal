@@ -5,3 +5,9 @@ set -e
 sudo docker-compose -f /var/www/DoCSoc-portal/docker-compose.yml pull
 # Run service
 sudo docker-compose -f /var/www/DoCSoc-portal/docker-compose.yml up -d
+
+# Cleanup unused resources
+sudo docker image prune -a
+sudo docker container prune
+sudo docker volume prune
+sudo docker network prune
