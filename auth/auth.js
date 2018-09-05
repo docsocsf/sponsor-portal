@@ -61,15 +61,15 @@ exports.authUser = (user, pass, session, callback) => {
           console.log('Outdated auth file, Updating...') 
           rp(options).then((body) => {
             fs.writeFileSync(authpath,body) 
-            return checkMember(session,user, callback) 
+            return checkMember(session,user, callback)
           }) 
         }else{
-          return checkMember(session, user, callback) 
+          return checkMember(session, user, callback)
         }
       }else{
         //download new file
-        console.log('Downloading auth file') 
         rp(options).then((body) => {
+          console.log('Downloading auth file')
           fs.writeFileSync(authpath,body) 
           return checkMember(session,user,callback) 
         }) 
