@@ -5,3 +5,6 @@ services:
       - "80:80"
     image: "icdocsoc/portal:latest"
     network_mode: "host"
+    volumes:
+      - /portal/sponsors:/portal/sponsors
+      - /portal/secure:/portal/secure
