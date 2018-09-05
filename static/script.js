@@ -63,7 +63,7 @@ $(function() {
   });
 
   $("input:file").change(function (){
-    var button = $(this).parent().parent()
+    var button = $(this).closest('button')
     var filename = $(this).val().split('\\').last().split('.')
     var extension = ''
     if(filename.length > 1)
