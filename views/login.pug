@@ -3,8 +3,8 @@ include ./layout.pug
   .row.align-items-center.justify-content-center
     .col-lg-6.col-sm-10.mt-5.login.logo
       .row.align-items-start.justify-content-center
-        img.d-inline-block(src="/static/assets/images/docsoc-sf-logo.svg" width="40" style="vertical-align: sub;")
-        h1.d-inline-block.ml-2 DoCSoc Sponsor Portal
+        img.d-inline-block(src="/static/assets/images/docsoc-sf-logo.svg" width="50" style="vertical-align: sub;")
+        .display-4.d-inline-block.ml-2 DoCSoc Sponsor Portal
   .row.align-items-center.justify-content-center
     .col-lg-6.col-sm-10.mt-5.login
       .row.align-items-start.justify-content-center
@@ -12,6 +12,7 @@ include ./layout.pug
         - var sklass = !member ? 'active-tab' : 'inactive-tab'
           .col-6.member-tab.login-tab.text-center(class = mklass) Members
           .col-6.sponsor-tab.login-tab.text-center(class = sklass) Sponsors
+      .row.mt-3
       .row.align-items-start.justify-content-center
         form(method="post" action="/member-login").member-login.d-none.col
           .row.mt-3
@@ -43,7 +44,7 @@ include ./layout.pug
           .row.mt-3
             .col
               h1 Sponsor Login:
-          .row
+          .row.mt-3
             .col
               if err && !member
                 .error #{err}
@@ -55,7 +56,7 @@ include ./layout.pug
                 label(for="user").col-12 
                   h2 Username: 
                 input(type="text", name="user").col-6.center
-          .row.mt-3
+          .row.mt-5
             .col
               .row.justify-content-center
                 label(for="pass").col-12 
