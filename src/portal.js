@@ -16,12 +16,12 @@ exports.setup = (app, db) => {
     }
   }, (req,res) => {
     var user = req.body.user 
-    var pass = req.body.pass 
-    if(user === 'docsoc' && pass === 'docsoc'){
+    var pass = req.body.pass
+    if (user === "docsoc" && pass === 'docsoc') {
       req.session.docsoc = true 
       res.redirect('/portal') 
     }else{
-      res.redirect('/') 
+      res.redirect('/')
     }
   })
 
