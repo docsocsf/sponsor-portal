@@ -40,21 +40,21 @@ exports.setup = (app, db) => {
   },(req,res) => {
     var sponsorpath = './sponsors/' + req.session.user + '/'
     if(!fs.existsSync(sponsorpath)){
-      console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
+      logger.info(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
       fs.mkdirSync(sponsorpath)
-      console.log('made a temp fix')
+      logger.info('made a temp fix')
     }
     var pospath = sponsorpath + req.params.pos + '/'
     if(!fs.existsSync(pospath)){
-      console.log(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
+      logger.info(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
       fs.mkdirSync(pospath)
-      console.log('made a temp fix')
+      logger.info('made a temp fix')
     }
     var userpath = pospath + req.params.filename + '/'
     if(!fs.existsSync(pospath)){
-      console.log("user " + req.params.filename + " of " + req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
+      logger.info("user " + req.params.filename + " of " + req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
       fs.mkdirSync(userpath)
-      console.log('made a temp fix')
+      logger.info('made a temp fix')
       res.redirect('/sponsor/#positions-tab-nav')
     }else{
       var path = userpath + req.params.document
@@ -68,21 +68,21 @@ exports.setup = (app, db) => {
   },(req,res) => {
     var sponsorpath = './sponsors/' + req.session.user + '/'
     if(!fs.existsSync(sponsorpath)){
-      console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
+      logger.info(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
       fs.mkdirSync(sponsorpath)
-      console.log('made a temp fix')
+      logger.info('made a temp fix')
     }
     var pospath = sponsorpath + req.params.pos + '/'
     if(!fs.existsSync(pospath)){
-      console.log(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
+      logger.info(req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
       fs.mkdirSync(pospath)
-      console.log('made a temp fix')
+      logger.info('made a temp fix')
     }
     var path = pospath + req.params.filename
     var zippath = './temp/' + req.params.filename + '.zip'
     zipFolder(path, zippath, function(err) {
       if(err) {
-        console.log('oh no!', err);
+        logger.info('oh no!', err);
       } else {
         res.download(zippath, () => {
           if(fs.existsSync(zippath)){
@@ -99,15 +99,15 @@ exports.setup = (app, db) => {
   },(req,res) => {
     var sponsorpath = './sponsors/' + req.session.user + '/'
     if(!fs.existsSync(sponsorpath)){
-      console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
+      logger.info(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
       fs.mkdirSync(sponsorpath)
-      console.log('made a temp fix')
+      logger.info('made a temp fix')
     }
     var path = sponsorpath +  req.params.pos
     var zippath = './temp/' + req.params.pos + '.zip'
     zipFolder(path, zippath, function(err) {
       if(err) {
-        console.log('oh no!', err);
+        logger.info('oh no!', err);
       } else {
         res.download(zippath, () => {
           if(fs.existsSync(zippath)){
@@ -133,9 +133,9 @@ exports.setup = (app, db) => {
         }
         var sponsorpath = './sponsors/' + req.session.user + '/'
         if(!fs.existsSync(sponsorpath)){
-          console.log(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
+          logger.info(req.session.user+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
           fs.mkdirSync(sponsorpath)
-          console.log('made a temp fix')
+          logger.info('made a temp fix')
         }
         var path = sponsorpath +  req.body.name.trim() + '/'
         if(!fs.existsSync(path)){

@@ -1,11 +1,12 @@
 const mongoose = require('mongoose') 
+const logger = require('./logger.js')
 
 //MONGOOSE
-mongoose.connect('mongodb://127.0.0.1/portal') 
+mongoose.connect('mongodb://127.0.0.1:27017/portal', {useNewUrlParser: true }) 
 var db = mongoose.connection 
 db.on('error', console.error.bind(console, 'connection error:')) 
 db.once('open', function() {
-  console.log('connected to db') 
+  logger.info('connected to db') 
 }) 
 
 //DATABASE SCHEME

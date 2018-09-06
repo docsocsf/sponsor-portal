@@ -6,10 +6,10 @@ const authpath = __dirname + '/auth.json'
 
 exports.authSponsor = (user, pass, db, session, callback) => {
   db.Sponsor.find({username: user}, (err,result) => {
-    if(err) return console.log(err) 
+    if(err) return logger.info(err) 
     if(result[0] && result[0].password === pass){
       //VALID USER
-      console.log('success') 
+      logger.info('success') 
       session.docsoc = false 
       session.login = true 
       session.type = 'sponsor' 
@@ -34,19 +34,19 @@ var options = {
 
 exports.authUser = (user, pass, session, callback) => {
   //for debugging
-  console.log('User ' + user + ' trying to login...') 
+  logger.info('User ' + user + ' trying to login...') 
   //KERBEROS AUTHENTICATION
-  console.log('starting Kerberos Authentication...') 
+  logger.info('starting Kerberos Authentication...') 
   krb5.authenticate(user + '@IC.AC.UK' , pass, (err) => {
     if(err){
       //WRONG PASSWORD/INVALID USER
-      console.log('err ' + err) 
+      logger.info('err ' + err) 
       //res.send('wrong username or password') 
       callback( {member: true, err: 'Wrong username or password'} )
       return
     }else{
-      console.log('Kerberos Authentication success.') 
-      console.log('Starting DoCSoc Member Check...') 
+      logger.info('Kerberos Authentication success.') 
+      logger.info('Starting DoCSoc Member Check...') 
       //REQUEST EACTIVITIES if auth file older than 24 hours
       if (fs.existsSync(authpath)) {
         var stat = fs.statSync(authpath) 
@@ -58,7 +58,7 @@ exports.authUser = (user, pass, session, callback) => {
         var endTime = new Date(stat.ctime).getTime() + 86400000 
         if (now > endTime) {
           //download new file
-          console.log('Outdated auth file, Updating...') 
+          logger.info('Outdated auth file, Updating...') 
           rp(options).then((body) => {
             fs.writeFileSync(authpath,body) 
             return checkMember(session,user, callback)
@@ -69,7 +69,7 @@ exports.authUser = (user, pass, session, callback) => {
       }else{
         //download new file
         rp(options).then((body) => {
-          console.log('Downloading auth file')
+          logger.info('Downloading auth file')
           fs.writeFileSync(authpath,body) 
           return checkMember(session,user,callback) 
         }) 
@@ -84,7 +84,7 @@ checkMember = (session, user, callback) => {
   var data = JSON.parse(auth).find(el => el.Login === user) 
   if(data) {
     //VALID USER
-    console.log('User ' + user + ' successfully loged in') 
+    logger.info('User ' + user + ' successfully loged in') 
     //setup session
     session.docsoc = false 
     session.login = true 
@@ -95,7 +95,7 @@ checkMember = (session, user, callback) => {
     return
   }else{
     //NON DOCSOC USER
-    console.log('Not member of DoCSoc') 
+    logger.info('Not member of DoCSoc') 
     callback( {member: true, err: 'Not a DoCSoc Member!'} )
     return
   }

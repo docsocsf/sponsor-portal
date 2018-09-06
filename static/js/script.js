@@ -109,7 +109,7 @@ $(function() {
 
   //LIVE PREVIEW
   $('.live .title').on('input',function() {
-    console.log('hi')
+    logger.info('hi')
     $(this).closest('.live').find('.preview-title').html($(this).val())
     if($(this).val().trim() != "") {
       $(this).closest('.live').find('button').prop('disabled', false);

@@ -1,6 +1,10 @@
 // setup express app
 const setup = require('./src/setup.js')
 const args = require('args-parser')(process.argv)
+
+//========================LOGGER==================
+const logger = require('./src/logger.js')
+
 const app = setup.app
 
 // setup mongoDB database
@@ -8,22 +12,22 @@ const db = require('./src/db.js')
 
 //= =========================LOGIN PAGE======================
 const login = require('./src/login.js')
-login.setup(app, db)
+login.setup(app, db, logger)
 
 //= ==========================MEMBER=========================
 
 const member = require('./src/member.js')
-member.setup(app, db)
+member.setup(app, db, logger)
 
 //= ==========================SPONSOR========================
 
 const sponsor = require('./src/sponsor.js')
-sponsor.setup(app, db)
+sponsor.setup(app, db, logger)
 
 //= ==========================PORTAL=========================
 
 const portal = require('./src/portal.js')
-portal.setup(app, db)
+portal.setup(app, db, logger)
 
 //= ===========================OTHER=========================
 
@@ -38,12 +42,12 @@ app.get('*', function (req, res) {
 })
 
 if (args['no-https']) { // If no https then just use app.listen
-  console.log('no-https option selected, running on just http')
+  logger.info('no-https option selected, running on just http')
   app.listen(app.get('port'), function () {
-    console.log('Server listening on port ' + app.get('port'))
+    logger.info('Server listening on port ' + app.get('port'))
   })
 } else { // Use greenlock to force https
-  console.log('HTTPS enforced')
+  logger.info('HTTPS enforced')
   require('greenlock-express').create({
 
   // Let's Encrypt v2 is ACME draft 11

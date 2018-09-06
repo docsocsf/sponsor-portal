@@ -62,12 +62,12 @@ exports.setup = (app, db) => {
     //check if valid path
     var sponsorpath = './sponsors/' + req.params.sponsor + '/'
     if(!fs.existsSync(sponsorpath)){
-      console.log(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      logger.info(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var pospath = sponsorpath + req.params.posname + '/'
     if(!fs.existsSync(pospath)){
-      console.log(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      logger.info(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
@@ -116,12 +116,12 @@ exports.setup = (app, db) => {
     //check if valid path
     var sponsorpath = './sponsors/' + req.params.sponsor + '/'
     if(!fs.existsSync(sponsorpath)){
-      console.log(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      logger.info(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var pospath = sponsorpath + req.params.posname + '/'
     if(!fs.existsSync(pospath)){
-      console.log(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      logger.info(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
