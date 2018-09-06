@@ -2,7 +2,7 @@ const krb5 = require('node-krb5')
 const rp = require('request-promise') 
 const fs = require('fs') 
 
-const authpath = __dirname + '/auth.json' 
+const authpath = './auth.json' 
 
 exports.authSponsor = (user, pass, db, session,logger, callback) => {
   db.Sponsor.find({username: user}, (err,result) => {
@@ -33,7 +33,7 @@ var options = {
   }
 }
 
-exports.authUser = (user, pass, session,logger, callback) => {
+exports.authUser = (user, pass, session, logger, callback) => {
   //for debugging
   logger.info('Member ' + user + ' trying to login...') 
   //KERBEROS AUTHENTICATION
@@ -41,7 +41,7 @@ exports.authUser = (user, pass, session,logger, callback) => {
   krb5.authenticate(user + '@IC.AC.UK' , pass, (err) => {
     if(err){
       //WRONG PASSWORD/INVALID USER
-      logger.error('kerberos error: ' + err) 
+      logger.info('kerberos error: ' + err) 
       //res.send('wrong username or password') 
       callback( {member: true, err: 'Wrong username or password'} )
       return
@@ -65,14 +65,14 @@ exports.authUser = (user, pass, session,logger, callback) => {
             return checkMember(session,user, callback)
           }) 
         }else{
-          return checkMember(session, user, callback)
+          return checkMember(session, user, logger, callback)
         }
       }else{
         //download new file
         rp(options).then((body) => {
           logger.info('Downloading auth file')
           fs.writeFileSync(authpath,body) 
-          return checkMember(session,user,callback) 
+          return checkMember(session,vuser,vlogger, callback) 
         }) 
       }
     }
@@ -80,7 +80,7 @@ exports.authUser = (user, pass, session,logger, callback) => {
 }
 
 //check memeber is docsoc
-checkMember = (session, user, callback) => {
+checkMember = (session, user, logger, callback) => {
   var auth = fs.readFileSync(authpath) 
   var data = JSON.parse(auth).find(el => el.Login === user) 
   if(data) {
@@ -89,8 +89,9 @@ checkMember = (session, user, callback) => {
     //setup session
     session.docsoc = false 
     session.login = true 
-    session.type = 'member' 
-    session.data = data 
+    session.type = 'member'
+    session.data = data
+    session.user = user
     //make folder
     callback(true)
     return

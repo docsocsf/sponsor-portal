@@ -115,7 +115,7 @@ exports.setup = (app, db, logger) => {
           return
         } 
         logger.info(req.session.data.Login + ' has successfully applied to '+ req.params.sponsor + "'s " +
-          req.params.posname + ' with ' + data.documents.length() + ' documents')
+          req.params.posname + ' with ' + data.documents.length + ' document(s)')
         res.redirect('/member')
       }) 
     })
@@ -156,6 +156,7 @@ exports.setup = (app, db, logger) => {
           logger.error(err)
           return
         } 
+        logger.info(req.session.data.Login + ' has successfully removed his applied to '+ req.params.sponsor + "'s " + req.params.posname)
         res.redirect('/member')
       }) 
     })

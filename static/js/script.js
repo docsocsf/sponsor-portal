@@ -15,7 +15,9 @@ $(function() {
   }
 
   $('.render-md').each(function(){
-    $(this).html(markdown.toHTML($(this).attr('value')))
+    if($(this).attr('value')){
+      $(this).html(markdown.toHTML($(this).attr('value')))
+    }
   })
 
 
@@ -109,7 +111,6 @@ $(function() {
 
   //LIVE PREVIEW
   $('.live .title').on('input',function() {
-    logger.info('hi')
     $(this).closest('.live').find('.preview-title').html($(this).val())
     if($(this).val().trim() != "") {
       $(this).closest('.live').find('button').prop('disabled', false);

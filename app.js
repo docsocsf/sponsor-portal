@@ -37,6 +37,7 @@ logger.info('(admin setup) done')
 
 // LOGOUT
 app.post('/logout', (req, res) => {
+  logger.info(req.session.user + ' has logged out')
   req.session.destroy()
   res.redirect('/')
 })
