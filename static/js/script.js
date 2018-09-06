@@ -14,7 +14,9 @@ $(function() {
     $('#info-tab').tab('show')
   }
 
-
+  $('.render-md').each(function(){
+    $(this).html(markdown.toHTML($(this).attr('value')))
+  })
 
 
   if($('.member-tab').hasClass('active-tab')){
@@ -63,7 +65,7 @@ $(function() {
   });
 
   $("input:file").change(function (){
-    var button = $(this).parent().parent()
+    var button = $(this).closest('button')
     var filename = $(this).val().split('\\').last().split('.')
     var extension = ''
     if(filename.length > 1)
@@ -102,5 +104,41 @@ $(function() {
     } else {
       $(this).parent().prev()[0].type = "password"
     }
+  })
+
+
+  //LIVE PREVIEW
+  $('.live .title').on('input',function() {
+    console.log('hi')
+    $(this).closest('.live').find('.preview-title').html($(this).val())
+    if($(this).val().trim() != "") {
+      $(this).closest('.live').find('button').prop('disabled', false);
+    }else{
+      $(this).closest('.live').find('button').prop('disabled', true);
+    }
+  })
+
+  $('.live .link').on('input',function() {
+    var live = $(this).closest('.live').find('.preview-link')
+    if($(this).val() != "") {
+      live.html("Link")
+      live.attr('href', $(this).val())
+    }else{
+      live.html("")
+    }
+  })
+
+  $('.live .email').on('input',function() {
+    var live = $(this).closest('.live').find('.preview-email')
+    if($(this).val() != "") {
+      live.html($(this).val())
+      live.attr('href',"mailto:"+$(this).val())
+    }else{
+      live.html("")
+    }
+  })
+
+  $('.live .text').on('input',function() {
+    $(this).closest('.live').find('.preview-text').html(markdown.toHTML($(this).val()))
   })
 });
