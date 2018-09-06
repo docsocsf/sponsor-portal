@@ -23,6 +23,14 @@ exports.setup = (app, db) => {
       res.render('sponsor', {sponsor: sponsor[0]})
     }) 
   }) 
+
+  app.get('/sponsor/error/:error', (req,res,next) => {
+    check(req,res,next)
+  }, (req,res) => {
+    db.Sponsor.find({username: req.session.user},(err, sponsor) => {
+      res.render('sponsor', {sponsor: sponsor[0], err: req.params.error})
+    }) 
+  }) 
   
   //=====================POSITIONS========================
   
@@ -140,7 +148,7 @@ exports.setup = (app, db) => {
           res.redirect('/sponsor/#positions-tab')
         }) 
       }else{
-        res.render('sponsor', {sponsor: sponsor[0], err: "Position name is blank or already exists"})
+        res.redirect('/sponsor/error/Position name is blank or already exists')
       }
     }) 
   }) 
@@ -243,7 +251,7 @@ exports.setup = (app, db) => {
           res.redirect('/sponsor/#info-tab')       
         }) 
       }else{
-        res.render('sponsor', {sponsor: sponsor[0], err: "Error while trying to change password. Please try again."})
+        res.redirect('/sponsor/error/Error while trying to change password. Please try again.')
       }
     }) 
   }) 
