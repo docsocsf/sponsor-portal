@@ -39,7 +39,7 @@ exports.setup = (app, db, logger) => {
   }) 
 
   //Add new sponsor
-  app.post('/new-sponsor', (req,res) => {
+  app.post('/admin/new-sponsor', (req,res) => {
     //make sponsor
     var sponsor = new db.Sponsor({
       username: req.body.user,
@@ -70,7 +70,7 @@ exports.setup = (app, db, logger) => {
 
 
   //Edit sponsor
-  app.post('/edit-sponsor/:username', (req,res) => {
+  app.post('/admin/edit-sponsor/:username', (req,res) => {
     db.Sponsor.find({username: req.params.username} , (err, sponsor) => {
       if (err) return 
       
@@ -111,7 +111,7 @@ exports.setup = (app, db, logger) => {
   })
 
   //Remove Sponsor
-  app.post('/remove-sponsor/:user', (req,res) => {
+  app.post('/admin/remove-sponsor/:user', (req,res) => {
     db.Sponsor.remove({username: req.params.user} , (err) => {
       if (err) {
         return  

@@ -46,6 +46,10 @@ app.get('*', function (req, res) {
   res.redirect('/')
 })
 
+app.post('*', function (req, res) {
+  res.redirect('/')
+})
+
 if (args['no-https']) { // If no https then just use app.listen
   logger.info('no-https option selected, running on just http')
   app.listen(app.get('port'), function () {
