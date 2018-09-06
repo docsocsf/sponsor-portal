@@ -85,7 +85,6 @@ table(style = "width:4000px").ml-3.mt-4
               tr 
                 th name
                 th description
-                th requirements
                 th link 
                 th users
               each p,i in s.positions
@@ -95,8 +94,6 @@ table(style = "width:4000px").ml-3.mt-4
                     input.form-control(type="text", name="p.name."+i, value=p.name)
                   th
                     input.form-control(type="text", name="p.description."+i, value=p.description)
-                  th
-                    input.form-control(type="text", name="p.requirements."+i, value=p.requirements)
                   th
                     input.form-control(type="text", name="p.link."+i, value=p.link)
                   th 

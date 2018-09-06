@@ -8,16 +8,30 @@
         .card
           .card-body
             h2.card-title Add New News Post:
-            form(method="post" action="/sponsor/add-news")
+            form(method="post" action="/sponsor/add-news").live
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="title") Title: 
-                input.col-lg-8.col-sm-7(type="text", name="title")
+                input.col-lg-8.col-sm-7.title(type="text", name="title")
               .row.mt-2.mb-2
-                label.col-lg-3.col-sm-4(for="text") Article: 
-                textarea.col-lg-8.col-sm-7(type="text", name="text")
+                label.col-lg-3.col-sm-4(for="link") Link to learn more: 
+                  .subtext (optional)
+                input.col-lg-8.col-sm-7.link(type="text", name="link")
               .row.mt-2.mb-2
-                label.col-lg-3.col-sm-4(for="link") Learn More Link: 
-                input.col-lg-8.col-sm-7(type="text", name="link")
+                .col-lg-3.col-sm-4
+                  label(for="text") Article: 
+                    .subtext (optional)
+                  .subtext (Works with Markdown. [#[a(target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet") more]])
+                textarea.col-lg-8.col-sm-7.text(type="text", name="text")
+              .row.mt-2.mb-2
+                .col-12.h4 Live Preview:
+                .col-12
+                  .card.mt-2.preview
+                    .card-body
+                      h1.card-title.preview-title
+                      .mb-3
+                        a(target="_blank").card-link.preview-link
+                      .card-text 
+                        .preview-text
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Add
     .row.justify-content-center.mt-4
@@ -26,15 +40,14 @@
     .row.justify-content-center
       .col-lg-8.col-sm-11
         each news in sponsor.news.reverse()
-          .card.mt-3              
-            .row
-              .col
-                .card-body
-                  h2.card-title #{news.title}
-                  .card-text.story #{news.text}
-                  a.card-link(href=news.link) #{news.link}
-              .col-2.mt-3
-                form(action="/sponsor/remove-news/" + news.date method="post")
-                  button.btn(type='submit') Delete 
-                    span.octicon.octicon-trashcan   
+          .card.mt-3
+            .card-body
+              h1.card-title=news.title
+              if(news.link != "")
+                .mb-3
+                  a(target="_blank" href=news.link) Link
+              .card-text.render-md(value = news.text)
+              form(action="/sponsor/remove-news/" + news.date method="post")
+                button.btn(type='submit') Delete 
+                  span.octicon.octicon-trashcan   
               
