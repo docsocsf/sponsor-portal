@@ -1,16 +1,16 @@
 const fs = require('fs-extra')
 
-exports.setup = (app, db) => {
+exports.setup = (app, db, logger) => {
 
   //PORTAL LOGIN PAGE
-  app.get('/portal-login', (req,res) => {
-    res.render('portal-login') 
+  app.get('/admin-login', (req,res) => {
+    res.render('admin-login') 
   }) 
 
-  //portal auth
-  app.post('/portal-login', (req,res,next) => {
+  //admin auth
+  app.post('/admin-login', (req,res,next) => {
     if(req.session.docsoc){
-      res.redirect('/portal') 
+      res.redirect('/admin') 
     }else{
       next() 
     }
@@ -19,22 +19,22 @@ exports.setup = (app, db) => {
     var pass = req.body.pass
     if (user === "docsoc" && pass === 'docsoc') {
       req.session.docsoc = true 
-      res.redirect('/portal') 
+      res.redirect('/admin') 
     }else{
       res.redirect('/')
     }
   })
 
   //PORTAL PAGE
-  app.get('/portal', (req,res,next) => {
+  app.get('/admin', (req,res,next) => {
     if(req.session.docsoc){
       next() 
     }else{
-      res.redirect('/portal-login') 
+      res.redirect('/admin-login') 
     }
   }, (req,res) => {
     db.Sponsor.find((err, s) => {
-      res.render('portal', {sponsors: s}) 
+      res.render('admin', {sponsors: s}) 
     })
   }) 
 
@@ -63,7 +63,7 @@ exports.setup = (app, db) => {
       if (err) {
         return  
       } else {
-        res.redirect('/portal') 
+        res.redirect('/admin') 
       }
     }) 
   }) 
@@ -104,7 +104,7 @@ exports.setup = (app, db) => {
 
       sponsor[0].save((err, user) => {
         if (err) return 
-        res.redirect('/portal')
+        res.redirect('/admin')
       }) 
 
     }) 
@@ -119,7 +119,7 @@ exports.setup = (app, db) => {
         if(fs.existsSync('./sponsors/' + req.params.user)){
           fs.removeSync('./sponsors/' + req.params.user)
         }
-        res.redirect('/portal')  
+        res.redirect('/admin')  
       }
     }) 
   }) 

@@ -4,18 +4,19 @@ const fs = require('fs')
 
 const authpath = __dirname + '/auth.json' 
 
-exports.authSponsor = (user, pass, db, session, callback) => {
+exports.authSponsor = (user, pass, db, session,logger, callback) => {
   db.Sponsor.find({username: user}, (err,result) => {
-    if(err) return logger.info(err) 
+    if(err) return logger.error(err) 
     if(result[0] && result[0].password === pass){
       //VALID USER
-      logger.info('success') 
+      logger.info('sponsor ' + user +' has successfully logged in') 
       session.docsoc = false 
       session.login = true 
       session.type = 'sponsor' 
       session.user = user 
       callback(true)
     }else{
+      logger.info('sponsor ' + user +' has failed logging in') 
       callback({member: false, err: 'Wrong username or password'}) 
     }
     return
@@ -32,15 +33,15 @@ var options = {
   }
 }
 
-exports.authUser = (user, pass, session, callback) => {
+exports.authUser = (user, pass, session,logger, callback) => {
   //for debugging
-  logger.info('User ' + user + ' trying to login...') 
+  logger.info('Member ' + user + ' trying to login...') 
   //KERBEROS AUTHENTICATION
   logger.info('starting Kerberos Authentication...') 
   krb5.authenticate(user + '@IC.AC.UK' , pass, (err) => {
     if(err){
       //WRONG PASSWORD/INVALID USER
-      logger.info('err ' + err) 
+      logger.error('kerberos error: ' + err) 
       //res.send('wrong username or password') 
       callback( {member: true, err: 'Wrong username or password'} )
       return

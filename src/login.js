@@ -12,7 +12,7 @@ var check = (req,res, callback) => {
   }
 }
 
-exports.setup = (app, db) => {
+exports.setup = (app, db, logger) => {
 
   app.get('/',  (req,res,next) => {
     check(req,res,next)
@@ -26,7 +26,7 @@ exports.setup = (app, db) => {
   }, (req,res) => {
     var user = req.body.user 
     var pass = req.body.pass 
-    auth.authUser(user, pass, req.session, (ret) => {
+    auth.authUser(user, pass, req.session, logger, (ret) => {
       (ret === true) ? res.redirect('/member') : res.render('login', ret)
     })
   }) 
@@ -37,7 +37,7 @@ exports.setup = (app, db) => {
   }, (req,res) => {
     var user = req.body.user 
     var pass = req.body.pass 
-    auth.authSponsor(user,pass,db,req.session, (ret) => {
+    auth.authSponsor(user,pass,db,req.session,logger, (ret) => {
       (ret === true) ? res.redirect('/sponsor') : res.render('login', ret) 
     })
   }) 

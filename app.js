@@ -2,32 +2,36 @@
 const setup = require('./src/setup.js')
 const args = require('args-parser')(process.argv)
 
-//========================LOGGER==================
+//========================LOGGER===========================
 const logger = require('./src/logger.js')
 
+//========================EXPRESS SETUP=====================
 const app = setup.app
+logger.info('(express setup) done')
 
-// setup mongoDB database
+//========================mongoDB===========================
 const db = require('./src/db.js')
+logger.info('(mongodb setup) done')
 
-//= =========================LOGIN PAGE======================
+//= =========================LOGIN PAGE=====================
 const login = require('./src/login.js')
 login.setup(app, db, logger)
+logger.info('(login setup) done')
 
 //= ==========================MEMBER=========================
-
 const member = require('./src/member.js')
 member.setup(app, db, logger)
+logger.info('(member setup) done')
 
 //= ==========================SPONSOR========================
-
 const sponsor = require('./src/sponsor.js')
 sponsor.setup(app, db, logger)
+logger.info('(sponsor setup) done')
 
 //= ==========================PORTAL=========================
-
-const portal = require('./src/portal.js')
-portal.setup(app, db, logger)
+const admin = require('./src/admin.js')
+admin.setup(app, db, logger)
+logger.info('(admin setup) done')
 
 //= ===========================OTHER=========================
 
