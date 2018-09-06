@@ -96,8 +96,6 @@ exports.setup = (app, db) => {
               sponsor[0].positions[j].name = req.body['p.name.'+i]
             if(req.body['p.description.'+i])
               sponsor[0].positions[j].description = req.body['p.description.'+i]
-            if(req.body['p.requirements.'+i])
-              sponsor[0].positions[j].requirements = req.body['p.requirements.'+i]
             if(req.body['p.link.'+i])
               sponsor[0].positions[j].link = req.body['p.link.'+i]
           }

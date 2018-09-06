@@ -9,16 +9,37 @@
         .card
           .card-body
             h2.card-title Edit Your Info:
-            form(method="post" action="/sponsor/update-info")
+            form(method="post" action="/sponsor/update-info").live
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="email") Email: 
-                input.col-lg-8.col-sm-7(type="text", name="email", value=sponsor.info.email)
+                  .subtext (optional)
+                input.col-lg-8.col-sm-7.email(type="text", name="email", value=sponsor.info.email)
               .row.mt-2.mb-2
-                label.col-lg-3.col-sm-4(for="description") Description: 
-                textarea.col-lg-8.col-sm-7(type="text", name="description")=sponsor.info.description
+                label.col-lg-3.col-sm-4(for="link") Link to learn more: 
+                  .subtext (optional)
+                input.col-lg-8.col-sm-7.link(type="text", name="link", value=sponsor.info.link)
               .row.mt-2.mb-2
-                label.col-lg-3.col-sm-4(for="link") Learn More Link: 
-                input.col-lg-8.col-sm-7(type="text", name="link", value=sponsor.info.link)
+                .col-lg-3.col-sm-4
+                  label(for="description") Description: 
+                    .subtext (optional)
+                  .subtext (Works with Markdown. [#[a(target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet") more]])
+                textarea.col-lg-8.col-sm-7.text(type="text", name="description")=sponsor.info.description
+              .row.mt-2.mb-2
+                .col-12.h4 Live Preview:
+                .col-12
+                  .card.mt-4.mb-2.preview
+                    .card-body.preview
+                      if(sponsor.info.bespoke)
+                        img(src="/static/assets/images/icons/"+sponsor.info.rank.toLowerCase()+"_bespoke.png" width="150px").bespoke
+                      .row
+                        .col-lg-3.col-sm-2
+                          img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="100%")
+                        .col-lg-7.col-sm-10
+                          h1.card-title=sponsor.info.name
+                          .card-text.story.mb-3.preview-text.render-md(value=sponsor.info.description)
+                          a.card-link.preview-email(href="mailto:"+sponsor.info.email)=sponsor.info.email
+                          if(sponsor.info.link)
+                            a.card-link.preview-link(href=sponsor.info.link) Read More
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Save
     .row.justify-content-center.mt-3

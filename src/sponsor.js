@@ -55,7 +55,7 @@ exports.setup = (app, db) => {
       console.log("user " + req.params.filename + " of " + req.params.pos + " position, of " + req.session.user +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG")
       fs.mkdirSync(userpath)
       console.log('made a temp fix')
-      res.redirect('/sponsor/#positions-tab')
+      res.redirect('/sponsor/#positions-tab-nav')
     }else{
       var path = userpath + req.params.document
       res.download(path)
@@ -128,7 +128,6 @@ exports.setup = (app, db) => {
         var data = {
           name: req.body.name.trim(),
           description: req.body.description,
-          requirements: req.body.requirements,
           link: req.body.link,
           users: []
         }
@@ -145,10 +144,10 @@ exports.setup = (app, db) => {
         sponsor[0].positions.push(data) 
         sponsor[0].save((err, user) => {
           if (err) return 
-          res.redirect('/sponsor/#positions-tab')
+          res.redirect('/sponsor/#positions-tab-nav')
         }) 
       }else{
-        res.redirect('/sponsor/error/Position name is blank or already exists')
+        res.redirect('/sponsor/error/Position name is blank or already exists/#positions-tab-nav')
       }
     }) 
   }) 
@@ -166,14 +165,14 @@ exports.setup = (app, db) => {
       sponsor[0].positions = sponsor[0].positions.filter(position => position.name !== req.params.name) 
       sponsor[0].save((err, user) => {
         if (err) return   
-        res.redirect('/sponsor/#positions-tab')
+        res.redirect('/sponsor/#positions-tab-nav')
       }) 
     }) 
   }) 
   app.post('/sponsor/remove-position/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    res.redirect('/sponsor/#positions-tab')
+    res.redirect('/sponsor/#positions-tab-nav')
   }) 
   
   //=======================================NEWS=================================
@@ -193,7 +192,7 @@ exports.setup = (app, db) => {
       sponsor[0].news.push(news)
       sponsor[0].save((err, user) => {
         if (err) return   
-        res.redirect('/sponsor/#news-tab')
+        res.redirect('/sponsor/#news-tab-nav')
       }) 
     }) 
   })
@@ -208,14 +207,15 @@ exports.setup = (app, db) => {
       sponsor[0].news = sponsor[0].news.filter(n => n.date !== req.params.date) 
       sponsor[0].save((err, user) => {
         if (err) return   
-        res.redirect('/sponsor/#news-tab')
+        res.redirect('/sponsor/#news-tab-nav')
       }) 
     }) 
   }) 
+
   app.post('/sponsor/remove-news/', (req,res,next) => {
     check(req,res,next)
   },(req,res) => {
-    res.redirect('/sponsor/#news-tab')
+    res.redirect('/sponsor/#news-tab-nav')
   }) 
   
   //=====================================ACCOUNT=================================
@@ -231,7 +231,7 @@ exports.setup = (app, db) => {
       sponsor[0].info.link = req.body.link
       sponsor[0].save((err, user) => {
         if (err) return   
-        res.redirect('/sponsor/#info-tab')
+        res.redirect('/sponsor/#info-tab-nav')
       }) 
     }) 
   })
@@ -248,10 +248,10 @@ exports.setup = (app, db) => {
         sponsor[0].password = req.body.new
         sponsor[0].save((err, user) => {
           if (err) return   
-          res.redirect('/sponsor/#info-tab')       
+          res.redirect('/sponsor/#info-tab-nav')       
         }) 
       }else{
-        res.redirect('/sponsor/error/Error while trying to change password. Please try again.')
+        res.redirect('/sponsor/error/Error while trying to change password. Please try again./#info-tab-nav')
       }
     }) 
   }) 

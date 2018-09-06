@@ -128,6 +128,16 @@ $(function() {
     }
   })
 
+  $('.live .email').on('input',function() {
+    var live = $(this).closest('.live').find('.preview-email')
+    if($(this).val() != "") {
+      live.html($(this).val())
+      live.attr('href',"mailto:"+$(this).val())
+    }else{
+      live.html("")
+    }
+  })
+
   $('.live .text').on('input',function() {
     $(this).closest('.live').find('.preview-text').html(markdown.toHTML($(this).val()))
   })
