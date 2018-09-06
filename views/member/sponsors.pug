@@ -13,7 +13,7 @@
                   img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="100%")
                 .col-lg-7.col-sm-10
                   h1.card-title=sponsor.info.name
-                  .card-text.story.mb-3=sponsor.info.description
+                  .card-text.mb-3.render-md(value=sponsor.info.description)
                   a.card-link(href="mailto:"+sponsor.info.email)=sponsor.info.email
                   if(sponsor.info.link)
                     a.card-link(href=sponsor.info.link) Read More
@@ -28,9 +28,11 @@
                     each news in sponsor.news.reverse()
                       .card.mt-2
                         .card-body
-                          h3.card-title.mb-3=news.title
-                          .card-text.story.mb-3=news.text
-                          a.card-link(href=news.link) Read More
+                          h1.card-title=news.title
+                          if(news.link != "")
+                            .mb-3
+                              a(target="_blank" href=news.link) Link
+                          .card-text.render-md(value = news.text)
               ul.list-group.list-group-flush
                 if(sponsor.positions.length != 0)
                   li.list-group-item 
@@ -41,13 +43,11 @@
                     each pos in sponsor.positions.reverse()
                       .card.mt-2
                         .card-body
-                          h3.card-title=pos.name 
-                          .story #{pos.description}
-                          br
-                          h4.card-text Requirements: 
-                          .story #{pos.requirements}
-                          .mb-3
-                            a.card-link(href=pos.link) Read More
+                          h1.card-title=pos.name
+                          if(pos.link != "")
+                            .mb-3
+                              a(target="_blank" href=pos.link) Link
+                          .card-text.render-md(value = pos.description)
                         ul.list-group.list-group-flush
                           if(pos.applied)
                             li.list-group-item
@@ -77,7 +77,7 @@
                                   .row
                                     h4 Documents:
                                   .row
-                                    .small-font Make sure you upload all the requirements above.
+                                    .small-font Make sure you upload all the requirements listed in the description.
                                   .documents
                                     .row
                                       .col-12

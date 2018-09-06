@@ -31,7 +31,6 @@ exports.setup = (app, db) => {
           var pos = {
             name: position.name,
             description: position.description,
-            requirements: position.requirements,
             link: position.link,
             applied: false
           }

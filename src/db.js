@@ -64,9 +64,6 @@ var SponsorSchema = new mongoose.Schema({
     description: {
       type: String
     },
-    requirements: {
-      type: String
-    },
     link: {
       type: String
     },
