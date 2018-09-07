@@ -9,7 +9,7 @@ const app = express()
 app.set('view engine', 'pug') 
 app.set('views', './views') 
 
-app.use('/static', express.static('./static')) 
+app.use('/', express.static('./static')) 
 
 app.use(fileUpload()) 
 
