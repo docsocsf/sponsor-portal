@@ -1,34 +1,43 @@
 // setup express app
 const setup = require('./src/setup.js')
 const args = require('args-parser')(process.argv)
+
+//========================LOGGER===========================
+const logger = require('./src/logger.js')
+
+//========================EXPRESS SETUP=====================
 const app = setup.app
+logger.info('(express setup) done')
 
-// setup mongoDB database
+//========================mongoDB===========================
 const db = require('./src/db.js')
+logger.info('(mongodb setup) done')
 
-//= =========================LOGIN PAGE======================
+//= =========================LOGIN PAGE=====================
 const login = require('./src/login.js')
 login.setup(app, db)
+logger.info('(login setup) done')
 
 //= ==========================MEMBER=========================
-
 const member = require('./src/member.js')
 member.setup(app, db)
+logger.info('(member setup) done')
 
 //= ==========================SPONSOR========================
-
 const sponsor = require('./src/sponsor.js')
 sponsor.setup(app, db)
+logger.info('(sponsor setup) done')
 
 //= ==========================PORTAL=========================
-
-const portal = require('./src/portal.js')
-portal.setup(app, db)
+const admin = require('./src/admin.js')
+admin.setup(app, db)
+logger.info('(admin setup) done')
 
 //= ===========================OTHER=========================
 
 // LOGOUT
 app.post('/logout', (req, res) => {
+  logger.info(req.session.user + ' has logged out')
   req.session.destroy()
   res.redirect('/')
 })
@@ -37,13 +46,17 @@ app.get('*', function (req, res) {
   res.redirect('/')
 })
 
+app.post('*', function (req, res) {
+  res.redirect('/')
+})
+
 if (args['no-https']) { // If no https then just use app.listen
-  console.log('no-https option selected, running on just http')
+  logger.info('no-https option selected, running on just http')
   app.listen(app.get('port'), function () {
-    console.log('Server listening on port ' + app.get('port'))
+    logger.info('Server listening on port ' + app.get('port'))
   })
 } else { // Use greenlock to force https
-  console.log('HTTPS enforced')
+  logger.info('HTTPS enforced')
   require('greenlock-express').create({
 
   // Let's Encrypt v2 is ACME draft 11

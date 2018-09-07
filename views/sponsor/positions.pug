@@ -46,7 +46,13 @@
         each position in sponsor.positions.reverse()
           .card.mt-2
             .card-body
-              h1.card-title=position.name
+              .row
+                h1.col-9.card-title=position.name
+                if(position.users.length > 0)
+                  .col-1
+                    form(action="/sponsor/download/pos/" + position.name method="post")
+                      button.btn(type='submit') Download All 
+                        span.octicon.octicon-desktop-download
               if(position.link != "")
                 .mb-3
                   a(target="_blank" href=position.link) Link
@@ -54,11 +60,6 @@
               form.col-1(action="/sponsor/remove-position/" + position.name method="post")
                 button.btn(type='submit') Delete 
                   span.octicon.octicon-trashcan   
-            if(position.users.length > 0)
-              .col-3
-                form(action="/sponsor/download/pos/" + position.name method="post")
-                  button.btn(type='submit') Download All 
-                    span.octicon.octicon-desktop-download
           if(position.users.length > 0)
             ul.list-group.list-group-flush
               li.list-group-item  
