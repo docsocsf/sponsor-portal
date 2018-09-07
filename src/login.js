@@ -1,6 +1,8 @@
 const auth = require('../auth/auth.js')
+const logger = require('./logger.js')
 
-var check = (req,res, callback) => {
+
+var check = (req, res, callback) => {
   if(req.session.login){
     if(req.session.type == 'sponsor'){
       res.redirect('/sponsor') 

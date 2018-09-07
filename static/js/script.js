@@ -1,10 +1,4 @@
 $(function() {
-  if (!Array.prototype.last){
-    Array.prototype.last = function(){
-        return this[this.length - 1];
-    };
-  };
-
 
   if(window.location.hash === '#positions-tab-nav') {
     $('#positions-tab').tab('show')
@@ -13,9 +7,17 @@ $(function() {
   } else if(window.location.hash === '#info-tab-nav') {
     $('#info-tab').tab('show')
   }
+  
+  if (!Array.prototype.last){
+    Array.prototype.last = function(){
+        return this[this.length - 1];
+    };
+  };
 
   $('.render-md').each(function(){
-    $(this).html(markdown.toHTML($(this).attr('value')))
+    if($(this).attr('value')){
+      $(this).html(markdown.toHTML($(this).attr('value')))
+    }
   })
 
 
@@ -109,7 +111,6 @@ $(function() {
 
   //LIVE PREVIEW
   $('.live .title').on('input',function() {
-    console.log('hi')
     $(this).closest('.live').find('.preview-title').html($(this).val())
     if($(this).val().trim() != "") {
       $(this).closest('.live').find('button').prop('disabled', false);

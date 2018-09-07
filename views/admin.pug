@@ -3,7 +3,7 @@ h1 Hello there DoCSoc
 .container-fluid.mt-4
   .row
     .col-4
-      form(method="post" action="/new-sponsor")
+      form(method="post" action="/admin/new-sponsor")
         h1 Add a new sponsor:
           div.form-group
             label(for="user") Username: 
@@ -42,7 +42,7 @@ table(style = "width:4000px").ml-3.mt-4
     th news
     th positions
   each s in sponsors
-    form(method="post" action="/edit-sponsor/"+s.username)
+    form(method="post" action="/admin/edit-sponsor/"+s.username)
       tr
         th=s.username
         th
@@ -115,7 +115,7 @@ table(style = "width:4000px").ml-3.mt-4
         th
           button.btn.btn-primary(type='submit') Save
     th
-      form(method="post" action="/remove-sponsor/"+s.username)
+      form(method="post" action="/admin/remove-sponsor/"+s.username)
         button.btn.btn-primary(type='submit') Remove
 
 form(method="post" action="/logout")

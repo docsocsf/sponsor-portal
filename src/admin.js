@@ -1,16 +1,18 @@
 const fs = require('fs-extra')
+const logger = require('./logger.js')
+
 
 exports.setup = (app, db) => {
 
   //PORTAL LOGIN PAGE
-  app.get('/portal-login', (req,res) => {
-    res.render('portal-login') 
+  app.get('/admin-login', (req,res) => {
+    res.render('admin-login') 
   }) 
 
-  //portal auth
-  app.post('/portal-login', (req,res,next) => {
+  //admin auth
+  app.post('/admin-login', (req,res,next) => {
     if(req.session.docsoc){
-      res.redirect('/portal') 
+      res.redirect('/admin') 
     }else{
       next() 
     }
@@ -19,27 +21,27 @@ exports.setup = (app, db) => {
     var pass = req.body.pass
     if (user === "docsoc" && pass === 'docsoc') {
       req.session.docsoc = true 
-      res.redirect('/portal') 
+      res.redirect('/admin') 
     }else{
       res.redirect('/')
     }
   })
 
   //PORTAL PAGE
-  app.get('/portal', (req,res,next) => {
+  app.get('/admin', (req,res,next) => {
     if(req.session.docsoc){
       next() 
     }else{
-      res.redirect('/portal-login') 
+      res.redirect('/admin-login') 
     }
   }, (req,res) => {
     db.Sponsor.find((err, s) => {
-      res.render('portal', {sponsors: s}) 
+      res.render('admin', {sponsors: s}) 
     })
   }) 
 
   //Add new sponsor
-  app.post('/new-sponsor', (req,res) => {
+  app.post('/admin/new-sponsor', (req,res) => {
     //make sponsor
     var sponsor = new db.Sponsor({
       username: req.body.user,
@@ -63,14 +65,14 @@ exports.setup = (app, db) => {
       if (err) {
         return  
       } else {
-        res.redirect('/portal') 
+        res.redirect('/admin') 
       }
     }) 
   }) 
 
 
   //Edit sponsor
-  app.post('/edit-sponsor/:username', (req,res) => {
+  app.post('/admin/edit-sponsor/:username', (req,res) => {
     db.Sponsor.find({username: req.params.username} , (err, sponsor) => {
       if (err) return 
       
@@ -104,14 +106,14 @@ exports.setup = (app, db) => {
 
       sponsor[0].save((err, user) => {
         if (err) return 
-        res.redirect('/portal')
+        res.redirect('/admin')
       }) 
 
     }) 
   })
 
   //Remove Sponsor
-  app.post('/remove-sponsor/:user', (req,res) => {
+  app.post('/admin/remove-sponsor/:user', (req,res) => {
     db.Sponsor.remove({username: req.params.user} , (err) => {
       if (err) {
         return  
@@ -119,7 +121,7 @@ exports.setup = (app, db) => {
         if(fs.existsSync('./sponsors/' + req.params.user)){
           fs.removeSync('./sponsors/' + req.params.user)
         }
-        res.redirect('/portal')  
+        res.redirect('/admin')  
       }
     }) 
   }) 
