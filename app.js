@@ -2,14 +2,14 @@
 const setup = require('./src/setup.js')
 const args = require('args-parser')(process.argv)
 
-//========================LOGGER===========================
+//= =======================LOGGER===========================
 const logger = require('./src/logger.js')
 
-//========================EXPRESS SETUP=====================
+//= =======================EXPRESS SETUP=====================
 const app = setup.app
 logger.info('(express setup) done')
 
-//========================mongoDB===========================
+//= =======================mongoDB===========================
 const db = require('./src/db.js')
 logger.info('(mongodb setup) done')
 
@@ -59,7 +59,7 @@ if (args['no-https']) { // If no https then just use app.listen
   logger.info('HTTPS enforced')
   require('greenlock-express').create({
 
-  // Let's Encrypt v2 is ACME draft 11
+    // Let's Encrypt v2 is ACME draft 11
     version: 'draft-11',
 
     // Note: If at first you don't succeed, switch to staging to debug
