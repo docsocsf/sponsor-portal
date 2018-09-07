@@ -5,10 +5,10 @@ const logger = require('./logger.js')
 mongoose.connect('mongodb://127.0.0.1:27017/portal', {useNewUrlParser: true }) 
 var db = mongoose.connection 
 db.on('error', function(err) {
-  logger.error('failed to connect to mongodb: '+ err) 
+  logger.error('Failed to connect to mongodb: '+ err) 
 })
 db.once('open', function() {
-  logger.info('connected to mongodb') 
+  logger.info('Connected to mongodb') 
 }) 
 
 //DATABASE SCHEME

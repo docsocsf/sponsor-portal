@@ -1,4 +1,5 @@
 const fs = require('fs-extra')
+const logger = require('./logger.js')
 
 var check = (req,res, callback) => {
   if(req.session.login){
@@ -12,7 +13,7 @@ var check = (req,res, callback) => {
   }
 }
 
-exports.setup = (app, db, logger) => {
+exports.setup = (app, db) => {
 
   //member PAGE
   app.get('/member', (req,res,next) => {
@@ -76,10 +77,10 @@ exports.setup = (app, db, logger) => {
     }
 
     db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
-      if (err) {
-        logger.error(err)
-        return
-      }
+      if (err) {         
+        logger.error('Failed to find sponsor: ' + err)         
+        return       
+      } 
       data = {
         firstname: req.session.data.FirstName,
         surname: req.session.data.Surname,
@@ -94,7 +95,7 @@ exports.setup = (app, db, logger) => {
           //Save files
           req.files['document'+i].mv(path + req.body['documentname'+i] + '.' + ext, function(err) {
             if (err) {
-              logger.error(err)
+              logger.error('Failed to save user document: ' + err)
               return
             }
           }) 
@@ -110,10 +111,10 @@ exports.setup = (app, db, logger) => {
       });
       
       sponsor[0].save((err, user) => {
-        if (err) {
-          logger.error(err)
-          return
-        } 
+        if (err) {         
+          logger.error('Failed to update sponsor for user application: ' + err)         
+          return       
+        }  
         logger.info(req.session.data.Login + ' has successfully applied to '+ req.params.sponsor + "'s " +
           req.params.posname + ' with ' + data.documents.length + ' document(s)')
         res.redirect('/member')
@@ -128,12 +129,12 @@ exports.setup = (app, db, logger) => {
     //check if valid path
     var sponsorpath = './sponsors/' + req.params.sponsor + '/'
     if(!fs.existsSync(sponsorpath)){
-      logger.info(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      logger.warning(req.params.sponsor+ " sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var pospath = sponsorpath + req.params.posname + '/'
     if(!fs.existsSync(pospath)){
-      logger.info(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
+      logger.warning(req.params.posname + " position, of " + req.params.sponsor +" sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync")
       res.redirect('/member')
     }
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
@@ -142,19 +143,19 @@ exports.setup = (app, db, logger) => {
     }
 
     db.Sponsor.find({username: req.params.sponsor} , (err, sponsor) => {
-      if (err) {
-        logger.error(err)
-        return
-      }
+      if (err) {         
+        logger.error('Failed to find sponsor: ' + err)         
+        return       
+      } 
       sponsor[0].positions.forEach(position => {
         if(position.name === req.params.posname){
           position.users = position.users.filter(user => user.username !== req.session.data.Login) 
         }
       });
       sponsor[0].save((err, user) => {
-        if (err) {
-          logger.error(err)
-          return
+        if (err) {         
+          logger.error('Failed to find sponsor for user removing application: ' + err)         
+          return       
         } 
         logger.info(req.session.data.Login + ' has successfully removed his applied to '+ req.params.sponsor + "'s " + req.params.posname)
         res.redirect('/member')

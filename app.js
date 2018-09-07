@@ -15,22 +15,22 @@ logger.info('(mongodb setup) done')
 
 //= =========================LOGIN PAGE=====================
 const login = require('./src/login.js')
-login.setup(app, db, logger)
+login.setup(app, db)
 logger.info('(login setup) done')
 
 //= ==========================MEMBER=========================
 const member = require('./src/member.js')
-member.setup(app, db, logger)
+member.setup(app, db)
 logger.info('(member setup) done')
 
 //= ==========================SPONSOR========================
 const sponsor = require('./src/sponsor.js')
-sponsor.setup(app, db, logger)
+sponsor.setup(app, db)
 logger.info('(sponsor setup) done')
 
 //= ==========================PORTAL=========================
 const admin = require('./src/admin.js')
-admin.setup(app, db, logger)
+admin.setup(app, db)
 logger.info('(admin setup) done')
 
 //= ===========================OTHER=========================

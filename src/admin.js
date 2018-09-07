@@ -1,6 +1,8 @@
 const fs = require('fs-extra')
+const logger = require('./logger.js')
 
-exports.setup = (app, db, logger) => {
+
+exports.setup = (app, db) => {
 
   //PORTAL LOGIN PAGE
   app.get('/admin-login', (req,res) => {

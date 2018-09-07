@@ -1,10 +1,4 @@
 $(function() {
-  if (!Array.prototype.last){
-    Array.prototype.last = function(){
-        return this[this.length - 1];
-    };
-  };
-
 
   if(window.location.hash === '#positions-tab-nav') {
     $('#positions-tab').tab('show')
@@ -13,6 +7,12 @@ $(function() {
   } else if(window.location.hash === '#info-tab-nav') {
     $('#info-tab').tab('show')
   }
+  
+  if (!Array.prototype.last){
+    Array.prototype.last = function(){
+        return this[this.length - 1];
+    };
+  };
 
   $('.render-md').each(function(){
     if($(this).attr('value')){

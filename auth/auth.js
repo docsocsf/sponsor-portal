@@ -1,10 +1,11 @@
 const krb5 = require('node-krb5')
 const rp = require('request-promise') 
 const fs = require('fs') 
+const logger = require('../src/logger.js')
 
 const authpath = './auth.json' 
 
-exports.authSponsor = (user, pass, db, session,logger, callback) => {
+exports.authSponsor = (user, pass, db, session, callback) => {
   db.Sponsor.find({username: user}, (err,result) => {
     if(err) return logger.error(err) 
     if(result[0] && result[0].password === pass){
@@ -33,15 +34,15 @@ var options = {
   }
 }
 
-exports.authUser = (user, pass, session, logger, callback) => {
+exports.authUser = (user, pass, session, callback) => {
   //for debugging
   logger.info('Member ' + user + ' trying to login...') 
   //KERBEROS AUTHENTICATION
-  logger.info('starting Kerberos Authentication...') 
+  logger.info('Starting Kerberos Authentication...') 
   krb5.authenticate(user + '@IC.AC.UK' , pass, (err) => {
     if(err){
       //WRONG PASSWORD/INVALID USER
-      logger.info('kerberos error: ' + err) 
+      logger.info('Kerberos ' + err) 
       //res.send('wrong username or password') 
       callback( {member: true, err: 'Wrong username or password'} )
       return
@@ -65,14 +66,14 @@ exports.authUser = (user, pass, session, logger, callback) => {
             return checkMember(session,user, callback)
           }) 
         }else{
-          return checkMember(session, user, logger, callback)
+          return checkMember(session, user, callback)
         }
       }else{
         //download new file
         rp(options).then((body) => {
           logger.info('Downloading auth file')
           fs.writeFileSync(authpath,body) 
-          return checkMember(session,vuser,vlogger, callback) 
+          return checkMember(session,user, callback) 
         }) 
       }
     }
@@ -80,12 +81,12 @@ exports.authUser = (user, pass, session, logger, callback) => {
 }
 
 //check memeber is docsoc
-checkMember = (session, user, logger, callback) => {
+checkMember = (session, user, callback) => {
   var auth = fs.readFileSync(authpath) 
   var data = JSON.parse(auth).find(el => el.Login === user) 
   if(data) {
     //VALID USER
-    logger.info('User ' + user + ' successfully loged in') 
+    logger.info('User ' + user + ' successfully logged in') 
     //setup session
     session.docsoc = false 
     session.login = true 
@@ -97,7 +98,7 @@ checkMember = (session, user, logger, callback) => {
     return
   }else{
     //NON DOCSOC USER
-    logger.info('Not member of DoCSoc') 
+    logger.info('Not a member of DoCSoc') 
     callback( {member: true, err: 'Not a DoCSoc Member!'} )
     return
   }

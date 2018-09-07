@@ -1,6 +1,8 @@
 const auth = require('../auth/auth.js')
+const logger = require('./logger.js')
 
-var check = (req,res, callback) => {
+
+var check = (req, res, callback) => {
   if(req.session.login){
     if(req.session.type == 'sponsor'){
       res.redirect('/sponsor') 
@@ -12,7 +14,7 @@ var check = (req,res, callback) => {
   }
 }
 
-exports.setup = (app, db, logger) => {
+exports.setup = (app, db) => {
 
   app.get('/',  (req,res,next) => {
     check(req,res,next)
@@ -26,7 +28,7 @@ exports.setup = (app, db, logger) => {
   }, (req,res) => {
     var user = req.body.user 
     var pass = req.body.pass 
-    auth.authUser(user, pass, req.session, logger, (ret) => {
+    auth.authUser(user, pass, req.session, (ret) => {
       (ret === true) ? res.redirect('/member') : res.render('login', ret)
     })
   }) 
@@ -37,7 +39,7 @@ exports.setup = (app, db, logger) => {
   }, (req,res) => {
     var user = req.body.user 
     var pass = req.body.pass 
-    auth.authSponsor(user,pass,db,req.session,logger, (ret) => {
+    auth.authSponsor(user,pass,db,req.session, (ret) => {
       (ret === true) ? res.redirect('/sponsor') : res.render('login', ret) 
     })
   }) 
