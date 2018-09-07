@@ -1,6 +1,7 @@
 const express = require('express')
 const session = require('express-session')
 const fileUpload = require('express-fileupload')
+const helmet = require('helmet')
 const fs = require('fs')
 
 const app = express()
@@ -8,6 +9,7 @@ const app = express()
 app.set('view engine', 'pug')
 app.set('views', './views')
 
+app.use(helmet())
 app.use('/static', express.static('./static'))
 
 app.use(fileUpload())
