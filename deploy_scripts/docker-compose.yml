@@ -8,3 +8,4 @@ services:
     volumes:
       - /portal/sponsors:/portal/sponsors
       - /portal/secure:/portal/secure
+      - /portal/logs:/portal/logs
