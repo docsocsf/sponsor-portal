@@ -1,41 +1,44 @@
-const express = require('express') 
-const session = require('express-session') 
-const fileUpload = require('express-fileupload') 
+'use strict'
+const express = require('express')
+const session = require('express-session')
+const fileUpload = require('express-fileupload')
+const helmet = require('helmet')
 const fs = require('fs')
 
-const app = express() 
+const app = express()
 
-app.set('view engine', 'pug') 
-app.set('views', './views') 
+app.set('view engine', 'pug')
+app.set('views', './views')
 
-app.use('/static', express.static('./static')) 
+app.use(helmet())
+app.use('/static', express.static('./static'))
 
-app.use(fileUpload()) 
+app.use(fileUpload())
 
-//PORT
-app.set('port', process.env.PORT || 80) 
+// PORT
+app.set('port', process.env.PORT || 80)
 
-//JSON PARSER
-app.use(express.urlencoded({extended: false}))  
-app.use(express.json())    
+// JSON PARSER
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json())
 
-//SESSION
+// SESSION
 app.use(session({
   secret: 'shhhhhhhhhhhh',
   resave: false,
   saveUninitialized: true
 }))
 
-if(!fs.existsSync('./sponsors/')){
-  fs.mkdirSync('./sponsors/') 
+if (!fs.existsSync('./sponsors/')) {
+  fs.mkdirSync('./sponsors/')
 }
 
-if(!fs.existsSync('./temp/')){
-  fs.mkdirSync('./temp/') 
+if (!fs.existsSync('./temp/')) {
+  fs.mkdirSync('./temp/')
 }
 
-if(!fs.existsSync('./secure/')){
-  fs.mkdirSync('./secure/') 
+if (!fs.existsSync('./secure/')) {
+  fs.mkdirSync('./secure/')
 }
 
-exports.app = app;
+exports.app = app

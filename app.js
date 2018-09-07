@@ -1,41 +1,42 @@
-// setup express app
+'use strict'
+// Setup Express App
 const setup = require('./src/setup.js')
 const args = require('args-parser')(process.argv)
 
-//========================LOGGER===========================
+// =======================LOGGER===========================
 const logger = require('./src/logger.js')
 
-//========================EXPRESS SETUP=====================
+// =======================EXPRESS SETUP=====================
 const app = setup.app
 logger.info('(express setup) done')
 
-//========================mongoDB===========================
+// =======================MongoDB===========================
 const db = require('./src/db.js')
 logger.info('(mongodb setup) done')
 
-//= =========================LOGIN PAGE=====================
+// =========================Login Page=====================
 const login = require('./src/login.js')
 login.setup(app, db)
 logger.info('(login setup) done')
 
-//= ==========================MEMBER=========================
+// ==========================Member=========================
 const member = require('./src/member.js')
 member.setup(app, db)
 logger.info('(member setup) done')
 
-//= ==========================SPONSOR========================
+// ==========================Sponsor========================
 const sponsor = require('./src/sponsor.js')
 sponsor.setup(app, db)
 logger.info('(sponsor setup) done')
 
-//= ==========================PORTAL=========================
+// ==========================Portal=========================
 const admin = require('./src/admin.js')
 admin.setup(app, db)
 logger.info('(admin setup) done')
 
-//= ===========================OTHER=========================
+// ===========================Other=========================
 
-// LOGOUT
+// Logout
 app.post('/logout', (req, res) => {
   logger.info(req.session.user + ' has logged out')
   req.session.destroy()
@@ -59,7 +60,7 @@ if (args['no-https']) { // If no https then just use app.listen
   logger.info('HTTPS enforced')
   require('greenlock-express').create({
 
-  // Let's Encrypt v2 is ACME draft 11
+    // Let's Encrypt v2 is ACME draft 11
     version: 'draft-11',
 
     // Note: If at first you don't succeed, switch to staging to debug
