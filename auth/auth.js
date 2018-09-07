@@ -9,7 +9,7 @@ const authpath = './auth.json'
 exports.authSponsor = (user, pass, db, session, callback) => {
   db.Sponsor.find({ username: user }, (err, result) => {
     if (err) {
-      return logger.error('Unable to find sponsor: ': err)
+      return logger.error('Unable to find sponsor: ' + err)
     } else {
       if (result[0] && result[0].password === pass) {
         // VALID USER
