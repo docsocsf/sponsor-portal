@@ -1,3 +1,4 @@
+'use strict'
 const krb5 = require('node-krb5')
 const rp = require('request-promise')
 const fs = require('fs')
@@ -7,18 +8,21 @@ const authpath = './auth.json'
 
 exports.authSponsor = (user, pass, db, session, callback) => {
   db.Sponsor.find({ username: user }, (err, result) => {
-    if (err) return logger.error(err)
-    if (result[0] && result[0].password === pass) {
-      // VALID USER
-      logger.info('sponsor ' + user + ' has successfully logged in')
-      session.docsoc = false
-      session.login = true
-      session.type = 'sponsor'
-      session.user = user
-      callback(true)
+    if (err) {
+      return logger.error('Unable to find sponsor: ': err)
     } else {
-      logger.info('sponsor ' + user + ' has failed logging in')
-      callback({ member: false, err: 'Wrong username or password' })
+      if (result[0] && result[0].password === pass) {
+        // VALID USER
+        logger.info('sponsor ' + user + ' has successfully logged in')
+        session.docsoc = false
+        session.login = true
+        session.type = 'sponsor'
+        session.user = user
+        callback(true)
+      } else {
+        logger.info('sponsor ' + user + ' has failed logging in')
+        callback({ member: false, err: 'Wrong username or password' })
+      }
     }
   })
 }
@@ -78,8 +82,8 @@ exports.authUser = (user, pass, session, callback) => {
   })
 }
 
-// check memeber is docsoc
-checkMember = (session, user, callback) => {
+// check memeber is DoCSoc
+const checkMember = (session, user, callback) => {
   var auth = fs.readFileSync(authpath)
   var data = JSON.parse(auth).find(el => el.Login === user)
   if (data) {

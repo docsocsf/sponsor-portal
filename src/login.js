@@ -1,11 +1,11 @@
+'use strict'
 const auth = require('../auth/auth.js')
-const logger = require('./logger.js')
 
 var check = (req, res, callback) => {
   if (req.session.login) {
-    if (req.session.type == 'sponsor') {
+    if (req.session.type === 'sponsor') {
       res.redirect('/sponsor')
-    } else if (req.session.type == 'member') {
+    } else if (req.session.type === 'member') {
       res.redirect('/member')
     }
   } else {

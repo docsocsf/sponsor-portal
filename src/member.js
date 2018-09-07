@@ -1,11 +1,12 @@
+'use strict'
 const fs = require('fs-extra')
 const logger = require('./logger.js')
 
 var check = (req, res, callback) => {
   if (req.session.login) {
-    if (req.session.type == 'member') {
+    if (req.session.type === 'member') {
       callback()
-    } else if (req.session.type == 'sponsor') {
+    } else if (req.session.type === 'sponsor') {
       res.redirect('/sponsor')
     }
   } else {
@@ -19,9 +20,9 @@ exports.setup = (app, db) => {
     check(req, res, next)
   }, (req, res) => {
     db.Sponsor.find((error, sponsors) => {
-      ss = []
+      var ss = []
       sponsors.forEach(sponsor => {
-        s = {
+        var s = {
           username: sponsor.username,
           info: sponsor.info,
           news: sponsor.news,
@@ -80,7 +81,7 @@ exports.setup = (app, db) => {
         logger.error('Failed to find sponsor: ' + err)
         return
       }
-      data = {
+      var data = {
         firstname: req.session.data.FirstName,
         surname: req.session.data.Surname,
         email: req.body.email,

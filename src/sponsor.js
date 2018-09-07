@@ -1,12 +1,13 @@
+'use strict'
 const fs = require('fs-extra')
 const zipFolder = require('zip-folder')
 const logger = require('./logger.js')
 
 var check = (req, res, callback) => {
   if (req.session.login) {
-    if (req.session.type == 'sponsor') {
+    if (req.session.type === 'sponsor') {
       callback()
-    } else if (req.session.type == 'member') {
+    } else if (req.session.type === 'member') {
       res.redirect('/member')
     }
   } else {
@@ -15,12 +16,16 @@ var check = (req, res, callback) => {
 }
 
 exports.setup = (app, db) => {
-  // sponsor PAGE
+  // Sponsor Page
   app.get('/sponsor', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
     db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
-      res.render('sponsor', { sponsor: sponsor[0] })
+      if (err) {
+        logger.error('Unable to find sponsor: ' + err)
+      } else {
+        res.render('sponsor', { sponsor: sponsor[0] })
+      }
     })
   })
 
@@ -28,7 +33,11 @@ exports.setup = (app, db) => {
     check(req, res, next)
   }, (req, res) => {
     db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
-      res.render('sponsor', { sponsor: sponsor[0], err: req.params.error })
+      if (err) {
+        logger.error('Unable to find sponsor: ' + err)
+      } else {
+        res.render('sponsor', { sponsor: sponsor[0], err: req.params.error })
+      }
     })
   })
 
