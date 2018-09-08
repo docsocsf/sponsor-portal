@@ -36,7 +36,7 @@ exports.authUser = (user, pass, session, callback) => {
   logger.info('Member ' + user + ' trying to login...')
   // KERBEROS AUTHENTICATION
   logger.info('Starting Kerberos Authentication...')
-  krb5.authenticate(user + '@ic.ac.uk', pass, (err) => {
+  krb5.authenticate(user + '@IC.AC.UK', pass, (err) => {
     if (err) {
       // WRONG PASSWORD/INVALID USER
       logger.info('Kerberos ' + err)
