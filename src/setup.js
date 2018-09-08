@@ -4,6 +4,8 @@ const session = require('express-session')
 const fileUpload = require('express-fileupload')
 const helmet = require('helmet')
 const fs = require('fs')
+const logger = require('./src/logger.js')
+const Morgan = require('morgan')
 
 const app = express()
 
@@ -11,6 +13,7 @@ app.set('view engine', 'pug')
 app.set('views', './views')
 
 app.use(helmet())
+app.use(Morgan({ 'stream': logger.stream }))
 app.use('/static', express.static('./static'))
 
 app.use(fileUpload())
