@@ -2,6 +2,7 @@
 const krb5 = require('node-krb5')
 const rp = require('request-promise')
 const fs = require('fs')
+const yaml = require('js-yaml')
 const logger = require('../src/logger.js')
 
 const authpath = './auth.json'
@@ -28,14 +29,7 @@ exports.authSponsor = (user, pass, db, session, callback) => {
 }
 
 // EACTIVITIES PORTAL
-var options = {
-  // Change this to get correct auth
-  url: 'https://eactivities.union.ic.ac.uk/API/CSP/605/reports/members',
-  auth: {
-    user: 'user',
-    password: '03CB83E3-AF2E-4528-98D2-20046AED475A'
-  }
-}
+const options = require('../src/config.js').doc.eactivities
 
 exports.authUser = (user, pass, session, callback) => {
   // for debugging
@@ -82,7 +76,7 @@ exports.authUser = (user, pass, session, callback) => {
   })
 }
 
-// check memeber is DoCSoc
+// check member is in DoCSoc
 const checkMember = (session, user, callback) => {
   var auth = fs.readFileSync(authpath)
   var data = JSON.parse(auth).find(el => el.Login === user)

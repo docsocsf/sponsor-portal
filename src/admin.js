@@ -1,6 +1,8 @@
 'use strict'
 const fs = require('fs-extra')
 const logger = require('./logger.js')
+const sha256 = require('js-sha256').sha256
+const credentials = require('./config.js').doc.auth
 
 exports.setup = (app, db) => {
   // PORTAL LOGIN PAGE
@@ -18,7 +20,8 @@ exports.setup = (app, db) => {
   }, (req, res) => {
     var user = req.body.user
     var pass = req.body.pass
-    if (user === 'docsoc' && pass === 'docsoc') {
+    if (user === credentials.username &&
+      sha256(pass) === credentials.pw) {
       req.session.docsoc = true
       res.redirect('/admin')
     } else {

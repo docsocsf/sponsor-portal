@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Decrypt Secrets Config
+sudo openssl enc -aes-256-cbc -md sha256 -d -in /portal/secrets.yml.enc -out /portal/secure/config.yml -k $KEY
+
 # Check if newer image available
 sudo docker-compose -f /portal/docker-compose.yml pull
 # Run service
