@@ -12,8 +12,10 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "d3:9b:6d:d3:87:3c:7b:97:7a:04:9c:e6:da:64:b7:00"
-      - run: scp -o 'StrictHostKeyChecking=no' -P 10022 deploy_scripts/docker-compose.yml circleci@portal.docsoc.co.uk:/portal/docker-compose.yml
-      - run: scp -o 'StrictHostKeyChecking=no' -P 10022 deploy_scripts/update-portal circleci@portal.docsoc.co.uk:/portal/update-portal
+      - run: scp -o 'StrictHostKeyChecking=no' -P 10022 \
+          deploy_scripts/docker-compose.yml \
+          deploy_scripts/update-portal \
+          secrets/secrets.yml.enc circleci@portal.docsoc.co.uk:/portal/
       - run: ssh -o "StrictHostKeyChecking=no" -p 10022 -v circleci@portal.docsoc.co.uk "update-portal"
   test:
     docker:

@@ -3,3 +3,6 @@ build
 sponsors/*
 temp/*
 secure/*
+
+*secrets.yml
+*auth.json
