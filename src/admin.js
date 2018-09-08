@@ -2,7 +2,7 @@
 const fs = require('fs-extra')
 const logger = require('./logger.js')
 const sha256 = require('js-sha256').sha256
-const credentials = require('./config.js').doc.auth
+const credentials = require('./config.js').doc.admin
 
 exports.setup = (app, db) => {
   // PORTAL LOGIN PAGE
