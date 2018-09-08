@@ -18,6 +18,7 @@
     "glob": "^7.1.2",
     "graceful-fs": "^4.1.11",
     "greenlock-express": "^2.4.6",
+    "helmet": "^3.13.0",
     "jquery": "^3.3.1",
     "js-sha256": "^0.9.0",
     "js-yaml": "^3.12.0",
@@ -44,7 +45,12 @@
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {
-    "args-parser": "^1.1.0"
+    "args-parser": "^1.1.0",
+    "eslint": "^5.5.0",
+    "eslint-config-import": "^0.13.0",
+    "eslint-config-node": "^3.0.0",
+    "eslint-config-promise": "^1.2.6",
+    "eslint-config-standard": "^12.0.0"
   },
   "repository": {
     "type": "git",

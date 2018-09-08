@@ -1,3 +1,4 @@
+'use strict'
 const fs = require('fs-extra')
 const logger = require('./logger.js')
 const sha256 = require('js-sha256').sha256
@@ -37,7 +38,11 @@ exports.setup = (app, db) => {
     }
   }, (req, res) => {
     db.Sponsor.find((err, s) => {
-      res.render('admin', { sponsors: s })
+      if (err) {
+        logger.error('Error with admin login: ' + err)
+      } else {
+        res.render('admin', { sponsors: s })
+      }
     })
   })
 
