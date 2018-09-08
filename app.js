@@ -8,31 +8,31 @@ const logger = require('./src/logger.js')
 
 // =======================EXPRESS SETUP=====================
 const app = setup.app
-logger.info('(express setup) done')
+logger.info('[Express Setup] done')
 
 // =======================MongoDB===========================
 const db = require('./src/db.js')
-logger.info('(mongodb setup) done')
+logger.info('[Mongodb Setup] done')
 
 // =========================Login Page=====================
 const login = require('./src/login.js')
 login.setup(app, db)
-logger.info('(login setup) done')
+logger.info('[Login Setup] done')
 
 // ==========================Member=========================
 const member = require('./src/member.js')
 member.setup(app, db)
-logger.info('(member setup) done')
+logger.info('[member Setup] done')
 
 // ==========================Sponsor========================
 const sponsor = require('./src/sponsor.js')
 sponsor.setup(app, db)
-logger.info('(sponsor setup) done')
+logger.info('[Sponsor Setup] done')
 
 // ==========================Portal=========================
 const admin = require('./src/admin.js')
 admin.setup(app, db)
-logger.info('(admin setup) done')
+logger.info('[Admin Setup] done')
 
 // ===========================Other=========================
 
