@@ -20,8 +20,9 @@ exports.setup = (app, db) => {
   }, (req, res) => {
     var user = req.body.user
     var pass = req.body.pass
+    console.log(sha256(pass))
     if (user === credentials.username &&
-      sha256(pass) === credentials.pw) {
+      sha256(pass) === credentials.pw_hash) {
       req.session.docsoc = true
       res.redirect('/admin')
     } else {
