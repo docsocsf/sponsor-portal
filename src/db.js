@@ -1,14 +1,18 @@
-const mongoose = require('mongoose') 
+'use strict'
+const mongoose = require('mongoose')
+const logger = require('./logger.js')
 
-//MONGOOSE
-mongoose.connect('mongodb://127.0.0.1/portal') 
-var db = mongoose.connection 
-db.on('error', console.error.bind(console, 'connection error:')) 
-db.once('open', function() {
-  console.log('connected to db') 
-}) 
+// MONGOOSE
+mongoose.connect('mongodb://127.0.0.1:27017/portal', { useNewUrlParser: true })
+var db = mongoose.connection
+db.on('error', function (err) {
+  logger.error('Failed to connect to mongodb: ' + err)
+})
+db.once('open', function () {
+  logger.info('Connected to mongodb')
+})
 
-//DATABASE SCHEME
+// DATABASE SCHEME
 var SponsorSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -18,7 +22,7 @@ var SponsorSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: true
   },
   info: {
     name: {
@@ -87,5 +91,5 @@ var SponsorSchema = new mongoose.Schema({
       }]
     }]
   }]
-}) 
-exports.Sponsor = mongoose.model('Sponsor', SponsorSchema) 
+})
+exports.Sponsor = mongoose.model('Sponsor', SponsorSchema)

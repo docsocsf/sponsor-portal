@@ -1,34 +1,44 @@
-// setup express app
+'use strict'
+// Setup Express App
 const setup = require('./src/setup.js')
 const args = require('args-parser')(process.argv)
+
+// =======================LOGGER===========================
+const logger = require('./src/logger.js')
+
+// =======================EXPRESS SETUP=====================
 const app = setup.app
+logger.info('[Express Setup] done')
 
-// setup mongoDB database
+// =======================MongoDB===========================
 const db = require('./src/db.js')
+logger.info('[Mongodb Setup] done')
 
-//= =========================LOGIN PAGE======================
+// =========================Login Page=====================
 const login = require('./src/login.js')
 login.setup(app, db)
+logger.info('[Login Setup] done')
 
-//= ==========================MEMBER=========================
-
+// ==========================Member=========================
 const member = require('./src/member.js')
 member.setup(app, db)
+logger.info('[member Setup] done')
 
-//= ==========================SPONSOR========================
-
+// ==========================Sponsor========================
 const sponsor = require('./src/sponsor.js')
 sponsor.setup(app, db)
+logger.info('[Sponsor Setup] done')
 
-//= ==========================PORTAL=========================
+// ==========================Portal=========================
+const admin = require('./src/admin.js')
+admin.setup(app, db)
+logger.info('[Admin Setup] done')
 
-const portal = require('./src/portal.js')
-portal.setup(app, db)
+// ===========================Other=========================
 
-//= ===========================OTHER=========================
-
-// LOGOUT
+// Logout
 app.post('/logout', (req, res) => {
+  logger.info(req.session.user + ' has logged out')
   req.session.destroy()
   res.redirect('/')
 })
@@ -37,16 +47,20 @@ app.get('*', function (req, res) {
   res.redirect('/')
 })
 
+app.post('*', function (req, res) {
+  res.redirect('/')
+})
+
 if (args['no-https']) { // If no https then just use app.listen
-  console.log('no-https option selected, running on just http')
+  logger.info('no-https option selected, running on just http')
   app.listen(app.get('port'), function () {
-    console.log('Server listening on port ' + app.get('port'))
+    logger.info('Server listening on port ' + app.get('port'))
   })
 } else { // Use greenlock to force https
-  console.log('HTTPS enforced')
+  logger.info('HTTPS enforced')
   require('greenlock-express').create({
 
-  // Let's Encrypt v2 is ACME draft 11
+    // Let's Encrypt v2 is ACME draft 11
     version: 'draft-11',
 
     // Note: If at first you don't succeed, switch to staging to debug
