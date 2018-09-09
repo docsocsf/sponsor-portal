@@ -13,10 +13,19 @@
                   img(src="/assets/images/sponsors/" + sponsor.info.picture width="100%")
                 .col-lg-7.col-sm-10
                   h1.card-title=sponsor.info.name
-                  .card-text.mb-3.render-md(value=sponsor.info.description)
-                  a.card-link(href="mailto:"+sponsor.info.email)=sponsor.info.email
+                  if(sponsor.info.description)
+                    .card-text.mb-3
+                      .show-md!=sponsor.info.description
+                      .read-more.d-none
+                        button.btn.btn-primary.button(href= ' ') Read more
+                  if(sponsor.info.email)
+                    a.card-link(href="mailto:"+sponsor.info.email)
+                      img(src="/assets/images/icons/apply.svg" width="30px")
+                      |  Email
                   if(sponsor.info.link)
-                    a.card-link(href=sponsor.info.link) Read More
+                    a.card-link(href=sponsor.info.link)
+                      img(src="/assets/images/icons/link.svg" width="30px")
+                      |  Link
             if(rank != 'bronze')
               ul.list-group.list-group-flush
                 if(sponsor.news.length != 0)
@@ -29,10 +38,14 @@
                       .card.mt-2
                         .card-body
                           h1.card-title=news.title
-                          if(news.link != "")
+                          if(news.link)
                             .mb-3
                               a(target="_blank" href=news.link) Link
-                          .card-text.render-md(value = news.text)
+                          if(news.text)
+                            .card-text.mb-3.mt-3
+                              .show-md!=news.text
+                              .read-more.d-none
+                                button.btn.btn-primary.button(href= ' ') Read more
               ul.list-group.list-group-flush
                 if(sponsor.positions.length != 0)
                   li.list-group-item 
@@ -44,10 +57,15 @@
                       .card.mt-2
                         .card-body
                           h1.card-title=pos.name
-                          if(pos.link != "")
-                            .mb-3
-                              a(target="_blank" href=pos.link) Link
-                          .card-text.render-md(value = pos.description)
+                          if(pos.link)
+                          a.card-link(href=pos.link) 
+                            img(src="/assets/images/icons/link.svg" width="30px")
+                            |  Link
+                          if(pos.description)
+                            .card-text.mb-3.mt-3
+                              .show-md!=pos.description
+                              .read-more.d-none
+                                button.btn.btn-primary.button(href= ' ') Read more
                         ul.list-group.list-group-flush
                           if(pos.applied)
                             li.list-group-item

@@ -1,6 +1,7 @@
 'use strict'
 const fs = require('fs-extra')
 const logger = require('./logger.js')
+const markdown = require('markdown').markdown
 
 var check = (req, res, callback) => {
   if (req.session.login) {
@@ -22,6 +23,12 @@ exports.setup = (app, db) => {
     db.Sponsor.find((error, sponsors) => {
       var ss = []
       sponsors.forEach(sponsor => {
+        if (sponsor.info.description)
+          sponsor.info.description = markdown.toHTML(sponsor.info.description)
+        sponsor.news.forEach(n => {
+          if (n.text)
+            n.text = markdown.toHTML(n.text)
+        })
         var s = {
           username: sponsor.username,
           info: sponsor.info,
@@ -29,6 +36,8 @@ exports.setup = (app, db) => {
           positions: []
         }
         sponsor.positions.forEach(position => {
+          if(position.description)
+            position.description = markdown.toHTML(position.description)
           var pos = {
             name: position.name,
             description: position.description,

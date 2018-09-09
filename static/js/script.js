@@ -19,12 +19,6 @@ $(function () {
   }
 
 
-  $('.render-md').each(function () {
-    if ($(this).attr('value')) {
-      $(this).html(markdown.toHTML($(this).attr('value')))
-    }
-  })
-
   if ($('.member-tab').hasClass('active-tab')) {
     $('.member-login').removeClass('d-none')
   } else {
@@ -94,6 +88,13 @@ $(function () {
       element.hide()
       element.removeClass('d-none')
       element.slideDown()
+
+      element.find('.show-md').each(function () {
+        if ($(this).height() > 300) {
+          $(this).parent().addClass('sidebar-box')
+          $(this).next().removeClass('d-none')
+        }
+      })
     } else {
       element.slideUp(function () {
         element.addClass('d-none')
@@ -147,4 +148,27 @@ $(function () {
   $('.live .text').on('input', function () {
     $(this).closest('.live').find('.preview-text').html(markdown.toHTML($(this).val()))
   })
+
+  //markdown render
+  $('.render-md').each(function () {
+    if ($(this).attr('value')) {
+      $(this).html(markdown.toHTML($(this).attr('value')))
+    }
+  })
+
+  $('.show-md').each(function () {
+    if ($(this).height() > 300) {
+      $(this).parent().addClass('sidebar-box')
+      $(this).next().removeClass('d-none')
+    }
+  })
+
+  //sponsor description shorten for members
+
+  $(".read-more .button").click(function () {
+    $(this).hide();
+    var element = $(this).closest('.sidebar-box')
+    element.removeClass('sidebar-box');
+    return false
+  });
 })

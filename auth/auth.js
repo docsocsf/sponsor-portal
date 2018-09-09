@@ -5,7 +5,7 @@ const fs = require('fs')
 const yaml = require('js-yaml')
 const logger = require('../src/logger.js')
 
-const authpath = './auth.json'
+const authpath = './auth/auth.json'
 
 exports.authSponsor = (user, pass, db, session, callback) => {
   db.Sponsor.find({ username: user }, (err, result) => {
