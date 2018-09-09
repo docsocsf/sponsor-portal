@@ -147,38 +147,35 @@ exports.setup = (app, db) => {
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      res.redirect('/member')
     } else if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      res.redirect('/member')
     } else {
       if (fs.existsSync(path)) {
         fs.removeSync(path)
       }
-
-      db.Sponsor.find({
-        username: req.params.sponsor
-      }, (err, sponsor) => {
+    }
+    db.Sponsor.find({
+      username: req.params.sponsor
+    }, (err, sponsor) => {
+      if (err) {
+        logger.error('Failed to find sponsor: ' + err)
+        res.redirect('/member')
+        return
+      }
+      sponsor[0].positions.forEach(position => {
+        if (position.name === req.params.posname) {
+          position.users = position.users.filter(user => user.username !== req.session.data.Login)
+        }
+      })
+      sponsor[0].save((err, user) => {
         if (err) {
-          logger.error('Failed to find sponsor: ' + err)
+          logger.error('Failed to find sponsor for user removing application: ' + err)
           res.redirect('/member')
           return
         }
-        sponsor[0].positions.forEach(position => {
-          if (position.name === req.params.posname) {
-            position.users = position.users.filter(user => user.username !== req.session.data.Login)
-          }
-        })
-        sponsor[0].save((err, user) => {
-          if (err) {
-            logger.error('Failed to find sponsor for user removing application: ' + err)
-            res.redirect('/member')
-            return
-          }
-          logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
-          res.redirect('/member')
-        })
+        logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
+        res.redirect('/member')
       })
-    }
+    })
   })
 }

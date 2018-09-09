@@ -67,12 +67,18 @@ $(function () {
 
   $('input:file').change(function () {
     var button = $(this).closest('button')
+    var input = button.prev().prev()
     var filename = $(this).val().split('\\').last().split('.')
     var extension = ''
     if (filename.length > 1) {
       extension = '.' + filename.pop()
     }
-    button.prev().prev().val(filename)
+    if(filename[0]){
+      input.prop('disabled', false)
+    }else{
+      input.prop('disabled', true)
+    }
+    input.val(filename)
     button.prev().html(extension)
   })
 

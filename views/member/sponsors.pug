@@ -103,8 +103,8 @@
                                           - var klass = (i === 0 ? '' : 'd-none')
                                           .row.justify-content-start.mb-2.mt-1(class = klass)
                                             label.col.mt-2.small-font(for="documentname" + i) Document Name:
-                                            input.col-5(type="text", name="documentname" + i).mt-1
-                                            label.col-1.mt-2
+                                            input.col-4.mt-1(type="text", name="documentname" + i disabled)
+                                            label.col-2.mt-2
                                             button.col-lg-2.col-sm-1.btn.mr-2.upload(type='button')
                                               .hide-small Upload 
                                                 span.octicon.octicon-cloud-upload
