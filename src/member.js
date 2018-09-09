@@ -62,21 +62,25 @@ exports.setup = (app, db) => {
   }, (req, res) => {
     // check if valid path
     var sponsorpath = './sponsors/' + req.params.sponsor + '/'
+    var pospath = sponsorpath + req.params.posname + '/'
+    var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       res.redirect('/member')
+      return
     }
-    var pospath = sponsorpath + req.params.posname + '/'
     if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       res.redirect('/member')
+      return
     }
-    var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path)
     }
 
-    db.Sponsor.find({ username: req.params.sponsor }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.params.sponsor
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
         return
@@ -96,6 +100,8 @@ exports.setup = (app, db) => {
           req.files['document' + i].mv(path + req.body['documentname' + i] + '.' + ext, function (err) {
             if (err) {
               logger.error('Failed to save user document: ' + err)
+              res.redirect('/member')
+              return
             }
           })
           data.documents.push({
@@ -112,6 +118,7 @@ exports.setup = (app, db) => {
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to update sponsor for user application: ' + err)
+          res.redirect('/member')
           return
         }
         logger.info(req.session.data.Login + ' has successfully applied to ' + req.params.sponsor + "'s " +
@@ -127,38 +134,42 @@ exports.setup = (app, db) => {
   }, (req, res) => {
     // check if valid path
     var sponsorpath = './sponsors/' + req.params.sponsor + '/'
+    var pospath = sponsorpath + req.params.posname + '/'
+    var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       res.redirect('/member')
-    }
-    var pospath = sponsorpath + req.params.posname + '/'
-    if (!fs.existsSync(pospath)) {
+    } else if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       res.redirect('/member')
-    }
-    var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
-    if (fs.existsSync(path)) {
-      fs.removeSync(path)
-    }
-
-    db.Sponsor.find({ username: req.params.sponsor }, (err, sponsor) => {
-      if (err) {
-        logger.error('Failed to find sponsor: ' + err)
-        return
+    } else {
+      if (fs.existsSync(path)) {
+        fs.removeSync(path)
       }
-      sponsor[0].positions.forEach(position => {
-        if (position.name === req.params.posname) {
-          position.users = position.users.filter(user => user.username !== req.session.data.Login)
-        }
-      })
-      sponsor[0].save((err, user) => {
+
+      db.Sponsor.find({
+        username: req.params.sponsor
+      }, (err, sponsor) => {
         if (err) {
-          logger.error('Failed to find sponsor for user removing application: ' + err)
+          logger.error('Failed to find sponsor: ' + err)
+          res.redirect('/member')
           return
         }
-        logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
-        res.redirect('/member')
+        sponsor[0].positions.forEach(position => {
+          if (position.name === req.params.posname) {
+            position.users = position.users.filter(user => user.username !== req.session.data.Login)
+          }
+        })
+        sponsor[0].save((err, user) => {
+          if (err) {
+            logger.error('Failed to find sponsor for user removing application: ' + err)
+            res.redirect('/member')
+            return
+          }
+          logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
+          res.redirect('/member')
+        })
       })
-    })
+    }
   })
 }
