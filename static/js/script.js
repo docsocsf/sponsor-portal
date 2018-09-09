@@ -1,11 +1,6 @@
-
-$(function () {
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js')
-    .then(function (reg) {
-    }).catch(function (err) {
-    });
+    .then(function (reg) {}).catch(function (err) {});
 }
 
 $(function () {
@@ -49,6 +44,10 @@ $(function () {
           $(this).removeClass('d-none')
         } else {
           $(this).addClass('d-none')
+        }
+      })
+    }
+  })
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     window.location.hash = e.target['id'] + '-nav'
@@ -58,7 +57,9 @@ $(function () {
     e.preventDefault()
     let documents = $(this).closest('.documents').find('.d-none')
     documents.first().removeClass('d-none')
-    if (documents.length <= 1) { $(this).addClass('d-none') }
+    if (documents.length <= 1) {
+      $(this).addClass('d-none')
+    }
   })
 
   $('.hide-document').click(function (e) {
@@ -74,7 +75,9 @@ $(function () {
     var button = $(this).closest('button')
     var filename = $(this).val().split('\\').last().split('.')
     var extension = ''
-    if (filename.length > 1) { extension = '.' + filename.pop() }
+    if (filename.length > 1) {
+      extension = '.' + filename.pop()
+    }
     button.prev().prev().val(filename)
     button.prev().html(extension)
   })
