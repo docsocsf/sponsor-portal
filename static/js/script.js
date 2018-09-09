@@ -1,4 +1,20 @@
+
 $(function () {
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(function (reg) {
+    }).catch(function (err) {
+    });
+}
+
+$(function () {
+  if (!Array.prototype.last) {
+    Array.prototype.last = function () {
+      return this[this.length - 1];
+    };
+  };
+
   if (window.location.hash === '#positions-tab-nav') {
     $('#positions-tab').tab('show')
   } else if (window.location.hash === '#news-tab-nav') {
@@ -7,11 +23,6 @@ $(function () {
     $('#info-tab').tab('show')
   }
 
-  if (!Array.prototype.last) {
-    Array.prototype.last = function () {
-      return this[this.length - 1]
-    }
-  };
 
   $('.render-md').each(function () {
     if ($(this).attr('value')) {
@@ -38,10 +49,6 @@ $(function () {
           $(this).removeClass('d-none')
         } else {
           $(this).addClass('d-none')
-        }
-      })
-    }
-  })
 
   $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
     window.location.hash = e.target['id'] + '-nav'

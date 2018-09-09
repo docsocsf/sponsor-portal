@@ -7,10 +7,10 @@
           .card.mt-4.mb-2
             .card-body
               if(sponsor.info.bespoke)
-                img(src="/static/assets/images/icons/"+rank+"_bespoke.png" width="150px").bespoke
+                img(src="/assets/images/icons/"+rank+"_bespoke.png" width="150px").bespoke
               .row
                 .col-lg-3.col-sm-2
-                  img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="100%")
+                  img(src="/assets/images/sponsors/" + sponsor.info.picture width="100%")
                 .col-lg-7.col-sm-10
                   h1.card-title=sponsor.info.name
                   .card-text.mb-3.render-md(value=sponsor.info.description)
