@@ -3,7 +3,7 @@
   "name": "DoCSoc Portal",
   "icons": [
     {
-      "src": "/static/assets/images/docsoc-sf-logo.png",
+      "src": "/assets/images/docsoc-sf-logo.png",
       "sizes": "192x192",
       "type": "image/png"
     }
