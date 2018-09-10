@@ -134,7 +134,7 @@ $(function () {
   $('.live .link').on('input', function () {
     var live = $(this).closest('.live').find('.preview-link')
     if ($(this).val() != '') {
-      live.html('Link')
+      live.html('<img src="/assets/images/icons/link.svg" width="30px"> Link')
       live.attr('href', $(this).val())
     } else {
       live.html('')

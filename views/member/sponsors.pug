@@ -39,8 +39,9 @@
                         .card-body
                           h1.card-title=news.title
                           if(news.link)
-                            .mb-3
-                              a(target="_blank" href=news.link) Link
+                            a(target="_blank" href=news.link)
+                              img(src="/assets/images/icons/link.svg" width="30px")
+                              |  Link
                           if(news.text)
                             .card-text.mb-3.mt-3
                               .show-md!=news.text
@@ -58,9 +59,9 @@
                         .card-body
                           h1.card-title=pos.name
                           if(pos.link)
-                          a.card-link(href=pos.link) 
-                            img(src="/assets/images/icons/link.svg" width="30px")
-                            |  Link
+                            a.card-link(href=pos.link) 
+                              img(src="/assets/images/icons/link.svg" width="30px")
+                              |  Link
                           if(pos.description)
                             .card-text.mb-3.mt-3
                               .show-md!=pos.description
@@ -90,7 +91,7 @@
                                     .small-font This is how the Sponsor will contact you.
                                   .row.justify-content-center.mt-1
                                     label.col-3.small-font(for="email").mt-2 Your email:
-                                    input.col-8.small-font(type="text", name="email", value=email).mt-2
+                                    input.col-8.small-font.form-control(type="text", name="email", value=email).mt-2
                                   br
                                   .row
                                     h4 Documents:
@@ -103,12 +104,12 @@
                                           - var klass = (i === 0 ? '' : 'd-none')
                                           .row.justify-content-start.mb-2.mt-1(class = klass)
                                             label.col.mt-2.small-font(for="documentname" + i) Document Name:
-                                            input.col-4.mt-1(type="text", name="documentname" + i disabled)
+                                            input.form-control.col-4.mt-1(type="text", name="documentname" + i disabled)
                                             label.col-2.mt-2
                                             button.col-lg-2.col-sm-1.btn.mr-2.upload(type='button')
                                               .hide-small Upload 
                                                 span.octicon.octicon-cloud-upload
-                                                  input(type="file", style = 'display:none' name="document" + i)
+                                                  input.d-none(.d-nonetype="file" name="document" + i)
                                             if(i)
                                               button.col-1.btn.btn-sm(type='button').hide-document
                                                 span.octicon.octicon-x

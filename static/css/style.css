@@ -15,7 +15,6 @@ h1, h2, h3, h4 {
   font-family: "Montserrat",Geneva,Verdana,sans-serif;
 }
 
-
 .subtext {
   font-size: 0.9rem
 }
@@ -197,7 +196,11 @@ th, td {
 }
 
 textarea {
-  height: 300px;
+  height: 300px !important;
+}
+
+.form-control {
+  font-size: 1.2rem !important;
 }
 
 /* sponsor description shorten for members */

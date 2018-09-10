@@ -14,20 +14,21 @@
               .row.justify-content-center
                 .col-12.live
                   .row.mt-2.mb-2
-                    label.col-lg-3.col-sm-4(for="name") Name: 
-                    input.col-lg-8.col-sm-7.title(type="text", name="name")
+                    label.col-lg-3.col-sm-4(for="name") Title: 
+                    input.form-control.col-lg-8.col-sm-7.title(type="text", name="name")
                   .row.mt-2.mb-2
                     label.col-lg-3.col-sm-4(for="link") Link to learn more: 
                       .subtext (optional) 
-                    input.col-lg-8.col-sm-7.link(type="text", name="link")
+                    input.form-control.col-lg-8.col-sm-7.link(type="text", name="link")
                   .row.mt-2.mb-2
                     .col-lg-3.col-sm-4
                       label(for="description") Description:
                         .subtext (optional) 
                       .subtext (Works with Markdown. [#[a(target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet") more]])
-                    textarea.col-lg-8.col-sm-7.text(type="text", name="description")
+                    textarea.form-control.col-lg-8.col-sm-7.text(type="text", name="description")
                   .row.mt-2.mb-2
                     .col-12.h4 Live Preview:
+                      .subtext (This is what DoCSoc members will see)
                     .col-12
                       .card.mt-2.preview
                         .card-body
@@ -53,10 +54,11 @@
                     form(action="/sponsor/download/pos/" + position.name method="post")
                       button.btn(type='submit') Download All 
                         span.octicon.octicon-desktop-download
-              if(position.link != "")
-                .mb-3
-                  a(target="_blank" href=position.link) Link
-              .card-text.render-md(value = position.description)
+              if(position.link)
+                a.card-link(href=position.link)
+                  img(src="/assets/images/icons/link.svg" width="30px")
+                  |  Link
+              .card-text.render-md.mt-3(value = position.description)
               form.col-1(action="/sponsor/remove-position/" + position.name method="post")
                 button.btn(type='submit') Delete 
                   span.octicon.octicon-trashcan   

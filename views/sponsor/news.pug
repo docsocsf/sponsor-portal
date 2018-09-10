@@ -11,19 +11,20 @@
             form(method="post" action="/sponsor/add-news").live
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="title") Title: 
-                input.col-lg-8.col-sm-7.title(type="text", name="title")
+                input.form-control.col-lg-8.col-sm-7.title(type="text", name="title")
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="link") Link to learn more: 
                   .subtext (optional)
-                input.col-lg-8.col-sm-7.link(type="text", name="link")
+                input.form-control.col-lg-8.col-sm-7.link(type="text", name="link")
               .row.mt-2.mb-2
                 .col-lg-3.col-sm-4
                   label(for="text") Article: 
                     .subtext (optional)
                   .subtext (Works with Markdown. [#[a(target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet") more]])
-                textarea.col-lg-8.col-sm-7.text(type="text", name="text")
+                textarea.form-control.col-lg-8.col-sm-7.text(type="text", name="text")
               .row.mt-2.mb-2
                 .col-12.h4 Live Preview:
+                  .subtext (This is what DoCSoc members will see)
                 .col-12
                   .card.mt-2.preview
                     .card-body
@@ -43,10 +44,11 @@
           .card.mt-3
             .card-body
               h1.card-title=news.title
-              if(news.link != "")
-                .mb-3
-                  a(target="_blank" href=news.link) Link
-              .card-text.render-md(value = news.text)
+              if(news.link)
+                a.card-link(href=news.link)
+                  img(src="/assets/images/icons/link.svg" width="30px")
+                  |  Link
+              .card-text.render-md.mt-3(value = news.text)
               form(action="/sponsor/remove-news/" + news.date method="post")
                 button.btn(type='submit') Delete 
                   span.octicon.octicon-trashcan   
