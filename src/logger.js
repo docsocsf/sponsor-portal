@@ -31,7 +31,7 @@ const logger = createLogger({
     //
     // - Write to all logs to their resepctive files
     //
-    new transports.Console({ level: 'debug' }),
+    new transports.Console({ level: 'info' }),
     new transports.File({ filename: '/portal/logs/error.log', level: 'error' }),
     new transports.File({ filename: '/portal/logs/info.log', level: 'info' }),
     new transports.File({ filename: '/portal/logs/debug.log' })
