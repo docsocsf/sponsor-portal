@@ -3,6 +3,7 @@ const krb5 = require('node-krb5')
 const rp = require('request-promise')
 const fs = require('fs')
 const yaml = require('js-yaml')
+const sha256 = require('js-sha256').sha256
 const logger = require('../src/logger.js')
 
 const authpath = './auth/auth.json'
@@ -12,7 +13,7 @@ exports.authSponsor = (user, pass, db, session, callback) => {
     if (err) {
       return logger.error('Unable to find sponsor: ' + err)
     } else {
-      if (result[0] && result[0].password === pass) {
+      if (result[0] && result[0].password === sha256(pass)) {
         // VALID USER
         logger.info('sponsor ' + user + ' has successfully logged in')
         session.docsoc = false

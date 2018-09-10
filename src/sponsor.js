@@ -2,6 +2,8 @@
 const fs = require('fs-extra')
 const zipFolder = require('zip-folder')
 const logger = require('./logger.js')
+const sha256 = require('js-sha256').sha256
+
 
 var check = (req, res, callback) => {
   if (req.session.login) {
@@ -292,8 +294,8 @@ exports.setup = (app, db) => {
         logger.error('Failed to find sponsor: ' + err)
         return
       }
-      if (req.body.new && sponsor[0].password === req.body.old && req.body.new === req.body.new2) {
-        sponsor[0].password = req.body.new
+      if (req.body.new && sponsor[0].password === sha256(req.body.old) && req.body.new === req.body.new2) {
+        sponsor[0].password = sha256(req.body.new)
         sponsor[0].save((err, user) => {
           if (err) {
             logger.error('Failed to update sponsor on change password: ' + err)
