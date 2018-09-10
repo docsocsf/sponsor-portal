@@ -9,13 +9,14 @@ $(function () {
       return this[this.length - 1];
     };
   };
-
-  if (window.location.hash === '#positions-tab-nav') {
-    $('#positions-tab').tab('show')
-  } else if (window.location.hash === '#news-tab-nav') {
-    $('#news-tab').tab('show')
-  } else if (window.location.hash === '#info-tab-nav') {
-    $('#info-tab').tab('show')
+  if(location.pathname == "/sponsor" || location.pathname == "/sponsor/"){
+    if (window.location.hash == "" || window.location.hash === '#positions-tab-nav') {
+      $('#positions-tab').tab('show')
+    } else if (window.location.hash === '#news-tab-nav') {
+      $('#news-tab').tab('show')
+    } else if (window.location.hash === '#info-tab-nav') {
+      $('#info-tab').tab('show')
+    }
   }
 
 
@@ -62,7 +63,20 @@ $(function () {
     $(this).siblings('input').each(function () {
       $(this).val('')
     })
+    $(this).closest('.row').find('.in-file').val('')
+    $(this).siblings('.ext').html('')
+    $(this).siblings('.doc-name').prop('disabled', true)
     $(this).closest('.documents').find('.show-document').removeClass('d-none')
+  })
+
+  $('.hide-document-0').click(function (e) {
+    e.preventDefault()
+    $(this).siblings('input').each(function () {
+      $(this).val('')
+    })
+    $(this).closest('.row').find('.in-file').val('')
+    $(this).siblings('.ext').html('')
+    $(this).siblings('.doc-name').prop('disabled', true)
   })
 
   $('input:file').change(function () {
@@ -124,7 +138,7 @@ $(function () {
   // LIVE PREVIEW
   $('.live .title').on('input', function () {
     $(this).closest('.live').find('.preview-title').html($(this).val())
-    if ($(this).val().trim() != '') {
+    if ($(this).val().trim()) {
       $(this).closest('.live').find('button').prop('disabled', false)
     } else {
       $(this).closest('.live').find('button').prop('disabled', true)
@@ -133,7 +147,7 @@ $(function () {
 
   $('.live .link').on('input', function () {
     var live = $(this).closest('.live').find('.preview-link')
-    if ($(this).val() != '') {
+    if ($(this).val()) {
       live.html('<img src="/assets/images/icons/link.svg" width="30px"> Link')
       live.attr('href', $(this).val())
     } else {
@@ -143,8 +157,8 @@ $(function () {
 
   $('.live .email').on('input', function () {
     var live = $(this).closest('.live').find('.preview-email')
-    if ($(this).val() != '') {
-      live.html($(this).val())
+    if ($(this).val()) {
+      live.html('<img src="/assets/images/icons/link.svg" width="30px"> Email')
       live.attr('href', 'mailto:' + $(this).val())
     } else {
       live.html('')
