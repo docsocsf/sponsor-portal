@@ -2,8 +2,8 @@
 const fs = require('fs-extra')
 const zipFolder = require('zip-folder')
 const logger = require('./logger.js')
-const sha256 = require('js-sha256').sha256
-
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 var check = (req, res, callback) => {
   if (req.session.login) {
@@ -22,11 +22,15 @@ exports.setup = (app, db) => {
   app.get('/sponsor', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Unable to find sponsor: ' + err)
       } else {
-        res.render('sponsor', { sponsor: sponsor[0] })
+        res.render('sponsor', {
+          sponsor: sponsor[0]
+        })
       }
     })
   })
@@ -34,11 +38,16 @@ exports.setup = (app, db) => {
   app.get('/sponsor/error/:error', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Unable to find sponsor: ' + err)
       } else {
-        res.render('sponsor', { sponsor: sponsor[0], err: req.params.error })
+        res.render('sponsor', {
+          sponsor: sponsor[0],
+          err: req.params.error
+        })
       }
     })
   })
@@ -136,7 +145,9 @@ exports.setup = (app, db) => {
   app.post('/sponsor/add-position', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
         return
@@ -178,7 +189,9 @@ exports.setup = (app, db) => {
   app.post('/sponsor/remove-position/:name', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
         return
@@ -210,7 +223,9 @@ exports.setup = (app, db) => {
   app.post('/sponsor/add-news', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
         return
@@ -237,7 +252,9 @@ exports.setup = (app, db) => {
   app.post('/sponsor/remove-news/:date', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
         return
@@ -266,7 +283,9 @@ exports.setup = (app, db) => {
   app.post('/sponsor/update-info', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
         return
@@ -289,20 +308,31 @@ exports.setup = (app, db) => {
   app.post('/sponsor/change-password', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
         return
       }
-      if (req.body.new && sponsor[0].password === sha256(req.body.old) && req.body.new === req.body.new2) {
-        sponsor[0].password = sha256(req.body.new)
-        sponsor[0].save((err, user) => {
-          if (err) {
-            logger.error('Failed to update sponsor on change password: ' + err)
-            return
+      if (req.body.new && req.body.new === req.body.new2) {
+        bcrypt.compare(req.body.old, sponsor[0].password, function(err, res) {
+          if (res) {
+            bcrypt.hash(req.body.new, saltRounds, function(err, pw_hash) {
+              sponsor[0].password_hash = pw_hash
+              sponsor[0].save((err, user) => {
+                if (err) {
+                  logger.error('Failed to update sponsor on change password: ' + err)
+                  return
+                }
+                logger.info(req.session.user + ' succesfully changed password')
+                res.redirect('/sponsor/#info-tab-nav')
+              })
+            })
+          } else {
+            logger.info(req.session.user + ' failed to changed password')
+            res.redirect('/sponsor/error/Error while trying to change password. Please try again./#info-tab-nav')
           }
-          logger.info(req.session.user + ' succesfully changed password')
-          res.redirect('/sponsor/#info-tab-nav')
         })
       } else {
         logger.info(req.session.user + ' failed to changed password')

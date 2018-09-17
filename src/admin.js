@@ -2,6 +2,8 @@
 const fs = require('fs-extra')
 const logger = require('./logger.js')
 const sha256 = require('js-sha256').sha256
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 const credentials = require('./config.js').doc.admin
 
 exports.setup = (app, db) => {
@@ -51,30 +53,33 @@ exports.setup = (app, db) => {
   // Add new sponsor
   app.post('/admin/new-sponsor', (req, res) => {
     // make sponsor
-    var sponsor = new db.Sponsor({
-      username: req.body.user,
-      password: sha256(req.body.pass),
-      info: {
-        name: req.body.name,
-        rank: req.body.rank,
-        picture: req.body.user + '_logo.png',
-        bespoke: (req.body.bespoke === 'true')
-      },
-      news: [],
-      positions: []
-    })
-    // Make sponsor folder
-    var path = './sponsors/' + req.body.user + '/'
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path)
-    }
-    // save sponsor
-    sponsor.save((err, user) => {
-      if (err) {
-
-      } else {
-        res.redirect('/admin')
+    // hash req.body.pass into pw_hash
+    bcrypt.hash(req.body['s.password'], saltRounds, function(err, pw_hash) {
+      // Store hash in password DB.
+      var sponsor = new db.Sponsor({
+        username: req.body.user,
+        password_hash: pw_hash,
+        info: {
+          name: req.body.name,
+          rank: req.body.rank,
+          picture: req.body.user + '_logo.png',
+          bespoke: (req.body.bespoke === 'true')
+        },
+        news: [],
+        positions: []
+      })
+      // Make sponsor folder
+      var path = './sponsors/' + req.body.user + '/'
+      if (!fs.existsSync(path)) {
+        fs.mkdirSync(path)
       }
+      // save sponsor
+      sponsor.save((err, user) => {
+        if (err) {
+          logger.error('Failed to save sponsor on creation: ' + err)
+        }
+        res.redirect('/admin')
+      })
     })
   })
 
@@ -83,10 +88,15 @@ exports.setup = (app, db) => {
     db.Sponsor.find({
       username: req.params.username
     }, (err, sponsor) => {
-      if (err) return
-
+      if (err) {
+        logger.error('Failed to find sponsor for edit: ' + err)
+        res.redirect('/member')
+        return
+      }
       if (req.body['s.password']) {
-        sponsor[0].password = sha256(req.body['s.password'])
+        bcrypt.hash(req.body['s.password'], saltRounds, function(err, pw_hash) {
+          sponsor[0].password_hash = pw_hash
+        });
       }
       if (req.body['s.info.name']) {
         sponsor[0].info.name = req.body['s.info.name']
@@ -126,7 +136,9 @@ exports.setup = (app, db) => {
       }
 
       sponsor[0].save((err, user) => {
-        if (err) return
+        if (err) {
+          logger.error('Failed to save sponsor for edit: ' + err)
+        }
         res.redirect('/admin')
       })
     })
@@ -138,7 +150,9 @@ exports.setup = (app, db) => {
       username: req.params.user
     }, (err) => {
       if (err) {
-
+        logger.error('Failed to find sponsor for user removing application: ' + err)
+        res.redirect('/member')
+        return
       } else {
         if (fs.existsSync('./sponsors/' + req.params.user)) {
           fs.removeSync('./sponsors/' + req.params.user)

@@ -3,31 +3,41 @@ const krb5 = require('node-krb5')
 const rp = require('request-promise')
 const fs = require('fs')
 const yaml = require('js-yaml')
-const sha256 = require('js-sha256').sha256
 const logger = require('../src/logger.js')
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const authpath = './auth/auth.json'
 
 exports.authSponsor = (user, pass, db, session, callback) => {
-  db.Sponsor.find({ username: user }, (err, result) => {
+  db.Sponsor.find({
+    username: user
+  }, (err, result) => {
     if (err) {
       return logger.error('Unable to find sponsor: ' + err)
     } else {
-      if (result[0] && result[0].password === sha256(pass)) {
-        // VALID USER
-        logger.info('sponsor ' + user + ' has successfully logged in')
-        session.docsoc = false
-        session.login = true
-        session.type = 'sponsor'
-        session.user = user
-        callback(true)
-      } else {
-        logger.info('sponsor ' + user + ' has failed logging in')
-        callback({ member: false, err: 'Wrong username or password' })
-      }
+      console.log(result[0].password_hash + ' ' + result[0].password_hash.length)
+      bcrypt.compare(pass, result[0].password_hash, function(err, res) {
+        if (res) {
+          // VALID USER
+          logger.info('sponsor ' + user + ' has successfully logged in')
+          session.docsoc = false
+          session.login = true
+          session.type = 'sponsor'
+          session.user = user
+          callback(true)
+        } else {
+          logger.info('sponsor ' + user + ' has failed logging in')
+          callback({
+            member: false,
+            err: 'Wrong username or password'
+          })
+        }
+      })
     }
   })
 }
+
 
 // EACTIVITIES PORTAL
 const options = require('../src/config.js').doc.eactivities
@@ -42,7 +52,10 @@ exports.authUser = (user, pass, session, callback) => {
       // WRONG PASSWORD/INVALID USER
       logger.info('Kerberos ' + err)
       // res.send('wrong username or password')
-      callback({ member: true, err: 'Wrong username or password' })
+      callback({
+        member: true,
+        err: 'Wrong username or password'
+      })
     } else {
       logger.info('Kerberos Authentication success.')
       logger.info('Starting DoCSoc Member Check...')
@@ -95,6 +108,9 @@ const checkMember = (session, user, callback) => {
   } else {
     // NON DOCSOC USER
     logger.info('Not a member of DoCSoc')
-    callback({ member: true, err: 'Not a DoCSoc Member!' })
+    callback({
+      member: true,
+      err: 'Not a DoCSoc Member!'
+    })
   }
 }
