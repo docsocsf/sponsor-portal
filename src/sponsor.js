@@ -316,8 +316,8 @@ exports.setup = (app, db) => {
         return
       }
       if (req.body.new && req.body.new === req.body.new2) {
-        bcrypt.compare(req.body.old, sponsor[0].password_hash, (err, res) => {
-          if (res) {
+        bcrypt.compare(req.body.old, sponsor[0].password_hash, (err, checkpass) => {
+          if (checkpass) {
             bcrypt.hash(req.body.new, saltRounds, (err, pw_hash) => {
               sponsor[0].password_hash = pw_hash
               sponsor[0].save((err, user) => {
