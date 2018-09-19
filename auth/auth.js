@@ -4,7 +4,7 @@ const rp = require('request-promise')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const logger = require('../src/logger.js')
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 const authpath = './auth/auth.json'
@@ -16,8 +16,7 @@ exports.authSponsor = (user, pass, db, session, callback) => {
     if (err) {
       return logger.error('Unable to find sponsor: ' + err)
     } else {
-      console.log(result[0].password_hash + ' ' + result[0].password_hash.length)
-      bcrypt.compare(pass, result[0].password_hash, function(err, checkpass) {
+      bcrypt.compare(pass, result[0].password_hash, (err, checkpass) => {
         if (checkpass) {
           // VALID USER
           logger.info('sponsor ' + user + ' has successfully logged in')

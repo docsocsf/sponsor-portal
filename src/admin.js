@@ -2,7 +2,7 @@
 const fs = require('fs-extra')
 const logger = require('./logger.js')
 const sha256 = require('js-sha256').sha256
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const credentials = require('./config.js').doc.admin
 
@@ -54,7 +54,7 @@ exports.setup = (app, db) => {
   app.post('/admin/new-sponsor', (req, res) => {
     // make sponsor
     // hash req.body.pass into pw_hash
-    bcrypt.hash(req.body['s.password'], saltRounds, function(err, pw_hash) {
+    bcrypt.hash(req.body['s.password'], saltRounds, (err, pw_hash) => {
       // Store hash in password DB.
       var sponsor = new db.Sponsor({
         username: req.body.user,
