@@ -17,8 +17,8 @@ exports.authSponsor = (user, pass, db, session, callback) => {
       return logger.error('Unable to find sponsor: ' + err)
     } else {
       console.log(result[0].password_hash + ' ' + result[0].password_hash.length)
-      bcrypt.compare(pass, result[0].password_hash, function(err, res) {
-        if (res) {
+      bcrypt.compare(pass, result[0].password_hash, function(err, checkpass) {
+        if (checkpass) {
           // VALID USER
           logger.info('sponsor ' + user + ' has successfully logged in')
           session.docsoc = false

@@ -38,14 +38,8 @@
                         .col-lg-7.col-sm-10
                           h1.card-title=sponsor.info.name
                           .card-text.story.mb-3.preview-text.render-md(value=sponsor.info.description)
-                          if(sponsor.info.email)
-                            a.card-link.preview-email(href="mailto:"+sponsor.info.email)
-                              img(src="/assets/images/icons/apply.svg" width="30px")
-                              |  Email
-                          if(sponsor.info.link)
-                            a.card-link.preview-link(href=sponsor.info.link)
-                              img(src="/assets/images/icons/apply.svg" width="30px")
-                              |  Link
+                            a(target="_blank").card-link.preview-email
+                            a(target="_blank").card-link.preview-link
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Save
     .row.justify-content-center.mt-3

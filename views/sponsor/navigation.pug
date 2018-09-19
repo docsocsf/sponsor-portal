@@ -9,7 +9,9 @@ ul#myTab.nav.nav-tabs.justify-content-center.header.mt-3(role='tablist', style="
   li.nav-item.col-md-auto.d-inline-block
     a#info-tab.nav-link(data-toggle='tab', href='#info', role='tab', aria-controls='info', aria-selected='true' class=(sponsor.info.rank === 'Bronze' ? 'active' : ''))
       h2.d-inline-block Account
-if err
+if error
   .alert.alert-danger(role="alert") 
     strong oh snap! 
-    | #{err}
+    | #{error}
+if success
+  .alert.alert-success(role="alert")=success
