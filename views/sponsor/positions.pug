@@ -52,7 +52,7 @@
                 if(position.users.length > 0)
                   .col-1
                     form(action="/sponsor/download/pos/" + position.name method="post")
-                      button.btn(type='submit') Download All 
+                      button.btn.btn-primary(type='submit') Download All 
                         span.octicon.octicon-desktop-download
               if(position.link)
                 a.card-link(href=position.link)
@@ -60,7 +60,7 @@
                   |  Link
               .card-text.render-md.mt-3(value = position.description)
               form.col-1(action="/sponsor/remove-position/" + position.name method="post")
-                button.btn(type='submit') Delete 
+                button.btn.btn-danger(type='submit') Delete 
                   span.octicon.octicon-trashcan   
           if(position.users.length > 0)
             ul.list-group.list-group-flush
@@ -79,7 +79,7 @@
                             a.card-link(href="mailto:"+user.email)=user.email
                           .col-2
                             form(action="/sponsor/download/user/" + position.name + '/' + user.firstname + ' ' + user.surname + ' ' + user.username method="post")
-                              button.btn(type='submit') 
+                              button.btn.btn-primary(type='submit') 
                                 span.octicon.octicon-desktop-download
                       ul.list-group.list-group-flush
                         li.list-group-item  
@@ -93,5 +93,5 @@
                                 .col-10=document.name
                                 .col-2
                                   form(action="/sponsor/show/" + position.name + '/' + user.firstname + ' ' + user.surname + ' ' + user.username + '/' + document.name method="post")
-                                    button.btn(type='submit') 
+                                    button.btn.btn-primary(type='submit') 
                                       span.octicon.octicon-eye

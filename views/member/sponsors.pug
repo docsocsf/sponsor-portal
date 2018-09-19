@@ -71,7 +71,7 @@
                           if(pos.applied)
                             li.list-group-item
                               form.col-1(action="/member/unapply/"+ sponsor.username + '/' + pos.name method="post")
-                                button.btn(type='submit')
+                                button.btn.btn-danger(type='submit')
                                   h4 Remove application 
                                     span.octicon.octicon-trashcan   
                           else
@@ -108,20 +108,20 @@
                                             label.col.mt-2.small-font(for="documentname" + i) Document #{i+1}:
                                             input.form-control.col-4.mt-1.doc-name(type="text", name="documentname" + i disabled)
                                             label.col-2.mt-2.ext
-                                            button.col-lg-2.col-sm-1.btn.mr-2.upload(type='button')
+                                            button.col-lg-2.col-sm-1.btn.btn-success.mr-2.upload(type='button')
                                               .hide-small Upload 
                                                 span.octicon.octicon-cloud-upload
                                                   input.in-file(accept="application/pdf, application/msword, text/plain" style="display:none;" type="file" name="document" + i)
                                             if(i)
-                                              button.col-1.btn.btn-sm(type='button').hide-document
+                                              button.col-1.btn.btn-sm.btn-danger(type='button' disabled).hide-document
                                                 span.octicon.octicon-x
                                             else
-                                              button.col-1.btn.btn-sm(type='button').hide-document-0
+                                              button.col-1.btn.btn-sm.btn-danger(type='button' disabled).hide-document-0
                                                 span.octicon.octicon-x
                                     .row
-                                      button.col-auto.btn(type='button').show-document Add Document 
+                                      button.col-auto.btn.btn-success.show-document(type='button') Add Document 
                                         span.octicon.octicon-plus
                                   br
                                   .row.float-right
-                                      button.btn(type='submit') Apply 
+                                      button.btn.btn-primary(type='submit') Apply 
                                         span.octicon.octicon-check

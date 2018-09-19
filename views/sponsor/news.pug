@@ -50,6 +50,6 @@
                   |  Link
               .card-text.render-md.mt-3(value = news.text)
               form(action="/sponsor/remove-news/" + news.date method="post")
-                button.btn(type='submit') Delete 
+                button.btn.btn-danger(type='submit') Delete 
                   span.octicon.octicon-trashcan   
               
