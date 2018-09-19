@@ -11,3 +11,9 @@ ul#myTab.nav.nav-tabs.justify-content-center.header.mt-3(role='tablist', style="
     a#bronze-tab.nav-link(data-toggle='tab', href='#bronze', role='tab', aria-controls='bronze', aria-selected='false')
       img.d-inline-block(src="/assets/images/icons/bronze.png" width="28" style="vertical-align: sub;")
       h2.d-inline-block.ml-2 Bronze
+if error
+  .alert.alert-danger(role="alert") 
+    strong oh snap! 
+    | #{err}
+if success
+  .alert.alert-success(role="alert")=success

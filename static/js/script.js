@@ -19,6 +19,18 @@ $(function () {
     }
   }
 
+  //admin
+  $('.option').each(function() {
+    var curr = $(this).attr('data')
+    $(this).children().each(function(){
+      if($(this).val() === curr){
+        $(this).attr('selected', true)
+      }else{
+        $(this).attr('selected', false)
+      }
+    })
+  })
+
 
   if ($('.member-tab').hasClass('active-tab')) {
     $('.member-login').removeClass('d-none')
@@ -128,14 +140,6 @@ $(function () {
   $('.account').click(function () {
     $('.account-settings').toggleClass('d-none')
     $('.account-settings').siblings().toggleClass('inactiveLink')
-  })
-
-  $('.pass').click(function () {
-    if ($(this).parent().prev()[0].type === 'password') {
-      $(this).parent().prev()[0].type = 'text'
-    } else {
-      $(this).parent().prev()[0].type = 'password'
-    }
   })
 
   // LIVE PREVIEW
