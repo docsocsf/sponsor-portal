@@ -4,6 +4,9 @@ if ('serviceWorker' in navigator) {
 }
 
 $(function () {
+  // Hide alerts after 5 seconds
+  $('.alert').delay(5000).fadeOut('slow');
+
   if (!Array.prototype.last) {
     Array.prototype.last = function () {
       return this[this.length - 1];

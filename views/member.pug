@@ -3,6 +3,10 @@ include ./layout.pug
   nav.header.head
     include ./member/header.pug
     include ./member/navigation.pug
+  if error
+    .alert.alert-danger(role="alert")=error
+  if success
+    .alert.alert-success(role="alert")=success
   .container
     .row.justify-content-center.mt-5.mb-5
       .col-lg-8.col-sm-12
