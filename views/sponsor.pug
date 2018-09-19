@@ -3,6 +3,10 @@ include ./layout.pug
   nav.header.head
     include ./sponsor/header.pug
     include ./sponsor/navigation.pug
+  if error
+    .alert.alert-danger(role="alert")=error
+  if success
+    .alert.alert-success(role="alert")=success
   #myTabContent.tab-content.mt-5.mb-5
     include ./sponsor/positions.pug
     include ./sponsor/news.pug

@@ -66,9 +66,11 @@ exports.setup = (app, db) => {
         error: req.session.error,
         success: req.session.success
       }
-      res.render('member', data)
-      req.session.error = ''
-      req.session.success = ''
+      res.render('member', data, (err, html) => {
+        req.session.error = ''
+        req.session.success = ''
+        res.send(html)
+      })
     })
   })
 
@@ -84,15 +86,11 @@ exports.setup = (app, db) => {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       req.session.error = 'Something went wrong'
       res.redirect('/member')
-      req.session.error = ''
-      return
     }
     if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       req.session.error = 'Something went wrong'
       res.redirect('/member')
-      req.session.error = ''
-      return
     }
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path)
@@ -105,8 +103,6 @@ exports.setup = (app, db) => {
         logger.error('Failed to find sponsor: ' + err)
         req.session.error = 'Something went wrong'
         res.redirect('/member')
-        req.session.error = ''
-        return
       }
       var data = {
         firstname: req.session.data.FirstName,
@@ -125,8 +121,6 @@ exports.setup = (app, db) => {
               logger.error('Failed to save user document: ' + err)
               req.session.error = 'Something went wrong'
               res.redirect('/member')
-              req.session.error = ''
-              return
             }
           })
           data.documents.push({
@@ -145,14 +139,11 @@ exports.setup = (app, db) => {
           logger.error('Failed to update sponsor for user application: ' + err)
           req.session.error = 'Something went wrong'
           res.redirect('/member')
-          req.session.error = ''
-          return
         }
         logger.info(req.session.data.Login + ' has successfully applied to ' + req.params.sponsor + "'s " +
           req.params.posname + ' with ' + data.documents.length + ' document(s)')
         req.session.success = 'Successfully applied to ' + req.params.sponsor + "'s " + req.params.posname + ' with ' + data.documents.length + ' document(s)'
         res.redirect('/member')
-        req.session.success = ''
       })
     })
   })
@@ -169,12 +160,10 @@ exports.setup = (app, db) => {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       req.session.error = 'Something went wrong'
       res.redirect('/member')
-      req.session.error = ''
     } else if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
       req.session.error = 'Something went wrong'
       res.redirect('/member')
-      req.session.error = ''
     } else {
       if (fs.existsSync(path)) {
         fs.removeSync(path)
@@ -187,8 +176,6 @@ exports.setup = (app, db) => {
         logger.error('Failed to find sponsor: ' + err)
         req.session.error = 'Something went wrong'
         res.redirect('/member')
-        req.session.error = ''
-        return
       }
       sponsor[0].positions.forEach(position => {
         if (position.name === req.params.posname) {
@@ -200,8 +187,6 @@ exports.setup = (app, db) => {
           logger.error('Failed to find sponsor for user removing application: ' + err)
           req.session.error = 'Something went wrong'
           res.redirect('/member')
-          req.session.error = ''
-          return
         }
         logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
         req.session.success = 'Successfully removed application for ' + req.params.sponsor + "'s " + req.params.posname

@@ -37,7 +37,7 @@ exports.setup = (app, db) => {
         res.render('sponsor', data, (err, html) => {
           req.session.error = ''
           req.session.success = ''
-          res.send(html);
+          res.send(html)
         })
       }
     })
