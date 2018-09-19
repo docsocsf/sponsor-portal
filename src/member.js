@@ -21,6 +21,10 @@ exports.setup = (app, db) => {
     check(req, res, next)
   }, (req, res) => {
     db.Sponsor.find((error, sponsors) => {
+      if (error) {
+        logger.error('Failed to get sponsors for user ' + req.session.data.Login + ': ' + error)
+        return
+      }
       var ss = []
       sponsors.forEach(sponsor => {
         if (sponsor.info.description)
@@ -36,7 +40,7 @@ exports.setup = (app, db) => {
           positions: []
         }
         sponsor.positions.forEach(position => {
-          if(position.description)
+          if (position.description)
             position.description = markdown.toHTML(position.description)
           var pos = {
             name: position.name,
@@ -59,9 +63,12 @@ exports.setup = (app, db) => {
         name: req.session.data.FirstName,
         email: req.session.data.Email,
         sponsors: ss,
-        err: error
+        error: req.session.error,
+        success: req.session.success
       }
       res.render('member', data)
+      req.session.error = ''
+      req.session.success = ''
     })
   })
 
@@ -75,12 +82,16 @@ exports.setup = (app, db) => {
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
+      req.session.error = 'Something went wrong'
       res.redirect('/member')
+      req.session.error = ''
       return
     }
     if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
+      req.session.error = 'Something went wrong'
       res.redirect('/member')
+      req.session.error = ''
       return
     }
     if (!fs.existsSync(path)) {
@@ -92,6 +103,9 @@ exports.setup = (app, db) => {
     }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
+        req.session.error = 'Something went wrong'
+        res.redirect('/member')
+        req.session.error = ''
         return
       }
       var data = {
@@ -109,7 +123,9 @@ exports.setup = (app, db) => {
           req.files['document' + i].mv(path + req.body['documentname' + i] + '.' + ext, function (err) {
             if (err) {
               logger.error('Failed to save user document: ' + err)
+              req.session.error = 'Something went wrong'
               res.redirect('/member')
+              req.session.error = ''
               return
             }
           })
@@ -127,12 +143,16 @@ exports.setup = (app, db) => {
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to update sponsor for user application: ' + err)
+          req.session.error = 'Something went wrong'
           res.redirect('/member')
+          req.session.error = ''
           return
         }
         logger.info(req.session.data.Login + ' has successfully applied to ' + req.params.sponsor + "'s " +
           req.params.posname + ' with ' + data.documents.length + ' document(s)')
+        req.session.success = 'Successfully applied to ' + req.params.sponsor + "'s " + req.params.posname + ' with ' + data.documents.length + ' document(s)'
         res.redirect('/member')
+        req.session.success = ''
       })
     })
   })
@@ -147,8 +167,14 @@ exports.setup = (app, db) => {
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
+      req.session.error = 'Something went wrong'
+      res.redirect('/member')
+      req.session.error = ''
     } else if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
+      req.session.error = 'Something went wrong'
+      res.redirect('/member')
+      req.session.error = ''
     } else {
       if (fs.existsSync(path)) {
         fs.removeSync(path)
@@ -159,7 +185,9 @@ exports.setup = (app, db) => {
     }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
+        req.session.error = 'Something went wrong'
         res.redirect('/member')
+        req.session.error = ''
         return
       }
       sponsor[0].positions.forEach(position => {
@@ -170,10 +198,13 @@ exports.setup = (app, db) => {
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to find sponsor for user removing application: ' + err)
+          req.session.error = 'Something went wrong'
           res.redirect('/member')
+          req.session.error = ''
           return
         }
         logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
+        req.session.success = 'Successfully removed application for ' + req.params.sponsor + "'s " + req.params.posname
         res.redirect('/member')
       })
     })
