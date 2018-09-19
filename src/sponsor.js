@@ -2,7 +2,7 @@
 const fs = require('fs-extra')
 const zipFolder = require('zip-folder')
 const logger = require('./logger.js')
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 var check = (req, res, callback) => {
@@ -316,9 +316,9 @@ exports.setup = (app, db) => {
         return
       }
       if (req.body.new && req.body.new === req.body.new2) {
-        bcrypt.compare(req.body.old, sponsor[0].password, function(err, res) {
+        bcrypt.compare(req.body.old, sponsor[0].password_hash, (err, res) => {
           if (res) {
-            bcrypt.hash(req.body.new, saltRounds, function(err, pw_hash) {
+            bcrypt.hash(req.body.new, saltRounds, (err, pw_hash) => {
               sponsor[0].password_hash = pw_hash
               sponsor[0].save((err, user) => {
                 if (err) {
