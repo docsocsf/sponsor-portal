@@ -54,7 +54,7 @@ exports.setup = (app, db) => {
   app.post('/admin/new-sponsor', (req, res) => {
     // make sponsor
     // hash req.body.pass into pw_hash
-    bcrypt.hash(req.body['s.password'], saltRounds, (err, pw_hash) => {
+    bcrypt.hash(req.body.pass, saltRounds, (err, pw_hash) => {
       // Store hash in password DB.
       var sponsor = new db.Sponsor({
         username: req.body.user,
@@ -94,7 +94,7 @@ exports.setup = (app, db) => {
         return
       }
       if (req.body['s.password']) {
-        bcrypt.hash(req.body['s.password'], saltRounds, function(err, pw_hash) {
+        bcrypt.hash(req.body['s.password'], saltRounds, (err, pw_hash) => {
           sponsor[0].password_hash = pw_hash
         });
       }
