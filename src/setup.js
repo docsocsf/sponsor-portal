@@ -6,6 +6,14 @@ const helmet = require('helmet')
 const fs = require('fs')
 const logger = require('./logger.js')
 const Morgan = require('morgan')
+const args = require('args-parser')(process.argv)
+
+var mainsponsorpath
+if (args['dev']) {
+  mainsponsorpath = './samplesponsors/'
+} else {
+  mainsponsorpath = './sponsors/'
+}
 
 const app = express()
 
@@ -13,7 +21,9 @@ app.set('view engine', 'pug')
 app.set('views', './views')
 
 app.use(helmet())
-app.use(Morgan({ 'stream': logger.stream }))
+app.use(Morgan({
+  'stream': logger.stream
+}))
 app.use('/', express.static('./static'))
 
 app.use(fileUpload())
@@ -22,7 +32,9 @@ app.use(fileUpload())
 app.set('port', process.env.PORT || 80)
 
 // JSON PARSER
-app.use(express.urlencoded({ extended: false }))
+app.use(express.urlencoded({
+  extended: false
+}))
 app.use(express.json())
 
 // SESSION
@@ -32,8 +44,8 @@ app.use(session({
   saveUninitialized: true
 }))
 
-if (!fs.existsSync('./sponsors/')) {
-  fs.mkdirSync('./sponsors/')
+if (!fs.existsSync(mainsponsorpath)) {
+  fs.mkdirSync(mainsponsorpath)
 }
 
 if (!fs.existsSync('./temp/')) {

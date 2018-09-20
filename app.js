@@ -1,6 +1,7 @@
 'use strict'
 // Setup Express App
 const setup = require('./src/setup.js')
+const fs = require('fs-extra')
 const args = require('args-parser')(process.argv)
 
 // =======================LOGGER===========================
@@ -51,6 +52,53 @@ app.post('*', function (req, res) {
   res.redirect('/')
 })
 
+// DEV
+if (args['dev']) {
+  //call this function to make sample sponsors for --dev
+  var makesamplesponsor = (user, pass, name, rank, bespoke, news, positions) => {
+    var mainsponsorpath = './samplesponsors/'
+    db.Sponsor.findOne({
+      username: user
+    }, (err, sponsor) => {
+      if (sponsor) {
+        return
+      } else {
+        var sponsor = new db.Sponsor({
+          username: user,
+          password: pass,
+          info: {
+            name: name,
+            rank: rank,
+            picture: 'sample_logo.png',
+            bespoke: bespoke
+          },
+          news: news,
+          positions: positions
+        })
+        // Make sponsor folder
+        var path = mainsponsorpath + sponsor.username + '/'
+        if (!fs.existsSync(path)) {
+          fs.mkdirSync(path)
+        }
+        // save sponsor
+        sponsor.save((err, user) => {
+          if (err) {
+            logger.error('Failed to make sample sponsor')
+            return
+          } else {
+            return
+          }
+        })
+      }
+    })
+  }
+
+  makesamplesponsor('gold', 'gold', 'Gold Sponsor', 'Gold', true, [], [])
+}
+
+
+
+// App listen
 if (args['no-https']) { // If no https then just use app.listen
   logger.info('no-https option selected, running on just http')
   app.listen(app.get('port'), function () {

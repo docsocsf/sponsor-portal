@@ -2,6 +2,7 @@
 const fs = require('fs-extra')
 const logger = require('./logger.js')
 const markdown = require('markdown').markdown
+const args = require('args-parser')(process.argv)
 
 var check = (req, res, callback) => {
   if (req.session.login) {
@@ -13,6 +14,13 @@ var check = (req, res, callback) => {
   } else {
     res.redirect('/')
   }
+}
+
+var mainsponsorpath
+if (args['dev']) {
+  mainsponsorpath = './samplesponsors/'
+} else {
+  mainsponsorpath = './sponsors/'
 }
 
 exports.setup = (app, db) => {
@@ -36,7 +44,7 @@ exports.setup = (app, db) => {
           positions: []
         }
         sponsor.positions.forEach(position => {
-          if(position.description)
+          if (position.description)
             position.description = markdown.toHTML(position.description)
           var pos = {
             name: position.name,
@@ -70,7 +78,7 @@ exports.setup = (app, db) => {
     check(req, res, next)
   }, (req, res) => {
     // check if valid path
-    var sponsorpath = './sponsors/' + req.params.sponsor + '/'
+    var sponsorpath = mainsponsorpath + req.params.sponsor + '/'
     var pospath = sponsorpath + req.params.posname + '/'
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
@@ -142,7 +150,7 @@ exports.setup = (app, db) => {
     check(req, res, next)
   }, (req, res) => {
     // check if valid path
-    var sponsorpath = './sponsors/' + req.params.sponsor + '/'
+    var sponsorpath = mainsponsorpath + req.params.sponsor + '/'
     var pospath = sponsorpath + req.params.posname + '/'
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {

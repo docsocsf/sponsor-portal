@@ -2,6 +2,7 @@
 const fs = require('fs-extra')
 const zipFolder = require('zip-folder')
 const logger = require('./logger.js')
+const args = require('args-parser')(process.argv)
 
 var check = (req, res, callback) => {
   if (req.session.login) {
@@ -13,6 +14,13 @@ var check = (req, res, callback) => {
   } else {
     res.redirect('/')
   }
+}
+
+var mainsponsorpath
+if (args['dev']) {
+  mainsponsorpath = './samplesponsors/'
+} else {
+  mainsponsorpath = './sponsors/'
 }
 
 exports.setup = (app, db) => {
@@ -47,7 +55,7 @@ exports.setup = (app, db) => {
   app.post('/sponsor/show/:pos/:filename/:document', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    var sponsorpath = './sponsors/' + req.session.user + '/'
+    var sponsorpath = mainsponsorpath + req.session.user + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
       fs.mkdirSync(sponsorpath)
@@ -76,7 +84,7 @@ exports.setup = (app, db) => {
   app.post('/sponsor/download/user/:pos/:filename/', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    var sponsorpath = './sponsors/' + req.session.user + '/'
+    var sponsorpath = mainsponsorpath + req.session.user + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
       fs.mkdirSync(sponsorpath)
@@ -108,7 +116,7 @@ exports.setup = (app, db) => {
   app.post('/sponsor/download/pos/:pos/', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    var sponsorpath = './sponsors/' + req.session.user + '/'
+    var sponsorpath = mainsponsorpath + req.session.user + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
       fs.mkdirSync(sponsorpath)
@@ -146,7 +154,7 @@ exports.setup = (app, db) => {
           link: req.body.link,
           users: []
         }
-        var sponsorpath = './sponsors/' + req.session.user + '/'
+        var sponsorpath = mainsponsorpath + req.session.user + '/'
         if (!fs.existsSync(sponsorpath)) {
           logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
           fs.mkdirSync(sponsorpath)
@@ -181,7 +189,7 @@ exports.setup = (app, db) => {
         logger.error('Failed to find sponsor: ' + err)
         return
       }
-      var path = './sponsors/' + req.session.user + '/' + req.params.name + '/'
+      var path = mainsponsorpath + req.session.user + '/' + req.params.name + '/'
       if (fs.existsSync(path)) {
         fs.removeSync(path)
       }
