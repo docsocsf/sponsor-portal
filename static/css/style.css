@@ -15,7 +15,6 @@ h1, h2, h3, h4 {
   font-family: "Montserrat",Geneva,Verdana,sans-serif;
 }
 
-
 .subtext {
   font-size: 0.9rem
 }
@@ -197,7 +196,30 @@ th, td {
 }
 
 textarea {
-  height: 300px;
+  height: 300px !important;
+}
+
+.form-control {
+  font-size: 1.2rem !important;
+}
+
+/* sponsor description shorten for members */
+.sidebar-box {
+  max-height: 300px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-box .read-more { 
+  position: absolute; 
+  bottom: 0; 
+  left: 0;
+  width: 100%; 
+  text-align: center; 
+  margin: 0; padding: 30px 0; 
+	
+  /* "transparent" only works here because == rgba(0,0,0,0) */
+  background-image: linear-gradient(to bottom, transparent, white);
 }
 
 /* xs < 768 */

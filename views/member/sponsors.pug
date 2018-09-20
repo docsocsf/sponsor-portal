@@ -7,16 +7,25 @@
           .card.mt-4.mb-2
             .card-body
               if(sponsor.info.bespoke)
-                img(src="/static/assets/images/icons/"+rank+"_bespoke.png" width="150px").bespoke
+                img(src="/assets/images/icons/"+rank+"_bespoke.png" width="150px").bespoke
               .row
                 .col-lg-3.col-sm-2
-                  img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="100%")
+                  img(src="/assets/images/sponsors/" + sponsor.info.picture width="100%")
                 .col-lg-7.col-sm-10
                   h1.card-title=sponsor.info.name
-                  .card-text.mb-3.render-md(value=sponsor.info.description)
-                  a.card-link(href="mailto:"+sponsor.info.email)=sponsor.info.email
+                  if(sponsor.info.description)
+                    .card-text.mb-3
+                      .show-md!=sponsor.info.description
+                      .read-more.d-none
+                        button.btn.btn-primary.button(href= ' ') Read more
+                  if(sponsor.info.email)
+                    a.card-link(href="mailto:"+sponsor.info.email)
+                      img(src="/assets/images/icons/apply.svg" width="30px")
+                      |  Email
                   if(sponsor.info.link)
-                    a.card-link(href=sponsor.info.link) Read More
+                    a.card-link(href=sponsor.info.link)
+                      img(src="/assets/images/icons/link.svg" width="30px")
+                      |  Link
             if(rank != 'bronze')
               ul.list-group.list-group-flush
                 if(sponsor.news.length != 0)
@@ -29,10 +38,15 @@
                       .card.mt-2
                         .card-body
                           h1.card-title=news.title
-                          if(news.link != "")
-                            .mb-3
-                              a(target="_blank" href=news.link) Link
-                          .card-text.render-md(value = news.text)
+                          if(news.link)
+                            a(target="_blank" href=news.link)
+                              img(src="/assets/images/icons/link.svg" width="30px")
+                              |  Link
+                          if(news.text)
+                            .card-text.mb-3.mt-3
+                              .show-md!=news.text
+                              .read-more.d-none
+                                button.btn.btn-primary.button(href= ' ') Read more
               ul.list-group.list-group-flush
                 if(sponsor.positions.length != 0)
                   li.list-group-item 
@@ -44,15 +58,20 @@
                       .card.mt-2
                         .card-body
                           h1.card-title=pos.name
-                          if(pos.link != "")
-                            .mb-3
-                              a(target="_blank" href=pos.link) Link
-                          .card-text.render-md(value = pos.description)
+                          if(pos.link)
+                            a.card-link(href=pos.link) 
+                              img(src="/assets/images/icons/link.svg" width="30px")
+                              |  Link
+                          if(pos.description)
+                            .card-text.mb-3.mt-3
+                              .show-md!=pos.description
+                              .read-more.d-none
+                                button.btn.btn-primary.button(href= ' ') Read more
                         ul.list-group.list-group-flush
                           if(pos.applied)
                             li.list-group-item
                               form.col-1(action="/member/unapply/"+ sponsor.username + '/' + pos.name method="post")
-                                button.btn(type='submit')
+                                button.btn.btn-danger(type='submit')
                                   h4 Remove application 
                                     span.octicon.octicon-trashcan   
                           else
@@ -72,34 +91,37 @@
                                     .small-font This is how the Sponsor will contact you.
                                   .row.justify-content-center.mt-1
                                     label.col-3.small-font(for="email").mt-2 Your email:
-                                    input.col-8.small-font(type="text", name="email", value=email).mt-2
+                                    input.col-8.small-font.form-control(type="text", name="email", value=email).mt-2
                                   br
                                   .row
                                     h4 Documents:
                                   .row
-                                    .small-font Make sure you upload all the requirements listed in the description.
+                                    .small-font Make sure you upload all the requirements.
+                                  .row
+                                    .small-font Accepted Document types: .pdf .doc .docx .txt
                                   .documents
                                     .row
                                       .col-12
                                         for i in [0,1,2,3,4,5,6,7,8,9]
                                           - var klass = (i === 0 ? '' : 'd-none')
                                           .row.justify-content-start.mb-2.mt-1(class = klass)
-                                            label.col.mt-2.small-font(for="documentname" + i) Document Name:
-                                            input.col-5(type="text", name="documentname" + i).mt-1
-                                            label.col-1.mt-2
-                                            button.col-lg-2.col-sm-1.btn.mr-2.upload(type='button')
+                                            label.col.mt-2.small-font(for="documentname" + i) Document #{i+1}:
+                                            input.form-control.col-4.mt-1.doc-name(type="text", name="documentname" + i disabled)
+                                            label.col-2.mt-2.ext
+                                            button.col-lg-2.col-sm-1.btn.btn-success.mr-2.upload(type='button')
                                               .hide-small Upload 
                                                 span.octicon.octicon-cloud-upload
-                                                  input(type="file", style = 'display:none' name="document" + i)
+                                                  input.in-file(accept="application/pdf, application/msword, text/plain" style="display:none;" type="file" name="document" + i)
                                             if(i)
-                                              button.col-1.btn.btn-sm(type='button').hide-document
+                                              button.col-1.btn.btn-sm.btn-danger(type='button' disabled).hide-document
                                                 span.octicon.octicon-x
                                             else
-                                              .col-1
+                                              button.col-1.btn.btn-sm.btn-danger(type='button' disabled).hide-document-0
+                                                span.octicon.octicon-x
                                     .row
-                                      button.col-auto.btn(type='button').show-document Add Document 
+                                      button.col-auto.btn.btn-success.show-document(type='button') Add Document 
                                         span.octicon.octicon-plus
                                   br
                                   .row.float-right
-                                      button.btn(type='submit') Apply 
+                                      button.btn.btn-primary(type='submit') Apply 
                                         span.octicon.octicon-check

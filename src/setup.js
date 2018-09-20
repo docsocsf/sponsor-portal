@@ -14,7 +14,7 @@ app.set('views', './views')
 
 app.use(helmet())
 app.use(Morgan({ 'stream': logger.stream }))
-app.use('/static', express.static('./static'))
+app.use('/', express.static('./static'))
 
 app.use(fileUpload())
 

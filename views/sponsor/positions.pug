@@ -14,20 +14,21 @@
               .row.justify-content-center
                 .col-12.live
                   .row.mt-2.mb-2
-                    label.col-lg-3.col-sm-4(for="name") Name: 
-                    input.col-lg-8.col-sm-7.title(type="text", name="name")
+                    label.col-lg-3.col-sm-4(for="name") Title: 
+                    input.form-control.col-lg-8.col-sm-7.title(autocomplete='off' placeholder='Title' type="text", name="name")
                   .row.mt-2.mb-2
                     label.col-lg-3.col-sm-4(for="link") Link to learn more: 
                       .subtext (optional) 
-                    input.col-lg-8.col-sm-7.link(type="text", name="link")
+                    input.form-control.col-lg-8.col-sm-7.link(placeholder='Link' type="text", name="link")
                   .row.mt-2.mb-2
                     .col-lg-3.col-sm-4
-                      label(for="description") Description:
+                      label(for="description") Information:
                         .subtext (optional) 
                       .subtext (Works with Markdown. [#[a(target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet") more]])
-                    textarea.col-lg-8.col-sm-7.text(type="text", name="description")
+                    textarea.form-control.col-lg-8.col-sm-7.text(autocomplete='off' placeholder='* Description \n* Who is this for \n* Documents required to apply' type="text", name="description")
                   .row.mt-2.mb-2
                     .col-12.h4 Live Preview:
+                      .subtext (This is what DoCSoc members will see)
                     .col-12
                       .card.mt-2.preview
                         .card-body
@@ -51,14 +52,15 @@
                 if(position.users.length > 0)
                   .col-1
                     form(action="/sponsor/download/pos/" + position.name method="post")
-                      button.btn(type='submit') Download All 
+                      button.btn.btn-primary(type='submit') Download All 
                         span.octicon.octicon-desktop-download
-              if(position.link != "")
-                .mb-3
-                  a(target="_blank" href=position.link) Link
-              .card-text.render-md(value = position.description)
+              if(position.link)
+                a.card-link(href=position.link)
+                  img(src="/assets/images/icons/link.svg" width="30px")
+                  |  Link
+              .card-text.render-md.mt-3(value = position.description)
               form.col-1(action="/sponsor/remove-position/" + position.name method="post")
-                button.btn(type='submit') Delete 
+                button.btn.btn-danger(type='submit') Delete 
                   span.octicon.octicon-trashcan   
           if(position.users.length > 0)
             ul.list-group.list-group-flush
@@ -77,7 +79,7 @@
                             a.card-link(href="mailto:"+user.email)=user.email
                           .col-2
                             form(action="/sponsor/download/user/" + position.name + '/' + user.firstname + ' ' + user.surname + ' ' + user.username method="post")
-                              button.btn(type='submit') 
+                              button.btn.btn-primary(type='submit') 
                                 span.octicon.octicon-desktop-download
                       ul.list-group.list-group-flush
                         li.list-group-item  
@@ -91,5 +93,5 @@
                                 .col-10=document.name
                                 .col-2
                                   form(action="/sponsor/show/" + position.name + '/' + user.firstname + ' ' + user.surname + ' ' + user.username + '/' + document.name method="post")
-                                    button.btn(type='submit') 
+                                    button.btn.btn-primary(type='submit') 
                                       span.octicon.octicon-eye

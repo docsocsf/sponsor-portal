@@ -13,33 +13,33 @@
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="email") Email: 
                   .subtext (optional)
-                input.col-lg-8.col-sm-7.email(type="text", name="email", value=sponsor.info.email)
+                input.form-control.col-lg-8.col-sm-7.email(autocomplete='off' placeholder='Email' type="text", name="email", value=sponsor.info.email)
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="link") Link to learn more: 
                   .subtext (optional)
-                input.col-lg-8.col-sm-7.link(type="text", name="link", value=sponsor.info.link)
+                input.form-control.col-lg-8.col-sm-7.link(autocomplete='off' placeholder='Link' type="text", name="link", value=sponsor.info.link)
               .row.mt-2.mb-2
                 .col-lg-3.col-sm-4
                   label(for="description") Description: 
                     .subtext (optional)
                   .subtext (Works with Markdown. [#[a(target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet") more]])
-                textarea.col-lg-8.col-sm-7.text(type="text", name="description")=sponsor.info.description
+                textarea.form-control.col-lg-8.col-sm-7.text(autocomplete='off' placeholder='Something about you' type="text", name="description")=sponsor.info.description
               .row.mt-2.mb-2
                 .col-12.h4 Live Preview:
+                  .subtext (This is what DoCSoc members will see)
                 .col-12
                   .card.mt-4.mb-2.preview
                     .card-body.preview
                       if(sponsor.info.bespoke)
-                        img(src="/static/assets/images/icons/"+sponsor.info.rank.toLowerCase()+"_bespoke.png" width="150px").bespoke
+                        img(src="/assets/images/icons/"+sponsor.info.rank.toLowerCase()+"_bespoke.png" width="150px").bespoke
                       .row
                         .col-lg-3.col-sm-2
-                          img(src="/static/assets/images/sponsors/" + sponsor.info.picture width="100%")
+                          img(src="/assets/images/sponsors/" + sponsor.info.picture width="100%")
                         .col-lg-7.col-sm-10
                           h1.card-title=sponsor.info.name
                           .card-text.story.mb-3.preview-text.render-md(value=sponsor.info.description)
-                          a.card-link.preview-email(href="mailto:"+sponsor.info.email)=sponsor.info.email
-                          if(sponsor.info.link)
-                            a.card-link.preview-link(href=sponsor.info.link) Read More
+                            a(target="_blank").card-link.preview-email
+                            a(target="_blank").card-link.preview-link
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Save
     .row.justify-content-center.mt-3
@@ -50,12 +50,12 @@
             form(method="post" action="/sponsor/change-password")
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="old") Old Password: 
-                input.col-lg-8.col-sm-7(type="password", name="old")
+                input.form-control.col-lg-8.col-sm-7(type="password", name="old")
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="new") New Password: 
-                input.col-lg-8.col-sm-7(type="password", name="new")
+                input.form-control.col-lg-8.col-sm-7(type="password", name="new")
               .row.mt-2.mb-2
                 label.col-lg-3.col-sm-4(for="new2") One more time: 
-                input.col-lg-8.col-sm-7(type="password", name="new2")
+                input.form-control.col-lg-8.col-sm-7(type="password", name="new2")
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Change

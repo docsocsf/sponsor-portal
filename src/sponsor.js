@@ -2,6 +2,8 @@
 const fs = require('fs-extra')
 const zipFolder = require('zip-folder')
 const logger = require('./logger.js')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 var check = (req, res, callback) => {
   if (req.session.login) {
@@ -20,23 +22,23 @@ exports.setup = (app, db) => {
   app.get('/sponsor', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Unable to find sponsor: ' + err)
+        return
       } else {
-        res.render('sponsor', { sponsor: sponsor[0] })
-      }
-    })
-  })
-
-  app.get('/sponsor/error/:error', (req, res, next) => {
-    check(req, res, next)
-  }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
-      if (err) {
-        logger.error('Unable to find sponsor: ' + err)
-      } else {
-        res.render('sponsor', { sponsor: sponsor[0], err: req.params.error })
+        var data = {
+          sponsor: sponsor[0],
+          error: req.session.error,
+          success: req.session.success
+        }
+        res.render('sponsor', data, (err, html) => {
+          req.session.error = ''
+          req.session.success = ''
+          res.send(html)
+        })
       }
     })
   })
@@ -64,6 +66,7 @@ exports.setup = (app, db) => {
       logger.warning('user ' + req.params.filename + ' of ' + req.params.pos + ' position, of ' + req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
       fs.mkdirSync(userpath)
       logger.warning('made a temp fix')
+      req.session.error = 'Something went wrong'
       res.redirect('/sponsor/#positions-tab-nav')
     } else {
       var path = userpath + req.params.document
@@ -93,13 +96,15 @@ exports.setup = (app, db) => {
     zipFolder(path, zippath, function (err) {
       if (err) {
         logger.error('zipFolder: ' + err)
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#positions-tab-nav')
       } else {
         res.download(zippath, () => {
           if (fs.existsSync(zippath)) {
             fs.removeSync(zippath)
           }
+          logger.info(req.session.user + ' downloading ' + path)
         })
-        logger.info(req.session.user + ' downloading ' + path)
       }
     })
   })
@@ -119,13 +124,15 @@ exports.setup = (app, db) => {
     zipFolder(path, zippath, function (err) {
       if (err) {
         logger.error('zipFolder: ' + err)
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#positions-tab-nav')
       } else {
         res.download(zippath, () => {
           if (fs.existsSync(zippath)) {
             fs.removeSync(zippath)
           }
+          logger.info(req.session.user + ' downloading ' + path)
         })
-        logger.info(req.session.user + ' downloading ' + path)
       }
     })
   })
@@ -134,10 +141,13 @@ exports.setup = (app, db) => {
   app.post('/sponsor/add-position', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
-        return
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#positions-tab-nav')
       }
       if (req.body.name.trim() && !sponsor[0].positions.some(position => position.name === req.body.name.trim())) {
         var data = {
@@ -160,14 +170,17 @@ exports.setup = (app, db) => {
         sponsor[0].save((err, user) => {
           if (err) {
             logger.error('Failed to update sponsor on adding new position: ' + err)
-            return
+            req.session.error = 'Something went wrong'
+            res.redirect('/sponsor/#positions-tab-nav')
           }
-          logger.info(req.session.user + ' succesfully added new position ' + req.body.name)
+          logger.info(req.session.user + ' successfully added new position ' + req.body.name)
+          req.session.success = 'Successfully added new opportunity'
           res.redirect('/sponsor/#positions-tab-nav')
         })
       } else {
         logger.info(req.session.user + ' succesfully failed to add new position because name already exists' + req.body.name)
-        res.redirect('/sponsor/error/Position name is blank or already exists/#positions-tab-nav')
+        req.session.error = 'Position name is blank or already exists'
+        res.redirect('/sponsor/#positions-tab-nav')
       }
     })
   })
@@ -176,10 +189,13 @@ exports.setup = (app, db) => {
   app.post('/sponsor/remove-position/:name', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
-        return
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#positions-tab-nav')
       }
       var path = './sponsors/' + req.session.user + '/' + req.params.name + '/'
       if (fs.existsSync(path)) {
@@ -189,9 +205,11 @@ exports.setup = (app, db) => {
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to update sponsor on removing position: ' + err)
-          return
+          req.session.error = 'Something went wrong'
+          res.redirect('/sponsor/#positions-tab-nav')
         }
-        logger.info(req.session.user + ' succesfully removed position ' + req.params.name)
+        logger.info(req.session.user + ' successfully removed position ' + req.params.name)
+        req.session.success = 'Successfully removed opporunity'
         res.redirect('/sponsor/#positions-tab-nav')
       })
     })
@@ -208,10 +226,13 @@ exports.setup = (app, db) => {
   app.post('/sponsor/add-news', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
-        return
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#news-tab-nav')
       }
       var news = {
         date: (new Date()).toString(),
@@ -223,9 +244,11 @@ exports.setup = (app, db) => {
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to update sponsor on adding news: ' + err)
-          return
+          req.session.error = 'Something went wrong'
+          res.redirect('/sponsor/#news-tab-nav')
         }
-        logger.info(req.session.user + ' succesfully added news ' + req.body.title)
+        logger.info(req.session.user + ' successfully added news ' + req.body.title)
+        req.session.success = 'Successfully added new post'
         res.redirect('/sponsor/#news-tab-nav')
       })
     })
@@ -235,18 +258,23 @@ exports.setup = (app, db) => {
   app.post('/sponsor/remove-news/:date', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
-        return
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#news-tab-nav')
       }
       sponsor[0].news = sponsor[0].news.filter(n => n.date !== req.params.date)
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to update sponsor on removing news: ' + err)
-          return
+          req.session.error = 'Something went wrong'
+          res.redirect('/sponsor/#news-tab-nav')
         }
-        logger.info(req.session.user + ' succesfully removed news created on ' + req.params.date)
+        logger.info(req.session.user + ' successfully removed news created on ' + req.params.date)
+        req.session.success = 'Successfully removed post'
         res.redirect('/sponsor/#news-tab-nav')
       })
     })
@@ -264,10 +292,13 @@ exports.setup = (app, db) => {
   app.post('/sponsor/update-info', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
-        return
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#news-tab-nav')
       }
       sponsor[0].info.email = req.body.email
       sponsor[0].info.description = req.body.description
@@ -275,9 +306,11 @@ exports.setup = (app, db) => {
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to update sponsor on edit info: ' + err)
-          return
+          req.session.error = 'Something went wrong'
+          res.redirect('/sponsor/#news-tab-nav')
         }
-        logger.info(req.session.user + ' succesfully updated info')
+        logger.info(req.session.user + ' successfully updated info')
+        req.session.success = 'Saved'
         res.redirect('/sponsor/#info-tab-nav')
       })
     })
@@ -287,24 +320,40 @@ exports.setup = (app, db) => {
   app.post('/sponsor/change-password', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find({ username: req.session.user }, (err, sponsor) => {
+    db.Sponsor.find({
+      username: req.session.user
+    }, (err, sponsor) => {
       if (err) {
         logger.error('Failed to find sponsor: ' + err)
-        return
+        req.session.error = 'Something went wrong'
+        res.redirect('/sponsor/#news-tab-nav')
       }
-      if (req.body.new && sponsor[0].password === req.body.old && req.body.new === req.body.new2) {
-        sponsor[0].password = req.body.new
-        sponsor[0].save((err, user) => {
-          if (err) {
-            logger.error('Failed to update sponsor on change password: ' + err)
-            return
+      if (req.body.new && req.body.new === req.body.new2) {
+        bcrypt.compare(req.body.old, sponsor[0].password_hash, (err, checkpass) => {
+          if (checkpass) {
+            bcrypt.hash(req.body.new, saltRounds, (err, pw_hash) => {
+              sponsor[0].password_hash = pw_hash
+              sponsor[0].save((err, user) => {
+                if (err) {
+                  logger.error('Failed to update sponsor on change password: ' + err)
+                  req.session.error = 'Something went wrong'
+                  res.redirect('/sponsor/#news-tab-nav')
+                }
+                logger.info(req.session.user + ' succesfully changed password')
+                req.session.success = 'Changed Password'
+                res.redirect('/sponsor/#info-tab-nav')
+              })
+            })
+          } else {
+            logger.info(req.session.user + ' failed to changed password')
+            req.session.error = 'Wrong Password'
+            res.redirect('/sponsor/#info-tab-nav')
           }
-          logger.info(req.session.user + ' succesfully changed password')
-          res.redirect('/sponsor/#info-tab-nav')
         })
       } else {
         logger.info(req.session.user + ' failed to changed password')
-        res.redirect('/sponsor/error/Error while trying to change password. Please try again./#info-tab-nav')
+        req.session.error = 'Passwords dont match'
+        res.redirect('/sponsor/#info-tab-nav')
       }
     })
   })
