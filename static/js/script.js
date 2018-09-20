@@ -4,6 +4,9 @@ if ('serviceWorker' in navigator) {
 }
 
 $(function () {
+  // Hide alerts after 5 seconds
+  $('.alert').delay(5000).fadeOut('slow');
+
   if (!Array.prototype.last) {
     Array.prototype.last = function () {
       return this[this.length - 1];
@@ -18,6 +21,18 @@ $(function () {
       $('#info-tab').tab('show')
     }
   }
+
+  //admin
+  $('.option').each(function() {
+    var curr = $(this).attr('data')
+    $(this).children().each(function(){
+      if($(this).val() === curr){
+        $(this).attr('selected', true)
+      }else{
+        $(this).attr('selected', false)
+      }
+    })
+  })
 
 
   if ($('.member-tab').hasClass('active-tab')) {
@@ -128,14 +143,6 @@ $(function () {
   $('.account').click(function () {
     $('.account-settings').toggleClass('d-none')
     $('.account-settings').siblings().toggleClass('inactiveLink')
-  })
-
-  $('.pass').click(function () {
-    if ($(this).parent().prev()[0].type === 'password') {
-      $(this).parent().prev()[0].type = 'text'
-    } else {
-      $(this).parent().prev()[0].type = 'password'
-    }
   })
 
   // LIVE PREVIEW

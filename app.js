@@ -2,6 +2,8 @@
 // Setup Express App
 const setup = require('./src/setup.js')
 const fs = require('fs-extra')
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const args = require('args-parser')(process.argv)
 
 // =======================LOGGER===========================
@@ -63,39 +65,44 @@ if (args['dev']) {
       if (sponsor) {
         return
       } else {
-        var sponsor = new db.Sponsor({
-          username: user,
-          password: pass,
-          info: {
-            name: name,
-            rank: rank,
-            picture: 'sample_logo.png',
-            bespoke: bespoke
-          },
-          news: news,
-          positions: positions
-        })
-        // Make sponsor folder
-        var path = mainsponsorpath + sponsor.username + '/'
-        if (!fs.existsSync(path)) {
-          fs.mkdirSync(path)
-        }
-        // save sponsor
-        sponsor.save((err, user) => {
-          if (err) {
-            logger.error('Failed to make sample sponsor')
-            return
-          } else {
-            return
+        bcrypt.hash(pass, saltRounds, (err, pw_hash) => {
+          var sponsor = new db.Sponsor({
+            username: user,
+            password_hash: pw_hash,
+            info: {
+              name: name,
+              rank: rank,
+              picture: 'sample_logo.png',
+              bespoke: bespoke
+            },
+            news: news,
+            positions: positions
+          })
+          // Make sponsor folder
+          var path = mainsponsorpath + sponsor.username + '/'
+          if (!fs.existsSync(path)) {
+            fs.mkdirSync(path)
           }
+          // save sponsor
+          sponsor.save((err, user) => {
+            if (err) {
+              logger.error('Failed to make sample sponsor: ' + err)
+              return
+            } else {
+              return
+            }
+          })
         })
       }
     })
   }
 
+  // Make sample sponsors
   makesamplesponsor('gold', 'gold', 'Gold Sponsor', 'Gold', true, [], [])
-}
+  makesamplesponsor('silver', 'silver', 'Silver Sponsor', 'Silver', true, [], [])
+  makesamplesponsor('bronze', 'bronze', 'Bronze Sponsor', 'Bronze', false, [], [])
 
+}
 
 
 // App listen

@@ -29,7 +29,7 @@ var SponsorSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  password: {
+  password_hash: {
     type: String,
     required: true
   },

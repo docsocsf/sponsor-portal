@@ -1,5 +1,9 @@
 include ./layout.pug
 h1 Hello there DoCSoc
+
+form(method="post" action="/logout")
+  button.btn.btn-primary(type='submit') Logout
+
 .container-fluid.mt-4
   .row
     .col-4
@@ -28,16 +32,15 @@ h1 Hello there DoCSoc
           button.btn.btn-primary(type='submit') Add
 
 h1.mt-5 Sponsors
-table(style = "width:4000px").ml-3.mt-4
+table(style = "width:100%").mt-4
   tr 
     th username
     th password
     th name
     th email
-    th rank
+    th rank (Gold/ Silver/Bronze)
     th bespoke (true/false)
     th description
-    th picture
     th link
     th news
     th positions
@@ -46,39 +49,38 @@ table(style = "width:4000px").ml-3.mt-4
       tr
         th=s.username
         th
-          input.form-control(type="password", name="s.password", value=s.password)
-          .row
-            div.col-9 Show Password:
-            input.col-2.form-control(type="checkbox").pass
+          input.form-control(type="password", name="s.password")
         th
           input.form-control(type="text", name="s.info.name", value=s.info.name)
         th
           input.form-control(type="text", name="s.info.email", value=s.info.email)
         th
-          input.form-control(type="text", name="s.info.rank", value=s.info.rank)
+          select.form-control(name="s.info.rank"  data=s.info.rank).option
+            option(value="Gold") Gold
+            option(value="Silver") Silver
+            option(value="Bronze") Bronze
         th
-          input.form-control(type="text", name="s.info.bespoke", value=s.info.bespoke.toString())
+          select.form-control(name="s.info.bespoke" value=s.info.bespoke.toString()).option
+            option(value="true") true
+            option(value="false") false
         th
-          input.form-control(type="text", name="s.info.description", value=s.info.description)
-        th
-          input.form-control(type="text", name="s.info.picture", value=s.info.picture)
+          textarea.form-control(type="text", name="s.info.description" style="height: 120px !important;")=s.info.description
         th
           input.form-control(type="text", name="s.info.link", value=s.info.link)
         th 
           if(s.news.length > 0)
             table(style = "width:100%")
               tr
-                th date
                 th title
                 th text
                 th link
               each n in s.news
                 tr
-                  th=n.date
                   th=n.title
                   th
-                    textarea.form-control(type="text" disabled)=n.text
-                  th=n.link
+                    textarea.form-control(type="text" disabled style="height: 120px !important;")=n.text
+                  th
+                    a(href=n.link) Link
         th 
           if(s.positions.length > 0)
             table(style = "width:100%")
@@ -93,30 +95,22 @@ table(style = "width:4000px").ml-3.mt-4
                     input.form-control(type="text", name="p.id."+i, value=p.name).d-none
                     input.form-control(type="text", name="p.name."+i, value=p.name)
                   th
-                    input.form-control(type="text", name="p.description."+i, value=p.description)
+                    textarea.form-control(type="text", name="p.description."+i style="height: 120px !important;")=p.description
                   th
                     input.form-control(type="text", name="p.link."+i, value=p.link)
                   th 
                     if(p.users.length > 0)
                       table(style = "width:100%")
                         tr   
-                          th firstname
-                          th surname
-                          th email
                           th username
-                          th documents
+                          th # of documents
                         each u in p.users
                           tr   
-                            th=u.firstname
-                            th=u.surname
-                            th=u.email
                             th=u.username
-                            th=u.documents.map(d => d = d.name)
+                            th=u.documents.length
+      tr
         th
           button.btn.btn-primary(type='submit') Save
     th
       form(method="post" action="/admin/remove-sponsor/"+s.username)
         button.btn.btn-primary(type='submit') Remove
-
-form(method="post" action="/logout")
-  button.btn.btn-primary(type='submit') Logout
