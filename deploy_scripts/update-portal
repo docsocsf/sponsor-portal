@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Source profile
+source ~/.profile
+
 # Decrypt Secrets Config
 sudo openssl enc -aes-256-cbc -md sha256 -d -in /portal/secrets.yml.enc -out /portal/secure/config.yml -k $KEY
 
