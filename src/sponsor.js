@@ -154,17 +154,21 @@ exports.setup = (app, db) => {
           name: req.body.name.trim(),
           description: req.body.description,
           link: req.body.link,
+          apply_local: (req.body.apply_local === 'on'),
+          apply_link: req.body.apply_link,
           users: []
         }
-        var sponsorpath = './sponsors/' + req.session.user + '/'
-        if (!fs.existsSync(sponsorpath)) {
-          logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
-          fs.mkdirSync(sponsorpath)
-          logger.warning('made a temp fix')
-        }
-        var path = sponsorpath + req.body.name.trim() + '/'
-        if (!fs.existsSync(path)) {
-          fs.mkdirSync(path)
+        if (data.apply_local) {
+          var sponsorpath = './sponsors/' + req.session.user + '/'
+          if (!fs.existsSync(sponsorpath)) {
+            logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
+            fs.mkdirSync(sponsorpath)
+            logger.warning('made a temp fix')
+          }
+          var path = sponsorpath + req.body.name.trim() + '/'
+          if (!fs.existsSync(path)) {
+            fs.mkdirSync(path)
+          }
         }
         sponsor[0].positions.push(data)
         sponsor[0].save((err, user) => {
