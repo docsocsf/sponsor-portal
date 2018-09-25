@@ -21,8 +21,9 @@ exports.setup = (app, db) => {
     check(req, res, next)
   }, (req, res) => {
     db.Sponsor.find((err, sponsors) => {
-      if (err || !sponsors) {
+      if (err) {
         logger.error('Failed to get sponsors for user ' + req.session.data.Login + ': ' + err)
+        res.end();
         return
       }
       var ss = []
@@ -72,6 +73,7 @@ exports.setup = (app, db) => {
         req.session.error = ''
         req.session.success = ''
         res.send(html)
+        res.end()
       })
     })
   })
