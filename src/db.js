@@ -71,6 +71,12 @@ var SponsorSchema = new mongoose.Schema({
     link: {
       type: String
     },
+    apply_local: {
+      type: Boolean
+    },
+    apply_link: {
+      type: String
+    },
     users: [{
       firstname: {
         type: String

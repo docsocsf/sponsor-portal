@@ -2,9 +2,12 @@
   .container-fluid
     .row.justify-content-center
       .col-lg-7.col-sm-10.text-center.mb-4
-        h3.small-font By adding a new opportunity here, DoCSoc members will be able to apply for the opportunity 
-          | by providing the nessesary documents. You will then be able to see who applied and download 
-          | the documents they provided.
+        h3.small-font 
+          | By adding a new opportunity here, DoCSoc members will be able to read about the opportunity throught the portal.
+          | You can choose to allow members to apply for the opportunity by providing the necessary documents directly through our portal, 
+          | or you can give a link that will show members where they can go to apply. 
+          | If you choose to allow members to apply through our portal, 
+          | you will then be able to see who applied below, and download all the documents they provided.
     .row.justify-content-center
       .col-lg-8.col-sm-11
         .card
@@ -26,6 +29,16 @@
                         .subtext (optional) 
                       .subtext (Works with Markdown. [#[a(target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet") more]])
                     textarea.form-control.col-lg-8.col-sm-7.text(autocomplete='off' placeholder='* Description \n* Who is this for \n* Documents required to apply' type="text", name="description")
+                  .row.mt-2.mb-2
+                    .col-1
+                      label.switch
+                        input#checkbox.form-control(type='checkbox' name="apply_local" checked)
+                        span.slider.round
+                    .col-lg-8.col-sm-7.pt-lg-1.text#checkbox_text Apply through portal
+                  #apply_link
+                    .row.mt-2.mb-2
+                      label.col-lg-3.col-sm-4(for="link") Apply Link: 
+                      input.form-control.col-lg-8.col-sm-7.apply-link(placeholder='Apply Link' type="text", name="apply_link")
                   .row.mt-2.mb-2
                     .col-12.h4 Live Preview:
                       .subtext (This is what DoCSoc members will see)

@@ -46,6 +46,8 @@ exports.setup = (app, db) => {
             name: position.name,
             description: position.description,
             link: position.link,
+            apply_local: position.apply_local,
+            apply_link: position.apply_link,
             applied: false
           }
           var maybeuser = position.users.filter(user => user.username === req.session.data.Login)

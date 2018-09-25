@@ -17,6 +17,13 @@ var check = (req, res, callback) => {
   }
 }
 
+var addhttp = (url) => {
+  if (url && !/^(f|ht)tps?:\/\//i.test(url)) {
+    url = "http://" + url;
+  }
+  return url;
+}
+
 exports.setup = (app, db) => {
   // Sponsor Page
   app.get('/sponsor', (req, res, next) => {
@@ -153,18 +160,22 @@ exports.setup = (app, db) => {
         var data = {
           name: req.body.name.trim(),
           description: req.body.description,
-          link: req.body.link,
+          link: addhttp(req.body.link),
+          apply_local: (req.body.apply_local === 'on'),
+          apply_link: addhttp(req.body.apply_link),
           users: []
         }
-        var sponsorpath = './sponsors/' + req.session.user + '/'
-        if (!fs.existsSync(sponsorpath)) {
-          logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
-          fs.mkdirSync(sponsorpath)
-          logger.warning('made a temp fix')
-        }
-        var path = sponsorpath + req.body.name.trim() + '/'
-        if (!fs.existsSync(path)) {
-          fs.mkdirSync(path)
+        if (data.apply_local) {
+          var sponsorpath = './sponsors/' + req.session.user + '/'
+          if (!fs.existsSync(sponsorpath)) {
+            logger.warning(req.session.user + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG')
+            fs.mkdirSync(sponsorpath)
+            logger.warning('made a temp fix')
+          }
+          var path = sponsorpath + req.body.name.trim() + '/'
+          if (!fs.existsSync(path)) {
+            fs.mkdirSync(path)
+          }
         }
         sponsor[0].positions.push(data)
         sponsor[0].save((err, user) => {
@@ -238,7 +249,7 @@ exports.setup = (app, db) => {
         date: (new Date()).toString(),
         title: req.body.title,
         text: req.body.text,
-        link: req.body.link
+        link: addhttp(req.body.link)
       }
       sponsor[0].news.push(news)
       sponsor[0].save((err, user) => {
@@ -302,7 +313,7 @@ exports.setup = (app, db) => {
       }
       sponsor[0].info.email = req.body.email
       sponsor[0].info.description = req.body.description
-      sponsor[0].info.link = req.body.link
+      sponsor[0].info.link = addhttp(req.body.link)
       sponsor[0].save((err, user) => {
         if (err) {
           logger.error('Failed to update sponsor on edit info: ' + err)
