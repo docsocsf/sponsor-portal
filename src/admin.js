@@ -40,7 +40,7 @@ exports.setup = (app, db) => {
     }
   }, (req, res) => {
     db.Sponsor.find((err, s) => {
-      if (err) {
+      if (err || !s[0]) {
         logger.error('Error with admin login: ' + err)
       } else {
         res.render('admin', {
@@ -88,7 +88,7 @@ exports.setup = (app, db) => {
     db.Sponsor.find({
       username: req.params.username
     }, (err, sponsor) => {
-      if (err) {
+      if (err || !sponsor[0]) {
         logger.error('Failed to find sponsor for edit: ' + err)
         res.redirect('/member')
         return

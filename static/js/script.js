@@ -3,6 +3,13 @@ if ('serviceWorker' in navigator) {
     .then(function (reg) {}).catch(function (err) {});
 }
 
+var addhttp = (url) => {
+  if (url && !/^(f|ht)tps?:\/\//i.test(url)) {
+    url = "http://" + url;
+  }
+  return url;
+}
+
 $(function () {
   // Hide alerts after 5 seconds
   $('.alert').delay(5000).fadeOut('slow');
@@ -12,7 +19,7 @@ $(function () {
       return this[this.length - 1];
     };
   };
-  if(location.pathname == "/sponsor" || location.pathname == "/sponsor/"){
+  if (location.pathname == "/sponsor" || location.pathname == "/sponsor/") {
     if (window.location.hash == "" || window.location.hash === '#positions-tab-nav') {
       $('#positions-tab').tab('show')
     } else if (window.location.hash === '#news-tab-nav') {
@@ -23,12 +30,12 @@ $(function () {
   }
 
   //admin
-  $('.option').each(function() {
+  $('.option').each(function () {
     var curr = $(this).attr('data')
-    $(this).children().each(function(){
-      if($(this).val() === curr){
+    $(this).children().each(function () {
+      if ($(this).val() === curr) {
         $(this).attr('selected', true)
-      }else{
+      } else {
         $(this).attr('selected', false)
       }
     })
@@ -103,10 +110,10 @@ $(function () {
     if (filename.length > 1) {
       extension = '.' + filename.pop()
     }
-    if(filename[0]){
+    if (filename[0]) {
       input.prop('disabled', false)
       clear.prop('disabled', false)
-    }else{
+    } else {
       input.prop('disabled', true)
       clear.prop('disabled', true)
     }
@@ -148,8 +155,11 @@ $(function () {
   // LIVE PREVIEW
   $('.live .title').on('input', function () {
     $(this).closest('.live').find('.preview-title').html($(this).val())
-    if ($(this).val().trim()) {
-      $(this).closest('.live').find('button').prop('disabled', false)
+    var checkbox = $(this).closest('.live').find('#checkbox')
+    if ($(this).val().trim() && (!checkbox[0] 
+      || (checkbox[0] && checkbox.is(":checked")) 
+      || (checkbox[0] && !checkbox.is(":checked") && ($(this).closest('.live').find('.apply-link').val().trim()) ) ) ) {
+        $(this).closest('.live').find('button').prop('disabled', false)
     } else {
       $(this).closest('.live').find('button').prop('disabled', true)
     }
@@ -159,7 +169,7 @@ $(function () {
     var live = $(this).closest('.live').find('.preview-link')
     if ($(this).val()) {
       live.html('<img src="/assets/images/icons/link.svg" width="30px"> Link')
-      live.attr('href', $(this).val())
+      live.attr('href', addhttp($(this).val()))
     } else {
       live.html('')
     }
@@ -178,6 +188,29 @@ $(function () {
   $('.live .text').on('input', function () {
     $(this).closest('.live').find('.preview-text').html(markdown.toHTML($(this).val()))
   })
+
+  $('.live .apply-link').on('input', function () {
+    if ($(this).closest('.live').find('.title').val().trim() && $(this).val().trim()) {
+      $(this).closest('.live').find('button').prop('disabled', false)
+    } else {
+      $(this).closest('.live').find('button').prop('disabled', true)
+    }
+  })
+
+  $('#checkbox').change(function () {
+    if (this.checked) {
+      if($(this).closest('.live').find('.title').val().trim()){
+        $(this).closest('.live').find('button').prop('disabled', false)
+      }
+      $(this).closest('.live').find('.apply-link').val('')
+      $('#apply_link').hide()
+      $('#checkbox_text').html('Apply through portal')
+    } else {
+      $(this).closest('.live').find('button').prop('disabled', true)
+      $('#apply_link').show()
+      $('#checkbox_text').html('Apply through link below')
+    }
+  });
 
   //markdown render
   $('.render-md').each(function () {

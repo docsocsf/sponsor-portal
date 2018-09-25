@@ -59,6 +59,10 @@ var SponsorSchema = new mongoose.Schema({
     },
     link: {
       type: String
+    },
+    love: {
+      type: Number,
+      min: 0
     }
   }],
   positions: [{
@@ -69,6 +73,12 @@ var SponsorSchema = new mongoose.Schema({
       type: String
     },
     link: {
+      type: String
+    },
+    apply_local: {
+      type: Boolean
+    },
+    apply_link: {
       type: String
     },
     users: [{
