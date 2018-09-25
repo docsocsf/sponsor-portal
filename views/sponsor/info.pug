@@ -38,8 +38,18 @@
                         .col-lg-7.col-sm-10
                           h1.card-title=sponsor.info.name
                           .card-text.story.mb-3.preview-text.render-md(value=sponsor.info.description)
-                            a(target="_blank").card-link.preview-email
-                            a(target="_blank").card-link.preview-link
+
+                          - var emailhref = (sponsor.info.email) ? "mailto:"+sponsor.info.email : ""
+                            a(target="_blank" href=emailhref).card-link.preview-email
+                              if sponsor.info.email
+                                img(src="/assets/images/icons/apply.svg" width="30px") 
+                                |  Email
+
+                          - var linkhref = (sponsor.info.link) ? "mailto:"+sponsor.info.link : ""
+                            a(target="_blank" href=linkhref).card-link.preview-link 
+                              if sponsor.info.link
+                                img(src="/assets/images/icons/link.svg" width="30px") 
+                                |  Link
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit') Save
     .row.justify-content-center.mt-3
