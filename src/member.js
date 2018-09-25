@@ -20,9 +20,9 @@ exports.setup = (app, db) => {
   app.get('/member', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find((error, sponsors) => {
-      if (error) {
-        logger.error('Failed to get sponsors for user ' + req.session.data.Login + ': ' + error)
+    db.Sponsor.find((err, sponsors) => {
+      if (err || !sponsors) {
+        logger.error('Failed to get sponsors for user ' + req.session.data.Login + ': ' + err)
         return
       }
       var ss = []
@@ -101,7 +101,7 @@ exports.setup = (app, db) => {
     db.Sponsor.find({
       username: req.params.sponsor
     }, (err, sponsor) => {
-      if (err) {
+      if (err || !sponsor[0]) {
         logger.error('Failed to find sponsor: ' + err)
         req.session.error = 'Something went wrong'
         res.redirect('/member')
@@ -174,7 +174,7 @@ exports.setup = (app, db) => {
     db.Sponsor.find({
       username: req.params.sponsor
     }, (err, sponsor) => {
-      if (err) {
+      if (err || !sponsor[0]) {
         logger.error('Failed to find sponsor: ' + err)
         req.session.error = 'Something went wrong'
         res.redirect('/member')

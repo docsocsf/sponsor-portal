@@ -59,6 +59,10 @@ var SponsorSchema = new mongoose.Schema({
     },
     link: {
       type: String
+    },
+    love: {
+      type: Number,
+      min: 0
     }
   }],
   positions: [{
