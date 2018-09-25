@@ -4,8 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node app.js",
-    "local": "node app.js --no-https",
-    "postinstall": "node ./conf/quickfix.js"
+    "local": "node app.js --no-https"
   },
   "author": "George Soteriou",
   "license": "ISC",
