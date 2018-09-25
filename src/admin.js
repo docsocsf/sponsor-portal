@@ -40,7 +40,7 @@ exports.setup = (app, db) => {
     }
   }, (req, res) => {
     db.Sponsor.find((err, s) => {
-      if (err || !s[0]) {
+      if (err) {
         logger.error('Error with admin login: ' + err)
       } else {
         res.render('admin', {
