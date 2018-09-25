@@ -19,10 +19,6 @@ h1, h2, h3, h4 {
   font-size: 0.9rem
 }
 
-.story {
-  white-space: pre-wrap !important;
-}
-
 .nav-link.active{
   background-color: #f5f5f5 !important;
   border-color: #f5f5f5 !important;
