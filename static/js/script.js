@@ -1,8 +1,3 @@
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js')
-    .then(function (reg) {}).catch(function (err) {});
-}
-
 var addhttp = (url) => {
   if (url && !/^(f|ht)tps?:\/\//i.test(url)) {
     url = "http://" + url;
