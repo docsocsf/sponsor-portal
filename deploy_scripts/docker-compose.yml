@@ -9,3 +9,6 @@ services:
       - /portal/sponsors:/portal/sponsors
       - /portal/secure:/portal/secure
       - /portal/logs:/portal/logs
+    deploy:
+      restart_policy:
+        condition: on-failure

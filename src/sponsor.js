@@ -34,6 +34,7 @@ exports.setup = (app, db) => {
     }, (err, sponsor) => {
       if (err) {
         logger.error('Unable to find sponsor: ' + err)
+        res.end()
         return
       } else {
         var data = {
