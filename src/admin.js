@@ -85,6 +85,22 @@ exports.setup = (app, db) => {
 
   // Edit sponsor
   app.post('/admin/edit-sponsor/:username', (req, res) => {
+    //change password
+    if (req.body['s.password']) {
+      db.Sponsor.find({
+        username: req.params.username
+      }, (err, sponsor) => {
+        bcrypt.hash(req.body['s.password'], saltRounds, (err, pw_hash) => {
+          sponsor[0].password_hash = pw_hash
+          sponsor[0].save((err, user) => {
+            if (err) {
+              logger.error('Failed to save sponsor for edit: ' + err)
+            }
+            logger.info('Changed sponsor password from admin panel')
+          })
+        });
+      })
+    }
     db.Sponsor.find({
       username: req.params.username
     }, (err, sponsor) => {
@@ -92,11 +108,6 @@ exports.setup = (app, db) => {
         logger.error('Failed to find sponsor for edit: ' + err)
         res.redirect('/member')
         return
-      }
-      if (req.body['s.password']) {
-        bcrypt.hash(req.body['s.password'], saltRounds, (err, pw_hash) => {
-          sponsor[0].password_hash = pw_hash
-        });
       }
       if (req.body['s.info.name']) {
         sponsor[0].info.name = req.body['s.info.name']
