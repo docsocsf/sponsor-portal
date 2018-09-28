@@ -9,7 +9,7 @@
 ## Build and Run
 1. start Mongod `sudo service mongod start`
 2. `npm install`
-3. `npm start` for https or `npm local` for http
+3. `npm start` for https or `npm run local` for http
 
 ## Extra info 
 To add new sponsors go to /portal
