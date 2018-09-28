@@ -14,7 +14,11 @@ exports.authSponsor = (user, pass, db, session, callback) => {
     username: user
   }, (err, result) => {
     if (err || !result[0]) {
-      return logger.error('Unable to find sponsor: ' + err)
+      logger.error('Unable to find sponsor: ' + user)
+      callback({
+        member: false,
+        err: 'Wrong username or password'
+      })
     } else {
       bcrypt.compare(pass, result[0].password_hash, (err, checkpass) => {
         if (checkpass) {
