@@ -14,7 +14,7 @@ exports.authSponsor = (user, pass, db, session, callback) => {
     username: user
   }, (err, result) => {
     if (err || !result[0]) {
-      logger.error('Unable to find sponsor: ' + err)
+      logger.error('Unable to find sponsor: ' + user)
       callback({
         member: false,
         err: 'Wrong username or password'
