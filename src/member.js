@@ -117,7 +117,7 @@ exports.setup = (app, db) => {
       }
       for (let i = 0; i < 10; i++) {
         if (req.files['document' + i]) {
-          // TODO: Implement check names
+          // split file extension
           var ext = req.files['document' + i].name.split('.').pop()
           // Save files
           req.files['document' + i].mv(path + req.body['documentname' + i] + '.' + ext, function (err) {
