@@ -1,8 +1,10 @@
-var addhttp = (url) => {
-  if (url && !/^(f|ht)tps?:\/\//i.test(url)) {
-    url = "http://" + url;
+var addlink = (url) => {
+  if(url && url.includes('@')) {
+    url = 'mailto:' + url
+  }else if (url && !/^(f|ht)tps?:\/\//i.test(url)) {
+    url = "http://" + url
   }
-  return url;
+  return url
 }
 
 $(function () {
@@ -166,7 +168,7 @@ $(function () {
     var live = $(this).closest('.live').find('.preview-link')
     if ($(this).val()) {
       live.html('<img src="/assets/images/icons/link.svg" width="30px"> Link')
-      live.attr('href', addhttp($(this).val()))
+      live.attr('href', addlink($(this).val()))
     } else {
       live.html('')
     }
@@ -205,7 +207,7 @@ $(function () {
     } else {
       $(this).closest('.live').find('button').prop('disabled', true)
       $('#apply_link').show()
-      $('#checkbox_text').html('Apply through link below')
+      $('#checkbox_text').html('Apply through link/email below')
     }
   });
 
