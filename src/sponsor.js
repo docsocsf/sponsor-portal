@@ -24,6 +24,15 @@ var addhttp = (url) => {
   return url;
 }
 
+var addlink = (url) => {
+  if(url && url.includes('@')) {
+    url = 'mailto:' + url
+  }else if (url && !/^(f|ht)tps?:\/\//i.test(url)) {
+    url = "http://" + url
+  }
+  return url
+}
+
 exports.setup = (app, db) => {
   // Sponsor Page
   app.get('/sponsor', (req, res, next) => {
@@ -163,7 +172,7 @@ exports.setup = (app, db) => {
           description: req.body.description,
           link: addhttp(req.body.link),
           apply_local: (req.body.apply_local === 'on'),
-          apply_link: addhttp(req.body.apply_link),
+          apply_link: addlink(req.body.apply_link),
           users: []
         }
         if (data.apply_local) {
