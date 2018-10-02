@@ -2,8 +2,8 @@
 // Setup Express App
 const setup = require('./src/setup.js')
 const fs = require('fs-extra')
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 const args = require('args-parser')(process.argv)
 
 // =======================LOGGER===========================
@@ -19,10 +19,11 @@ logger.info('[Mongodb Setup] done')
 
 // =========================Login Page=====================
 const login = require('./src/login.js')
-if arg['dev'] { // If development version,
-  const auth = require('./auth/local-auth.js')
+var auth
+if (args['dev']) { // If development version,
+  auth = require('./auth/local-auth.js')
 } else {
-  const auth = require('./auth/auth.js')
+  auth = require('./auth/auth.js')
 }
 login.setup(app, db, auth)
 logger.info('[Login Setup] done')
@@ -61,14 +62,14 @@ app.post('*', function (req, res) {
 
 // DEV
 if (args['dev']) {
-  //call this function to make sample sponsors for --dev
+  // call this function to make sample sponsors for --dev
   var makesamplesponsor = (user, pass, name, rank, bespoke, news, positions) => {
     var mainsponsorpath = './samplesponsors/'
     db.Sponsor.findOne({
       username: user
     }, (err, sponsor) => {
       if (sponsor) {
-        return
+
       } else {
         bcrypt.hash(pass, saltRounds, (err, pw_hash) => {
           var sponsor = new db.Sponsor({
@@ -92,9 +93,8 @@ if (args['dev']) {
           sponsor.save((err, user) => {
             if (err) {
               logger.error('Failed to make sample sponsor: ' + err)
-              return
             } else {
-              return
+
             }
           })
         })
@@ -106,9 +106,7 @@ if (args['dev']) {
   makesamplesponsor('gold', 'gold', 'Gold Sponsor', 'Gold', true, [], [])
   makesamplesponsor('silver', 'silver', 'Silver Sponsor', 'Silver', true, [], [])
   makesamplesponsor('bronze', 'bronze', 'Bronze Sponsor', 'Bronze', false, [], [])
-
 }
-
 
 // App listen
 if (args['no-https']) { // If no https then just use app.listen
