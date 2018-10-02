@@ -28,9 +28,10 @@ exports.setup = (app, db) => {
   app.get('/member', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
-    db.Sponsor.find((error, sponsors) => {
-      if (error) {
-        logger.error('Failed to get sponsors for user ' + req.session.data.Login + ': ' + error)
+    db.Sponsor.find((err, sponsors) => {
+      if (err) {
+        logger.error('Failed to get sponsors for user ' + req.session.data.Login + ': ' + err)
+        res.end();
         return
       }
       var ss = []
@@ -54,6 +55,8 @@ exports.setup = (app, db) => {
             name: position.name,
             description: position.description,
             link: position.link,
+            apply_local: position.apply_local,
+            apply_link: position.apply_link,
             applied: false
           }
           var maybeuser = position.users.filter(user => user.username === req.session.data.Login)
@@ -78,6 +81,7 @@ exports.setup = (app, db) => {
         req.session.error = ''
         req.session.success = ''
         res.send(html)
+        res.end()
       })
     })
   })
@@ -107,7 +111,7 @@ exports.setup = (app, db) => {
     db.Sponsor.find({
       username: req.params.sponsor
     }, (err, sponsor) => {
-      if (err) {
+      if (err || !sponsor[0]) {
         logger.error('Failed to find sponsor: ' + err)
         req.session.error = 'Something went wrong'
         res.redirect('/member')
@@ -121,7 +125,7 @@ exports.setup = (app, db) => {
       }
       for (let i = 0; i < 10; i++) {
         if (req.files['document' + i]) {
-          // TODO: Implement check names
+          // split file extension
           var ext = req.files['document' + i].name.split('.').pop()
           // Save files
           req.files['document' + i].mv(path + req.body['documentname' + i] + '.' + ext, function (err) {
@@ -180,7 +184,7 @@ exports.setup = (app, db) => {
     db.Sponsor.find({
       username: req.params.sponsor
     }, (err, sponsor) => {
-      if (err) {
+      if (err || !sponsor[0]) {
         logger.error('Failed to find sponsor: ' + err)
         req.session.error = 'Something went wrong'
         res.redirect('/member')

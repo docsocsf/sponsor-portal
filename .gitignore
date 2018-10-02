@@ -8,3 +8,4 @@ secure/*
 *secrets.yml
 *auth.json
 *config.yml
+.vscode

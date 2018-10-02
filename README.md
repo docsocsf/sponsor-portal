@@ -1,8 +1,8 @@
 # DoCSoc Portal for Members and Sponsors
 
 ## Develop
-(This will not affect the actual db or files saved, use this for test)
-
+---
+(This will not affect the actual db or files saved, use this for test and local developing)
 ### Dependencies
 * [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)
 * Kerbersos Client `libkrb5-dev` (only needed for install. will not be used in dev)
@@ -12,10 +12,10 @@
 ### Build and Run
 1. start Mongod `sudo service mongod start`
 2. `npm install` (will need sudo access)
-3. `npm test` (will need sudo access)
+3. `npm run local` (will need sudo access)
 
 ### Usage
-* Access from `localhost`
+* Access from `http://localhost`
 * Member login with blank username and password
 * Sponsor login with `gold` / `silver` / `bronze` username, and same for password
 * `localhost/admin` login with blank username and password
@@ -26,12 +26,10 @@
 
 
 ## Prodction (will only work on imperial VM)
-
+---
 ### Dependencies
 * [MongoDB](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/)
-* Kerbersos Client `libkrb5-dev` (server must be in IC network. VPN works)
-* npm 5.6+ `npm`
-* node 8.11.3+ `node`
+* docker
 
 ### Build and Run
 1. `update-portal`

@@ -2,7 +2,7 @@
   .container-fluid
     .row.justify-content-center
       .col-lg-7.col-sm-10.text-center.mb-4
-        h3.small-font All news post posted here will be avalable for all DoCSoc members to see.
+        h3.small-font All news posted here will be available for all DoCSoc members to see.
     .row.justify-content-center
       .col-lg-8.col-sm-11
         .card
@@ -35,21 +35,22 @@
                         .preview-text
               .row.justify-content-center.mt-2.mb-2
                 button.btn.btn-primary.btn-lg.col-10(type='submit' disabled) Add
-    .row.justify-content-center.mt-4
-      .col
-        h2.center Your News:
-    .row.justify-content-center
-      .col-lg-8.col-sm-11
-        each news in sponsor.news.reverse()
-          .card.mt-3
-            .card-body
-              h1.card-title=news.title
-              if(news.link)
-                a.card-link(href=news.link)
-                  img(src="/assets/images/icons/link.svg" width="30px")
-                  |  Link
-              .card-text.render-md.mt-3(value = news.text)
-              form(action="/sponsor/remove-news/" + news.date method="post")
-                button.btn.btn-danger(type='submit') Delete 
-                  span.octicon.octicon-trashcan   
+    if sponsor.news.length > 0
+      .row.justify-content-center.mt-4
+        .col
+          h2.center Your News:
+      .row.justify-content-center
+        .col-lg-8.col-sm-11
+          each news in sponsor.news.reverse()
+            .card.mt-3
+              .card-body
+                h1.card-title=news.title
+                if(news.link)
+                  a.card-link(href=news.link)
+                    img(src="/assets/images/icons/link.svg" width="30px")
+                    |  Link
+                .card-text.render-md.mt-3(value = news.text)
+                form(action="/sponsor/remove-news/" + news.date method="post")
+                  button.btn.btn-danger(type='submit') Delete 
+                    span.octicon.octicon-trashcan   
               
