@@ -19,7 +19,12 @@ logger.info('[Mongodb Setup] done')
 
 // =========================Login Page=====================
 const login = require('./src/login.js')
-login.setup(app, db)
+if arg['dev'] { // If development version,
+  const auth = require('./auth/local-auth.js')
+} else {
+  const auth = require('./auth/auth.js')
+}
+login.setup(app, db, auth)
 logger.info('[Login Setup] done')
 
 // ==========================Member=========================
