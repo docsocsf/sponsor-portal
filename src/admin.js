@@ -4,7 +4,17 @@ const logger = require('./logger.js')
 const sha256 = require('js-sha256').sha256
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const credentials = require('./config.js').doc.admin
+const args = require('args-parser')(process.argv)
+
+var credentials
+
+var mainsponsorpath
+if (args['dev']) {
+  mainsponsorpath = './samplesponsors/'
+} else {
+  credentials = require('./config.js').doc.admin
+  mainsponsorpath = './sponsors/'
+}
 
 exports.setup = (app, db) => {
   // PORTAL LOGIN PAGE
@@ -22,8 +32,7 @@ exports.setup = (app, db) => {
   }, (req, res) => {
     var user = req.body.user
     var pass = req.body.pass
-    if (user === credentials.username &&
-      sha256(pass) === credentials.pw_hash) {
+    if ((args['dev'] || user === credentials.username && sha256(pass) === credentials.pw_hash)) {
       req.session.docsoc = true
       res.redirect('/admin')
     } else {
@@ -165,8 +174,8 @@ exports.setup = (app, db) => {
         res.redirect('/member')
         return
       } else {
-        if (fs.existsSync('./sponsors/' + req.params.user)) {
-          fs.removeSync('./sponsors/' + req.params.user)
+        if (fs.existsSync(mainsponsorpath + req.params.user)) {
+          fs.removeSync(mainsponsorpath + req.params.user)
         }
         res.redirect('/admin')
       }

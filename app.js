@@ -1,6 +1,9 @@
 'use strict'
 // Setup Express App
 const setup = require('./src/setup.js')
+const fs = require('fs-extra')
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 const args = require('args-parser')(process.argv)
 
 // =======================LOGGER===========================
@@ -21,7 +24,13 @@ logger.info('[API Setup] done')
 
 // =========================Login Page=====================
 const login = require('./src/login.js')
-login.setup(app, db)
+var auth
+if (args['dev']) { // If development version,
+  auth = require('./auth/local-auth.js')
+} else {
+  auth = require('./auth/auth.js')
+}
+login.setup(app, db, auth)
 logger.info('[Login Setup] done')
 
 // ==========================Member=========================
@@ -56,6 +65,55 @@ app.post('*', function (req, res) {
   res.redirect('/')
 })
 
+// DEV
+if (args['dev']) {
+  // call this function to make sample sponsors for --dev
+  var makesamplesponsor = (user, pass, name, rank, bespoke, news, positions) => {
+    var mainsponsorpath = './samplesponsors/'
+    db.Sponsor.findOne({
+      username: user
+    }, (err, sponsor) => {
+      if (sponsor) {
+
+      } else {
+        bcrypt.hash(pass, saltRounds, (err, pw_hash) => {
+          var sponsor = new db.Sponsor({
+            username: user,
+            password_hash: pw_hash,
+            info: {
+              name: name,
+              rank: rank,
+              picture: 'sample_logo.png',
+              bespoke: bespoke
+            },
+            news: news,
+            positions: positions
+          })
+          // Make sponsor folder
+          var path = mainsponsorpath + sponsor.username + '/'
+          if (!fs.existsSync(path)) {
+            fs.mkdirSync(path)
+          }
+          // save sponsor
+          sponsor.save((err, user) => {
+            if (err) {
+              logger.error('Failed to make sample sponsor: ' + err)
+            } else {
+
+            }
+          })
+        })
+      }
+    })
+  }
+
+  // Make sample sponsors
+  makesamplesponsor('gold', 'gold', 'Gold Sponsor', 'Gold', true, [], [])
+  makesamplesponsor('silver', 'silver', 'Silver Sponsor', 'Silver', true, [], [])
+  makesamplesponsor('bronze', 'bronze', 'Bronze Sponsor', 'Bronze', false, [], [])
+}
+
+// App listen
 if (args['no-https']) { // If no https then just use app.listen
   logger.info('no-https option selected, running on just http')
   app.listen(app.get('port'), function () {
