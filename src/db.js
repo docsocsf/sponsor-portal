@@ -1,9 +1,18 @@
 'use strict'
 const mongoose = require('mongoose')
 const logger = require('./logger.js')
+const args = require('args-parser')(process.argv)
 
 // MONGOOSE
-mongoose.connect('mongodb://127.0.0.1:27017/portal', { useNewUrlParser: true })
+if (args['dev']) {
+  mongoose.connect('mongodb://127.0.0.1:27017/portalsample', {
+    useNewUrlParser: true
+  })
+} else {
+  mongoose.connect('mongodb://127.0.0.1:27017/portal', {
+    useNewUrlParser: true
+  })
+}
 var db = mongoose.connection
 db.on('error', function (err) {
   logger.error('Failed to connect to mongodb: ' + err)

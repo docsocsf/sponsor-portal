@@ -1,5 +1,4 @@
 'use strict'
-const auth = require('../auth/auth.js')
 
 var check = (req, res, callback) => {
   if (req.session.login) {
@@ -13,7 +12,7 @@ var check = (req, res, callback) => {
   }
 }
 
-exports.setup = (app, db) => {
+exports.setup = (app, db, auth) => {
   app.get('/', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {

@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node app.js",
-    "local": "node app.js --no-https"
+    "local": "node app.js --no-https --dev"
   },
   "author": "George Soteriou",
   "license": "ISC",
