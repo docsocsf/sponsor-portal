@@ -7,6 +7,7 @@ const fs = require('fs')
 const logger = require('./logger.js')
 const Morgan = require('morgan')
 const args = require('args-parser')(process.argv)
+const config = require('./config.js')
 
 var mainsponsorpath
 if (args['dev']) {
@@ -39,7 +40,7 @@ app.use(express.json())
 
 // SESSION
 app.use(session({
-  secret: 'shhhhhhhhhhhh',
+  secret: (config.doc.sessions) ? config.doc.sessions : "shhhhhhhhh",
   resave: false,
   saveUninitialized: true
 }))
