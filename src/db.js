@@ -10,10 +10,10 @@ if (args['dev']) {
     useNewUrlParser: true
   })
 } else {
-  mongoose.connect(config.mongod.url, {
+  mongoose.connect(config.doc.mongod.url + "?authSource=admin", {
     useNewUrlParser: true,
-    user: config.mongod.username,
-    pass: config.mongod.password
+    user: config.doc.mongod.username,
+    pass: config.doc.mongod.password
   })
 }
 var db = mongoose.connection
