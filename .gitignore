@@ -1,10 +1,11 @@
 node_modules
 build
-sponsors
-samplesponsors
-temp/*
-secure/*
+./sponsors
+./samplesponsors
+./temp/*
+./secure/*
 
 *secrets.yml
 *auth.json
 *config.yml
+.vscode

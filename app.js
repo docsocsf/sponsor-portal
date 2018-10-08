@@ -17,6 +17,11 @@ logger.info('[Express Setup] done')
 const db = require('./src/db.js')
 logger.info('[Mongodb Setup] done')
 
+// =======================API===========================
+const API = require('./src/API.js')
+API.setup(app, db)
+logger.info('[API Setup] done')
+
 // =========================Login Page=====================
 const login = require('./src/login.js')
 var auth
