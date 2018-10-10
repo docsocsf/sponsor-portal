@@ -40,7 +40,7 @@ app.use(express.json())
 
 // SESSION
 app.use(session({
-  secret: (config.doc.sessions) ? config.doc.sessions : "shhhhhhhhh",
+  secret: (config.doc) ? config.doc.sessions : "shhhhhhhhh",
   resave: false,
   saveUninitialized: true
 }))
