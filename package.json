@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node app.js",
-    "local": "node app.js --no-https --dev"
+    "local": "node app.js --dev"
   },
   "author": "George Soteriou",
   "license": "ISC",
@@ -18,7 +18,6 @@
     "fstream": "^1.0.11",
     "glob": "^7.1.2",
     "graceful-fs": "^4.1.11",
-    "greenlock-express": "^2.4.6",
     "helmet": "^3.13.0",
     "jquery": "^3.3.1",
     "js-sha256": "^0.9.0",

@@ -7,8 +7,8 @@ jobs:
       - checkout
       - setup_remote_docker
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
-      - run: docker build -t icdocsoc/portal -f docker/Dockerfile .
-      - run: docker push icdocsoc/portal
+      - run: docker build -t icdocsoc/portal:nginx -f docker/Dockerfile .
+      - run: docker push icdocsoc/portal:nginx
       - add_ssh_keys:
           fingerprints:
             - "7c:b4:98:ad:a5:2b:3a:c9:58:b9:5d:6a:1b:48:fb:16"

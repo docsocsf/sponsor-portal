@@ -11,11 +11,11 @@
 
 ### Build and Run
 1. start Mongod `sudo service mongod start`
-2. `npm install` (will need sudo access)
-3. `npm run local` (will need sudo access)
+2. `npm install` 
+3. `npm run local`
 
 ### Usage
-* Access from `http://localhost`
+* Access from `http://localhost:8080`
 * Member login with blank username and password
 * Sponsor login with `gold` / `silver` / `bronze` username, and same for password
 * `localhost/admin` login with blank username and password

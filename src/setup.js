@@ -30,7 +30,7 @@ app.use('/', express.static('./static'))
 app.use(fileUpload())
 
 // PORT
-app.set('port', process.env.PORT || 80)
+app.set('port', process.env.PORT || 8080)
 
 // JSON PARSER
 app.use(express.urlencoded({
