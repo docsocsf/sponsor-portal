@@ -117,3 +117,4 @@ if (args['dev']) {
 app.listen(app.get('port'), function () {
   logger.info('Server listening on port ' + app.get('port'))
 })
+
