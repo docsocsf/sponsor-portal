@@ -30,7 +30,7 @@ app.use('/', express.static('./static'))
 app.use(fileUpload())
 
 // PORT
-app.set('port', process.env.PORT || 80)
+app.set('port', process.env.PORT || 8080)
 
 // JSON PARSER
 app.use(express.urlencoded({
@@ -40,7 +40,7 @@ app.use(express.json())
 
 // SESSION
 app.use(session({
-  secret: (config.doc.sessions) ? config.doc.sessions : "shhhhhhhhh",
+  secret: (config.doc) ? config.doc.sessions : "shhhhhhhhh",
   resave: false,
   saveUninitialized: true
 }))
