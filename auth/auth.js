@@ -74,7 +74,7 @@ exports.authUser = (user, pass, session, callback) => {
   }).catch(function (err) {
     callback({
       member: true,
-      err: 'Auth-server down. Try again later'
+      err: 'Authentication server down. Try again later'
     })
   })
 }
