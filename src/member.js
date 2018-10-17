@@ -205,12 +205,10 @@ exports.setup = (app, db) => {
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      req.session.error = 'Something went wrong'
-      res.redirect('/member')
+      req.session.error = 'Something went wrong, but dont worry, we fixed it!'
     } else if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      req.session.error = 'Something went wrong'
-      res.redirect('/member')
+      req.session.error = 'Something went wrong, but dont worry, we fixed it!'
     } else {
       if (fs.existsSync(path)) {
         fs.removeSync(path)
