@@ -42,11 +42,80 @@ var addlink = (url) => {
   return url
 }
 
+
+var uploadToS3 = (req, callback) => {
+  // UPLOAD TO S3 IF NOT DEV
+  if (!args['dev']) {
+    const AWS = require('aws-sdk')
+    const s3 = require('s3')
+    var awsS3Client = new AWS.S3()
+    var options = {
+      s3Client: awsS3Client,
+    };
+    var client = s3.createClient(options)
+
+    var params = {
+      localDir: mainsponsorpath + req.session.user + '/',
+      deleteRemoved: true,
+      s3Params: {
+        Bucket: "icdocsoc-sponsor-portal",
+        Prefix: "sponsors/" + req.session.user + '/'
+      },
+    }
+    var uploader = client.uploadDir(params)
+    logger.info(req.session.user + ' updated so started uploading to s3')
+    uploader.on('error', function (err) {
+      logger.error("Failed to upload to s3:", err.stack)
+    })
+    uploader.on('end', function () {
+      logger.info("Finished uploading to s3")
+      callback();
+    })
+  } else {
+    callback();
+  }
+}
+
+var downloadFromS3 = (req, callback) => {
+  if (!args['dev']) {
+    if (!fs.existsSync(mainsponsorpath + req.session.user + '/')) {
+      fs.mkdirSync(mainsponsorpath + req.session.user + '/')
+    }
+    const AWS = require('aws-sdk')
+    const s3 = require('s3')
+    var awsS3Client = new AWS.S3()
+    var options = {
+      s3Client: awsS3Client,
+    };
+    var client = s3.createClient(options)
+    var params = {
+      localDir: mainsponsorpath + req.session.user + '/',
+      deleteRemoved: false,
+      s3Params: {
+        Bucket: "icdocsoc-sponsor-portal",
+        Prefix: "sponsors/" + req.session.user + '/'
+      }
+    }
+    var uploader = client.downloadDir(params)
+    logger.info("Update of " + req.session.user + " from s3 Started")
+    uploader.on('error', function (err) {
+      logger.error("Failed to update from s3:", err.stack)
+    })
+    uploader.on('end', function () {
+      logger.info("Update of " + req.session.user + " from s3 Done")
+      callback();
+    })
+  } else {
+    callback();
+  }
+}
+
 exports.setup = (app, db) => {
   // Sponsor Page
   app.get('/sponsor', (req, res, next) => {
     check(req, res, next)
   }, (req, res) => {
+
     db.Sponsor.find({
       username: req.session.user
     }, (err, sponsor) => {
@@ -60,10 +129,12 @@ exports.setup = (app, db) => {
           error: req.session.error,
           success: req.session.success
         }
-        res.render('sponsor', data, (err, html) => {
-          req.session.error = ''
-          req.session.success = ''
-          res.send(html)
+        downloadFromS3(req, () => {
+          res.render('sponsor', data, (err, html) => {
+            req.session.error = ''
+            req.session.success = ''
+            res.send(html)
+          })
         })
       }
     })
@@ -208,7 +279,7 @@ exports.setup = (app, db) => {
           res.redirect('/sponsor#positions-tab-nav')
         })
       } else {
-        logger.info(req.session.user + ' succesfully failed to add new position because name already exists' + req.body.name)
+        logger.info(req.session.user + ' successfully failed to add new position because name already exists' + req.body.name)
         req.session.error = 'Position name is blank or already exists'
         res.redirect('/sponsor#positions-tab-nav')
       }
@@ -240,7 +311,9 @@ exports.setup = (app, db) => {
         }
         logger.info(req.session.user + ' successfully removed position ' + req.params.name)
         req.session.success = 'Successfully removed opporunity'
-        res.redirect('/sponsor#positions-tab-nav')
+        uploadToS3(req, () => {
+          res.redirect('/sponsor#positions-tab-nav')
+        })
       })
     })
   })

@@ -74,7 +74,10 @@ if (args['dev']) {
       username: user
     }, (err, sponsor) => {
       if (sponsor) {
-
+        var path = mainsponsorpath + user + '/'
+        if (!fs.existsSync(path)) {
+          fs.mkdirSync(path)
+        }
       } else {
         bcrypt.hash(pass, saltRounds, (err, pw_hash) => {
           var sponsor = new db.Sponsor({
