@@ -1,13 +1,7 @@
 'use strict'
-const krb5 = require('node-krb5')
 const rp = require('request-promise')
-const fs = require('fs')
-const yaml = require('js-yaml')
 const logger = require('../src/logger.js')
-const args = require('args-parser')(process.argv)
 const bcrypt = require('bcrypt');
-
-const authpath = './auth/auth.json'
 
 exports.authSponsor = (user, pass, db, session, callback) => {
   db.Sponsor.find({
