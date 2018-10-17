@@ -23,6 +23,43 @@ if (args['dev']) {
   mainsponsorpath = './sponsors/'
 }
 
+
+var uploadToS3 = (req, callback) => {
+  // UPLOAD TO S3 IF NOT DEV
+  if (!args['dev']) {
+    const AWS = require('aws-sdk')
+    const s3 = require('s3')
+    var awsS3Client = new AWS.S3()
+    var options = {
+      s3Client: awsS3Client,
+    };
+    var client = s3.createClient(options)
+
+    var params = {
+      localDir: path,
+      deleteRemoved: true,
+      s3Params: {
+        Bucket: "icdocsoc-sponsor-portal",
+        Prefix: "sponsors/" + req.params.sponsor + '/' + req.params.posname +
+          '/' + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' +
+          req.session.data.Login + '/'
+      },
+    }
+    var uploader = client.uploadDir(params)
+    logger.info(req.session.data.Login + "'s application to " + req.params.sponsor + "'s " +
+      req.params.posname + ' with ' + data.documents.length + ' document(s) started uploading to s3')
+    uploader.on('error', function (err) {
+      logger.error("Failed to upload to s3:", err.stack)
+    })
+    uploader.on('end', function () {
+      logger.info(req.session.data.Login + "'s application to " + req.params.sponsor + "'s " +
+        req.params.posname + ' with ' + data.documents.length + ' document(s) finished uploading to s3')
+    })
+  } else {
+    callback();
+  }
+}
+
 exports.setup = (app, db) => {
   // member PAGE
   app.get('/member', (req, res, next) => {
@@ -95,14 +132,10 @@ exports.setup = (app, db) => {
     var pospath = sponsorpath + req.params.posname + '/'
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
-      logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      req.session.error = 'Something went wrong'
-      res.redirect('/member')
+      fs.mkdirSync(sponsorpath)
     }
     if (!fs.existsSync(pospath)) {
-      logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      req.session.error = 'Something went wrong'
-      res.redirect('/member')
+      fs.mkdirSync(pospath)
     }
     if (!fs.existsSync(path)) {
       fs.mkdirSync(path)
@@ -152,10 +185,12 @@ exports.setup = (app, db) => {
           req.session.error = 'Something went wrong'
           res.redirect('/member')
         }
-        logger.info(req.session.data.Login + ' has successfully applied to ' + req.params.sponsor + "'s " +
-          req.params.posname + ' with ' + data.documents.length + ' document(s)')
-        req.session.success = 'Successfully applied to ' + req.params.sponsor + "'s " + req.params.posname + ' with ' + data.documents.length + ' document(s)'
-        res.redirect('/member')
+        uploadToS3(req, () => {
+          logger.info(req.session.data.Login + ' has successfully applied to ' + req.params.sponsor + "'s " +
+            req.params.posname + ' with ' + data.documents.length + ' document(s)')
+          req.session.success = 'Successfully applied to ' + req.params.sponsor + "'s " + req.params.posname + ' with ' + data.documents.length + ' document(s)'
+          res.redirect('/member')
+        })
       })
     })
   })
@@ -170,12 +205,10 @@ exports.setup = (app, db) => {
     var path = pospath + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' + req.session.data.Login + '/'
     if (!fs.existsSync(sponsorpath)) {
       logger.warning(req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      req.session.error = 'Something went wrong'
-      res.redirect('/member')
+      req.session.error = 'Something went wrong, but dont worry, we fixed it!'
     } else if (!fs.existsSync(pospath)) {
       logger.warning(req.params.posname + ' position, of ' + req.params.sponsor + ' sponsor path magically deleted SOMETHING HAS GONE TERRIBLY WRONG or user out of sync')
-      req.session.error = 'Something went wrong'
-      res.redirect('/member')
+      req.session.error = 'Something went wrong, but dont worry, we fixed it!'
     } else {
       if (fs.existsSync(path)) {
         fs.removeSync(path)
@@ -200,9 +233,11 @@ exports.setup = (app, db) => {
           req.session.error = 'Something went wrong'
           res.redirect('/member')
         }
-        logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
-        req.session.success = 'Successfully removed application for ' + req.params.sponsor + "'s " + req.params.posname
-        res.redirect('/member')
+        uploadToS3(req, () => {
+          logger.info(req.session.data.Login + ' has successfully removed his applied to ' + req.params.sponsor + "'s " + req.params.posname)
+          req.session.success = 'Successfully removed application for ' + req.params.sponsor + "'s " + req.params.posname
+          res.redirect('/member')
+        })
       })
     })
   })

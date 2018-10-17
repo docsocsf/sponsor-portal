@@ -14,6 +14,29 @@ if (args['dev']) {
   mainsponsorpath = './samplesponsors/'
 } else {
   mainsponsorpath = './sponsors/'
+  const AWS = require('aws-sdk')
+  const s3 = require('s3')
+  var awsS3Client = new AWS.S3()
+  var options = {
+    s3Client: awsS3Client,
+  };
+  var client = s3.createClient(options)
+  var params = {
+    localDir: mainsponsorpath,
+    deleteRemoved: false,
+    s3Params: {
+      Bucket: "icdocsoc-sponsor-portal",
+      Prefix: "sponsors/" 
+    }
+  }
+  var uploader = client.downloadDir(params)
+  logger.info("[S3] Starting Download")
+  uploader.on('error', function (err) {
+    logger.error("Failed to update from s3:", err.stack)
+  })
+  uploader.on('end', function () {
+    logger.info("[S3] Finished Download")
+  })
 }
 
 const app = express()
@@ -22,9 +45,7 @@ app.set('view engine', 'pug')
 app.set('views', './views')
 
 app.use(helmet())
-app.use(Morgan({
-  'stream': logger.stream
-}))
+app.use(Morgan('combined'))
 app.use('/', express.static('./static'))
 
 app.use(fileUpload())
@@ -53,8 +74,5 @@ if (!fs.existsSync('./temp/')) {
   fs.mkdirSync('./temp/')
 }
 
-if (!fs.existsSync('./secure/')) {
-  fs.mkdirSync('./secure/')
-}
 
 exports.app = app
