@@ -38,7 +38,7 @@ exports.authSponsor = (user, pass, db, session, callback) => {
 exports.authUser = (user, pass, session, callback) => {
   var options = {
     method: 'POST',
-    uri: 'https://auth.docsoc.co.uk',
+    uri: 'https://auth.docsoc.co.uk/api/authenticate',
     body: {
       "user": user,
       "pass": pass
