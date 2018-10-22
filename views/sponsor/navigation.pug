@@ -1,5 +1,6 @@
 ul#myTab.nav.nav-tabs.justify-content-center.header.mt-3(role='tablist', style="margin-top: -2px;")
-  if(sponsor.info.rank != 'Bronze')
+  //- This is a hack for blackrock. will fix later
+  if sponsor.info.rank != 'Bronze' || sponsor.username == 'blackrock'
     li.nav-item.col-md-auto.d-inline-block
       a#positions-tab.nav-link.active(data-toggle='tab', href='#positions', role='tab', aria-controls='positions', aria-selected='false')
         h2.d-inline-block Opportunities
@@ -7,5 +8,6 @@ ul#myTab.nav.nav-tabs.justify-content-center.header.mt-3(role='tablist', style="
       a#news-tab.nav-link(data-toggle='tab', href='#news', role='tab', aria-controls='news', aria-selected='false')
         h2.d-inline-block News
   li.nav-item.col-md-auto.d-inline-block
-    a#info-tab.nav-link(data-toggle='tab', href='#info', role='tab', aria-controls='info', aria-selected='true' class=(sponsor.info.rank === 'Bronze' ? 'active' : ''))
+    //- This class is a hack too for blackrock 
+    a#info-tab.nav-link(data-toggle='tab', href='#info', role='tab', aria-controls='info', aria-selected='true' class=(sponsor.info.rank == 'Bronze' && sponsor.username != 'blackrock' ? 'active' : ''))
       h2.d-inline-block Account
