@@ -2,13 +2,11 @@ version: '3'
 services:
   portal:
     ports:
-      - "80:80"
-    image: "icdocsoc/portal:latest"
-    network_mode: "host"
+      - "8080:8080"
+    image: "icdocsoc/portal:aws"
     volumes:
       - /portal/sponsors:/portal/sponsors
       - /portal/secure:/portal/secure
       - /portal/logs:/portal/logs
-    deploy:
-      restart_policy:
-        condition: on-failure
+      - /portal/aws:/root/.aws
+    command: sudo node app.js
