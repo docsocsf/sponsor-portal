@@ -36,27 +36,26 @@ var uploadToS3 = (req, callback) => {
     var client = s3.createClient(options)
 
     var params = {
-      localDir: path,
+      localDir: "sponsors/" + req.params.sponsor + '/' + req.params.posname,
       deleteRemoved: true,
       s3Params: {
         Bucket: "icdocsoc-sponsor-portal",
-        Prefix: "sponsors/" + req.params.sponsor + '/' + req.params.posname +
-          '/' + req.session.data.FirstName + ' ' + req.session.data.Surname + ' ' +
-          req.session.data.Login + '/'
+        Prefix: "sponsors/" + req.params.sponsor + '/' + req.params.posname
       },
     }
     var uploader = client.uploadDir(params)
     logger.info(req.session.data.Login + "'s application to " + req.params.sponsor + "'s " +
-      req.params.posname + ' with ' + data.documents.length + ' document(s) started uploading to s3')
+      req.params.posname  + ' document(s) started uploading to s3')
     uploader.on('error', function (err) {
       logger.error("Failed to upload to s3:", err.stack)
     })
     uploader.on('end', function () {
       logger.info(req.session.data.Login + "'s application to " + req.params.sponsor + "'s " +
-        req.params.posname + ' with ' + data.documents.length + ' document(s) finished uploading to s3')
+        req.params.posname  + ' document(s) finished uploading to s3')
+      callback()
     })
   } else {
-    callback();
+    callback()
   }
 }
 
