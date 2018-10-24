@@ -57,6 +57,10 @@ app.post('/logout', (req, res) => {
   res.redirect('/')
 })
 
+app.get(['/about', '/team'], (req,res) => {
+  res.render('team')
+})
+
 app.get('*', function (req, res) {
   res.redirect('/')
 })
