@@ -203,7 +203,7 @@ $(function () {
       }
       $(this).closest('.live').find('.apply-link').val('')
       $('#apply_link').hide()
-      $('#checkbox_text').html('Apply through portal')
+      $('#checkbox_text').html(' Allow applications through our portal Remember to check back later to see who applied)')
     } else {
       $(this).closest('.live').find('button').prop('disabled', true)
       $('#apply_link').show()

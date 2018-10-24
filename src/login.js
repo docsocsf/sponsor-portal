@@ -36,7 +36,7 @@ exports.setup = (app, db, auth) => {
   }, (req, res) => {
     var user = req.body.user
     var pass = req.body.pass
-    auth.authSponsor(user, pass, db, req.session, (ret) => {
+    auth.authSponsor(user.toLowerCase(), pass, db, req.session, (ret) => {
       (ret === true) ? res.redirect('/sponsor') : res.render('login', ret)
     })
   })
