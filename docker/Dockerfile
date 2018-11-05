@@ -4,9 +4,6 @@ FROM ubuntu:18.04
 RUN apt-get update && apt-get install -y \
     curl vim sudo gnupg gnupg2 gnupg1 git make g++
 
-# Install kerberos
-RUN apt-get update && apt-get install -y libkrb5-dev
-
 # Install Node10 and npm
 RUN curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
 RUN apt-get update && apt-get install -y nodejs

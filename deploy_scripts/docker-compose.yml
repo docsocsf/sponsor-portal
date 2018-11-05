@@ -3,10 +3,13 @@ services:
   portal:
     ports:
       - "8080:8080"
-    image: "icdocsoc/portal:aws"
+    image: "icdocsoc/portal:latest"
     volumes:
       - /portal/sponsors:/portal/sponsors
       - /portal/secure:/portal/secure
       - /portal/logs:/portal/logs
       - /portal/aws:/root/.aws
-    command: sudo node app.js
+    command: node app.js
+    deploy:
+      restart_policy:
+        condition: any
