@@ -9,7 +9,7 @@ services:
       - /portal/secure:/portal/secure
       - /portal/logs:/portal/logs
       - /portal/aws:/root/.aws
-    command: node app.js
+    command: npm start
     deploy:
       restart_policy:
         condition: any
