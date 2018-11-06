@@ -8,7 +8,12 @@ jobs:
       - setup_remote_docker
       - run: docker login -u $DOCKER_USER -p $DOCKER_PASS
       - run: docker build -t icdocsoc/portal:aws -f docker/Dockerfile .
-      - run: docker push icdocsoc/portal:aws
+      - run: docker push icdocsoc/portal:latest
+      - add_ssh_keys:
+          fingerprints:
+            - "7c:b4:98:ad:a5:2b:3a:c9:58:b9:5d:6a:1b:48:fb:16"
+      - run: scp -o 'StrictHostKeyChecking=no' deploy_scripts/docker-compose.yml deploy_scripts/update-portal secrets/secrets.yml.enc ubuntu@portal.docsoc.co.uk:/portal/
+      - run: ssh -o "StrictHostKeyChecking=no" -v ubuntu@portal.docsoc.co.uk "update-portal"
   test:
     docker:
       - image: circleci/node:10.9.0-browsers
