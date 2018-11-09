@@ -218,11 +218,6 @@ textarea {
   background-image: linear-gradient(to bottom, transparent, white);
 }
 
-/* SWITCH */
-
-#apply_link {
-  display: none;
-}
 
 /* The switch - the box around the slider */
 .switch {
