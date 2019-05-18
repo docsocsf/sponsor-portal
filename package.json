@@ -16,7 +16,7 @@
     "express": "^4.16.3",
     "express-fileupload": "^0.4.0",
     "express-session": "^1.15.6",
-    "fstream": "^1.0.11",
+    "fstream": "^1.0.12",
     "glob": "^7.1.2",
     "graceful-fs": "^4.1.11",
     "helmet": "^3.13.0",
